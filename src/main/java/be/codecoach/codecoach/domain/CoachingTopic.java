@@ -5,11 +5,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-@Embeddable
+@Entity
+@Table(name = "coaching_topics")
 public class CoachingTopic {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "coaching_topic_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -17,7 +18,7 @@ public class CoachingTopic {
     )
     private String coachingTopicId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "topic", referencedColumnName = "topic_id")
     private Topic topic;
 

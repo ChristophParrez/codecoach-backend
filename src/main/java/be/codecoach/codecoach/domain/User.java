@@ -35,10 +35,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
-    @JoinTable(name = "users_roles",
-    joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "role_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "user_id"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "role_id")
     private Collection<Role> roles;
 
     @Column(name = "picture")

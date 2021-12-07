@@ -3,12 +3,12 @@ package be.codecoach.codecoach.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 
+
+@Entity
+@Table(name = "coach_info")
 public class CoachInformation {
 
     @Id
@@ -29,7 +29,7 @@ public class CoachInformation {
     @Column(name = "availability")
     private String availability;
 
-    @Embedded
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<CoachingTopic> coachingTopics;
 
 }
