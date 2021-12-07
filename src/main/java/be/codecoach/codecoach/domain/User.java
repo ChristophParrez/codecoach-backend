@@ -36,7 +36,7 @@ public class User {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "user_id")
     private Collection<Role> roles;
 
     @Column(name = "picture")
