@@ -32,5 +32,5 @@ public class CoachInformation {
 
     @OneToMany
     @JoinColumn(name = "coaching_topic_id")
-    private List<CoachingTopic> coachingTopics = new ArrayList<>();
+    private List<CoachingTopic> coachingTopics;
 }

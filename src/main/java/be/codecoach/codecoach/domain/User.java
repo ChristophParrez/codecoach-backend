@@ -4,7 +4,7 @@ package be.codecoach.codecoach.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -37,7 +37,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    private Collection<Role> roles;
+    private List<Role> roles;
 
     @Column(name = "picture")
     private String picture;
