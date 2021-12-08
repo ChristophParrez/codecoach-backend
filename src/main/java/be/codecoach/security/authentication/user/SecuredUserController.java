@@ -1,5 +1,6 @@
 package be.codecoach.security.authentication.user;
 
+import be.codecoach.security.authentication.user.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

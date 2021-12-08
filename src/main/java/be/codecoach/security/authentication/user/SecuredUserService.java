@@ -1,5 +1,9 @@
 package be.codecoach.security.authentication.user;
 
+import be.codecoach.security.authentication.user.accountverification.AccountVerificationService;
+import be.codecoach.security.authentication.user.api.*;
+import be.codecoach.security.authentication.user.exception.AccountNotFoundException;
+import be.codecoach.security.authentication.user.password.reset.PasswordResetService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 @Service
