@@ -21,9 +21,9 @@ public class UserMapper {
         this.roleMapper = roleMapper;
     }
 
-    public User toEntity(UserDto dto) {
+    public User toEntity(UserDto dto, Role role) {
         CoachInformation coachInformation = dto.getCoachInformation() != null ? coachInformationMapper.toEntity(dto.getCoachInformation()) : null;
-        List<Role> roles = roleMapper.toEntity(dto.getRoles());
+        List<Role> roles = List.of(role);
 
         return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
     }

@@ -4,15 +4,15 @@ import be.codecoach.domain.RoleEnum;
 
 public class RoleDto {
 
-    private final String roleId;
+    private final int roleId;
     private final RoleEnum role;
 
-    private RoleDto(String roleId, RoleEnum role) {
+    private RoleDto(int roleId, RoleEnum role) {
         this.roleId = roleId;
         this.role = role;
     }
 
-    public String getRoleId() {
+    public int getRoleId() {
         return roleId;
     }
 
@@ -22,7 +22,7 @@ public class RoleDto {
 
 
     public static final class Builder {
-        private String roleId;
+        private int roleId;
         private RoleEnum role;
 
         private Builder() {
@@ -32,7 +32,7 @@ public class RoleDto {
             return new Builder();
         }
 
-        public Builder withRoleId(String roleId) {
+        public Builder withRoleId(int roleId) {
             this.roleId = roleId;
             return this;
         }

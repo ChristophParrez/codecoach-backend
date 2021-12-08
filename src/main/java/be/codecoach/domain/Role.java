@@ -1,7 +1,5 @@
 package be.codecoach.domain;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,7 +12,7 @@ public class Role {
         this.role = role;
     }
 
-    public String getRoleId() {
+    public int getRoleId() {
         return roleId;
     }
 
@@ -24,12 +22,9 @@ public class Role {
 
     @Id
     @Column(name = "role_id")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private String roleId;
+    @SequenceGenerator(name = "role_seq", sequenceName = "ROLE_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
+    private int roleId;
 
     @Column(name = "role_name")
     @Enumerated(EnumType.STRING)
