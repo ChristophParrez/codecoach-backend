@@ -1,4 +1,4 @@
-package be.codecoach.security.authentication;
+package be.codecoach.security.authentication.user;
 
 public enum Authority implements GrantedAuthority {
     COACHEE("COACHEE"),

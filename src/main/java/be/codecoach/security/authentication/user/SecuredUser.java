@@ -1,5 +1,6 @@
 package be.codecoach.security.authentication.user;
 
+import java.util.Collection;
 import java.util.Objects;
 
 public class SecuredUser implements UserDetails {
