@@ -25,5 +25,8 @@ public class CoachingTopic {
     @Column(name = "experience")
     private double experience;
 
+    @ManyToOne
+    @JoinColumn(name = "coach_info_id")
+    private CoachInformation coachInformation;
 
 }

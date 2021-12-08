@@ -30,7 +30,4 @@ public class CoachInformation {
     @Column(name = "availability")
     private String availability;
 
-    @OneToMany
-    @JoinColumn(name = "coaching_topic_id")
-    private List<CoachingTopic> coachingTopics;
 }
