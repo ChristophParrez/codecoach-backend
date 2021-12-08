@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(value = "http://localhost:4200/")
 public class UserController {
 
     private final UserService userService;
@@ -22,7 +23,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUser(@RequestBody UserDto userDto) {
         userService.registerUser(userDto);
-
     }
 
 }

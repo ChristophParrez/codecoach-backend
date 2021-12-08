@@ -1,6 +1,7 @@
 package be.codecoach.services.validators;
 
 import be.codecoach.api.dtos.UserDto;
+import be.codecoach.exceptions.InvalidEmailException;
 import be.codecoach.exceptions.InvalidPasswordException;
 import be.codecoach.exceptions.NoInputException;
 import be.codecoach.exceptions.NotUniqueException;
@@ -54,7 +55,7 @@ public class MemberValidator{
         java.util.regex.Matcher m = p.matcher(email);
 
         if(!m.matches()) {
-            throw new IllegalArgumentException();
+            throw new InvalidEmailException("Email is invalid");
         }
     }
 
