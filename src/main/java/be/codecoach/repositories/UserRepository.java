@@ -7,4 +7,5 @@ import be.codecoach.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
+    User findByEmail(String email);
 }
