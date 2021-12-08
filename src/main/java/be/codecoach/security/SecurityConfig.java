@@ -1,6 +1,11 @@
 package be.codecoach.security;
 
 import be.codecoach.security.authentication.OnAuthenticationFailureHandler;
+import be.codecoach.security.authentication.jwt.JwtAuthenticationFilter;
+import be.codecoach.security.authentication.jwt.JwtAuthorizationFilter;
+import be.codecoach.security.authentication.jwt.JwtGenerator;
+import be.codecoach.security.authentication.user.SecuredUserService;
+import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
