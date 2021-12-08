@@ -1,7 +1,11 @@
 package be.codecoach.security.authorization;
 
+import be.codecoach.security.authentication.user.api.Account;
+import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import static be.codecoach.security.authentication.user.Authority.ADMIN;
 
 @Service
 public class AuthorizationService {
