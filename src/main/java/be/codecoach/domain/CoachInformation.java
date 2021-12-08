@@ -1,16 +1,24 @@
-package be.codecoach.codecoach.domain;
+package be.codecoach.domain;
 
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
 @Table(name = "coach_info")
 public class CoachInformation {
+
+    public CoachInformation() {}
+
+    public CoachInformation(int coachXp, String introduction, String availability, List<CoachingTopic> coachingTopics) {
+        this.coachXp = coachXp;
+        this.introduction = introduction;
+        this.availability = availability;
+        this.coachingTopics = coachingTopics;
+    }
 
     @Id
     @Column(name = "coach_info_id")
@@ -29,5 +37,9 @@ public class CoachInformation {
 
     @Column(name = "availability")
     private String availability;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "coaching_topics")
+    private List<CoachingTopic> coachingTopics;
 
 }

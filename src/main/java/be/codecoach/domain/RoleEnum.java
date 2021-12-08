@@ -1,4 +1,4 @@
-package be.codecoach.codecoach.domain;
+package be.codecoach.domain;
 
 public enum RoleEnum {
 

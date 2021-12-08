@@ -1,13 +1,26 @@
-package be.codecoach.codecoach.domain;
+package be.codecoach.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "roles")
 public class Role {
+
+    public Role() {}
+
+    public Role(RoleEnum role) {
+        this.role = role;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
 
     @Id
     @Column(name = "role_id")

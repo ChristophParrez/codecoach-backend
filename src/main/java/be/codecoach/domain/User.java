@@ -1,4 +1,4 @@
-package be.codecoach.codecoach.domain;
+package be.codecoach.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,6 +9,18 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
+    public User() {}
+
+    public User(String firstName, String lastName, String email, String companyName, String password, List<Role> roles, String picture, CoachInformation coachInformation) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.companyName = companyName;
+        this.password = password;
+        this.roles = roles;
+        this.picture = picture;
+        this.coachInformation = coachInformation;
+    }
 
     @Id
     @Column(name = "user_id")

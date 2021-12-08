@@ -1,4 +1,4 @@
-package be.codecoach.codecoach.domain;
+package be.codecoach.domain;
 
 
 import org.hibernate.annotations.GenericGenerator;
@@ -9,6 +9,12 @@ import javax.persistence.*;
 @Table(name = "topics")
 public class Topic {
 
+    public Topic() {}
+
+    public Topic(String name) {
+        this.name = name;
+    }
+
     @Id
     @Column(name = "topic_id")
     @GeneratedValue(generator = "UUID")
@@ -16,7 +22,7 @@ public class Topic {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private String topic_id;
+    private String topicId;
 
     @Column(name = "name")
     private String name;
