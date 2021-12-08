@@ -21,7 +21,6 @@ public class SecuredUserService implements UserDetailsService {
 
     private final AccountService accountService;
     private final AccountMapper accountMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     private final AccountVerificationService accountVerificationService;
