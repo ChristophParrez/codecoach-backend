@@ -26,4 +26,12 @@ public class Topic {
 
     @Column(name = "name")
     private String name;
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

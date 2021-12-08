@@ -32,4 +32,12 @@ public class CoachingTopic {
             this.topic = topic;
             this.experience = experience;
         }
+
+        public Topic getTopic() {
+                return topic;
+        }
+
+        public double getExperience() {
+                return experience;
+        }
 }
