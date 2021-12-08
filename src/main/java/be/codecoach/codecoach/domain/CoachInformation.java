@@ -4,7 +4,8 @@ package be.codecoach.codecoach.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,7 +30,7 @@ public class CoachInformation {
     @Column(name = "availability")
     private String availability;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<CoachingTopic> coachingTopics;
-
+    @OneToMany
+    @JoinColumn(name = "coaching_topic_id")
+    private List<CoachingTopic> coachingTopics = new ArrayList<>();
 }

@@ -24,4 +24,6 @@ public class CoachingTopic {
 
     @Column(name = "experience")
     private double experience;
+
+
 }
