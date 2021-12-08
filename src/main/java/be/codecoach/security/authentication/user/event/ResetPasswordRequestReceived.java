@@ -1,6 +1,6 @@
 package be.codecoach.security.authentication.user.event;
 
-public class ResetPasswordRequestReceived {
+public class ResetPasswordRequestReceived implements Event {
 
     private String email;
     private String signature;

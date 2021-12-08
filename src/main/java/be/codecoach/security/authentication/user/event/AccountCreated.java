@@ -3,7 +3,7 @@ package be.codecoach.security.authentication.user.event;
 import be.codecoach.security.authentication.user.accountverification.AccountVerification;
 import be.codecoach.security.authentication.user.api.Account;
 
-public class AccountCreated {
+public class AccountCreated implements Event {
 
     private final Account account;
     private final AccountVerification accountVerification;

@@ -1,5 +1,7 @@
 package be.codecoach.security.authentication.user.password.reset;
 
+import be.codecoach.security.authentication.user.api.*;
+import be.codecoach.security.authentication.user.event.ResetPasswordRequestReceived;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
