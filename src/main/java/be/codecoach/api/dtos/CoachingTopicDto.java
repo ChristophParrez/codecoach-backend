@@ -5,10 +5,10 @@ import be.codecoach.domain.Topic;
 public class CoachingTopicDto {
 
     private final String coachingTopicId;
-    private final Topic topic;
+    private final TopicDto topic;
     private final double experience;
 
-    private CoachingTopicDto(String coachingTopicId, Topic topic, double experience) {
+    private CoachingTopicDto(String coachingTopicId, TopicDto topic, double experience) {
         this.coachingTopicId = coachingTopicId;
         this.topic = topic;
         this.experience = experience;
@@ -18,7 +18,7 @@ public class CoachingTopicDto {
         return coachingTopicId;
     }
 
-    public Topic getTopic() {
+    public TopicDto getTopic() {
         return topic;
     }
 
@@ -28,7 +28,7 @@ public class CoachingTopicDto {
 
     public static final class Builder {
         private String coachingTopicId;
-        private Topic topic;
+        private TopicDto topic;
         private double experience;
 
         private Builder() {
@@ -43,7 +43,7 @@ public class CoachingTopicDto {
             return this;
         }
 
-        public Builder withTopic(Topic topic) {
+        public Builder withTopic(TopicDto topic) {
             this.topic = topic;
             return this;
         }

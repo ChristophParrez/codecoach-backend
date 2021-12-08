@@ -22,7 +22,7 @@ public class UserMapper {
     }
 
     public User toEntity(UserDto dto) {
-        CoachInformation coachInformation = coachInformationMapper.toEntity(dto.getCoachInformation());
+        CoachInformation coachInformation = dto.getCoachInformation() != null ? coachInformationMapper.toEntity(dto.getCoachInformation()) : null;
         List<Role> roles = roleMapper.toEntity(dto.getRoles());
 
         return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
