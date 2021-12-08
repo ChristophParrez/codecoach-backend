@@ -1,6 +1,5 @@
 package be.codecoach.codecoach.domain;
 
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -35,8 +34,14 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private List<Role> roles;
 
     @Column(name = "picture")

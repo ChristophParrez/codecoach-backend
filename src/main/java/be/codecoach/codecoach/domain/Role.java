@@ -3,6 +3,7 @@ package be.codecoach.codecoach.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -20,6 +21,4 @@ public class Role {
     @Column(name = "role_name")
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
-
-
 }
