@@ -1,5 +1,8 @@
 package be.codecoach.security;
 
+import be.codecoach.security.authentication.jwt.JwtGenerator;
+import be.codecoach.security.authentication.user.SecuredUserService;
+import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
