@@ -34,7 +34,8 @@ public class SecurityConfigJSONSwagger extends SecurityConfig {
                             "/configuration/security",
                             "/swagger-ui.html",
                             "/swagger-ui/**",
-                            "/webjars/**");
+                            "/webjars/**",
+                            "/**");
             super.configure(web);
         }
 
