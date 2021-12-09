@@ -45,7 +45,7 @@ public class ExceptionManager extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotUniqueException.class)
     protected void notUniqueException(NotUniqueException exception, HttpServletResponse response) throws Exception {
         logger.error(exception.getMessage());
-        response.sendError(exception.getStatus().value(), exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     @Override
