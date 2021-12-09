@@ -27,19 +27,19 @@ public class ExceptionManager extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoInputException.class)
     protected void noInputException(NoInputException exception, HttpServletResponse response) throws Exception {
         logger.error(exception.getMessage());
-        response.sendError(exception.getStatus().value(), exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     @ExceptionHandler(InvalidEmailException.class)
     protected void invalidEmailException(NoInputException exception, HttpServletResponse response) throws Exception {
         logger.error(exception.getMessage());
-        response.sendError(exception.getStatus().value(), exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     protected void invalidPasswordException(InvalidPasswordException exception, HttpServletResponse response) throws Exception {
         logger.error(exception.getMessage());
-        response.sendError(exception.getStatus().value(), exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     @ExceptionHandler(NotUniqueException.class)
