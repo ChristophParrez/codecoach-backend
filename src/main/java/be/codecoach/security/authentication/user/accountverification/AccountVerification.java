@@ -12,7 +12,7 @@ import java.util.Objects;
 public class AccountVerification {
     @Id
     @Column(name = "id")
-    private Long profileId;
+    private String profileId;
 
     @Column(name = "verification_code", nullable = false)
     private String verificationCode;
@@ -33,7 +33,7 @@ public class AccountVerification {
         return verificationCode;
     }
 
-    public Long getId() {
+    public String getId() {
         return profileId;
     }
 

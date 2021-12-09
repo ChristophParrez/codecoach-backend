@@ -3,11 +3,11 @@ package be.codecoach.security.authentication.user.api;
 import java.util.Objects;
 
 public class SecuredUserDto {
-    private long id;
+    private String id;
     private String email;
     private boolean accountEnabled;
 
-    public SecuredUserDto(long id, String email, boolean accountEnabled) {
+    public SecuredUserDto(String id, String email, boolean accountEnabled) {
         this.id = id;
         this.email = email;
         this.accountEnabled = accountEnabled;
@@ -16,7 +16,7 @@ public class SecuredUserDto {
     public SecuredUserDto() {
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 

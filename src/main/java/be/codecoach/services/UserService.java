@@ -8,10 +8,15 @@ import be.codecoach.repositories.UserRepository;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class UserService {
+public class UserService implements AccountService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -29,10 +34,26 @@ public class UserService {
     public void registerUser(UserDto userDto) {
         assertUserInfoIsValid(userDto);
         Role role = roleRepository.findByRole(RoleEnum.COACHEE);
-        userRepository.save(userMapper.toEntity(userDto, role));
+        //TODO: passwordEncoder.encode(createSecuredUserDto.getPassword()));
+        return userRepository.save(userMapper.toEntity(userDto, role));
     }
 
     private void assertUserInfoIsValid(UserDto userDto) {
         memberValidator.validate(userDto);
+    }
+
+    @Override
+    public Optional<? extends Account> findByEmail(String email) {
+        return Optional.of(userRepository.findByEmail(email));
+    }
+
+    @Override
+    public Account createAccount(UserDto dto) {
+        return registerUser(dto);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

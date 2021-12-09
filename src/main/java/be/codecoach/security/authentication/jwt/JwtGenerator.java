@@ -1,6 +1,6 @@
 package be.codecoach.security.authentication.jwt;
 
-import be.codecoach.security.authentication.user.Authority;
+import be.codecoach.domain.RoleEnum;
 import be.codecoach.security.authentication.user.api.Account;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -56,7 +56,7 @@ public class JwtGenerator {
 
         List<String> authoritiesInToken = parsedToken.getBody().get("rol", ArrayList.class);
         var authorities = authoritiesInToken.stream()
-                .map(Authority::valueOf)
+                .map(RoleEnum::valueOf)
                 .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(username, null, authorities);

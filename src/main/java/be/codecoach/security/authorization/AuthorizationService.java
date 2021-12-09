@@ -5,7 +5,7 @@ import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import static be.codecoach.security.authentication.user.Authority.ADMIN;
+import static be.codecoach.domain.RoleEnum.ADMIN;
 
 @Service
 public class AuthorizationService {

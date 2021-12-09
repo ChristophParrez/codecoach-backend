@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface AccountVerificationRepository extends CrudRepository<AccountVerification, Long> {
 
-    void deleteAccountVerificationByProfileId(Long profileId);
+    void deleteAccountVerificationByProfileId(String profileId);
 
-    Optional<AccountVerification> findAccountVerificationByProfileId(Long profileId);
+    Optional<AccountVerification> findAccountVerificationByProfileId(String profileId);
 }

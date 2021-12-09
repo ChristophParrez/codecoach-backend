@@ -1,5 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
+import be.codecoach.api.dtos.UserDto;
+
 import java.util.Optional;
 
 

@@ -1,5 +1,6 @@
 package be.codecoach.security.authentication.user;
 
+import be.codecoach.domain.RoleEnum;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -8,10 +9,10 @@ import java.util.Objects;
 public class SecuredUser implements UserDetails {
     private String username;
     private String password;
-    private Collection<Authority> authorities;
+    private Collection<RoleEnum> authorities;
     private boolean enabled;
 
-    public SecuredUser(String username, String password, Collection<Authority> authorities, boolean enabled){
+    public SecuredUser(String username, String password, Collection<RoleEnum> authorities, boolean enabled){
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -23,7 +24,7 @@ public class SecuredUser implements UserDetails {
     }
 
     @Override
-    public Collection<Authority> getAuthorities() {
+    public Collection<RoleEnum> getAuthorities() {
         return authorities;
     }
 

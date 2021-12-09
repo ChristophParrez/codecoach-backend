@@ -1,8 +1,10 @@
 package be.codecoach.security.authentication.user;
 
+import be.codecoach.api.dtos.UserDto;
+import be.codecoach.domain.RoleEnum;
 import be.codecoach.security.authentication.user.accountverification.AccountVerificationService;
 import be.codecoach.security.authentication.user.api.*;
-import be.codecoach.security.authentication.user.exception.AccountNotFoundException;
+import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.security.authentication.user.password.reset.PasswordResetService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,21 +41,21 @@ public class SecuredUserService implements UserDetailsService {
         Account account = accountService.findByEmail(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
 
-        Collection<Authority> authorities = determineGrantedAuthorities(account);
+        Collection<RoleEnum> authorities = determineGrantedAuthorities(account);
 
         return new SecuredUser(account.getEmail(), account.getPassword(), authorities, account.isAccountEnabled());
     }
 
-    private Collection<Authority> determineGrantedAuthorities(Account account) {
+    private Collection<RoleEnum> determineGrantedAuthorities(Account account) {
         return new ArrayList<>(account.getAuthorities());
     }
 
-    public SecuredUserDto registerAccount(CreateSecuredUserDto createSecuredUserDto) {
-        if (emailExists(createSecuredUserDto.getEmail())) {
+    public SecuredUserDto registerAccount(UserDto userDto) {
+        if (emailExists(userDto.getEmail())) {
             throw new IllegalStateException("Email already exists!");
         }
-        Account account = accountService.createAccount(createSecuredUserDto);
-        account.setPassword(passwordEncoder.encode(createSecuredUserDto.getPassword()));
+        Account account = accountService.createAccount(userDto);
+        account.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         accountVerificationService.sendVerificationEmail(account);
 
@@ -65,7 +67,7 @@ public class SecuredUserService implements UserDetailsService {
     }
 
     public VerificationResultDto validateAccount(ValidateAccountDto validationData) {
-        Account account = accountService.findByEmail(validationData.getEmail()).orElseThrow(() -> new AccountNotFoundException(""));
+        Account account = accountService.findByEmail(validationData.getEmail()).orElseThrow(() -> new UserNotFoundException(""));
         return new VerificationResultDto(accountVerificationService.enableAccount(validationData.getVerificationCode(), account));
     }
 

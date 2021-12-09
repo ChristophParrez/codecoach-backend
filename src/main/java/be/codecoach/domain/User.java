@@ -1,13 +1,15 @@
 package be.codecoach.domain;
 
+import be.codecoach.security.authentication.user.api.Account;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Account {
 
     public User() {}
 
@@ -63,4 +65,39 @@ public class User {
     @JoinColumn(name = "coach_info", referencedColumnName = "coach_info_id")
     private CoachInformation coachInformation;
 
+
+    @Override
+    public String getId() {
+        return this.userId;
+    }
+
+    @Override
+    public String getEmail() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public void setPassword(String encode) {
+
+    }
+
+    @Override
+    public List<RoleEnum> getAuthorities() {
+        return this.roles.stream().map(Role::getRole).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAccountEnabled() {
+        return true;
+    }
+
+    @Override
+    public void enableAccount() {
+
+    }
 }

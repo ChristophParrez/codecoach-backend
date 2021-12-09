@@ -21,7 +21,7 @@ public class SecuredUserController {
     public SecuredUserController(SecuredUserService securedUserService) {
         this.securedUserService = securedUserService;
     }
-
+/*
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8")
     public SecuredUserDto createUser(@RequestBody CreateSecuredUserDto createSecuredUserDto) {
@@ -33,7 +33,7 @@ public class SecuredUserController {
         }
         LOGGER.info("User was added");
         return securedUserService.registerAccount(createSecuredUserDto);
-    }
+    }*/
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", path = "/validate")
@@ -76,7 +76,7 @@ public class SecuredUserController {
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
-    }
+    }*/
 
     boolean isPasswordValid(String password) {
         if (password == null) return false;
