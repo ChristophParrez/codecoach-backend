@@ -5,6 +5,9 @@ import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
+import be.codecoach.security.authentication.user.api.Account;
+import be.codecoach.security.authentication.user.api.AccountService;
+import be.codecoach.security.authentication.user.api.CreateSecuredUserDto;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +34,7 @@ public class UserService implements AccountService {
         this.roleRepository = roleRepository;
     }
 
-    public void registerUser(UserDto userDto) {
+    public Account registerUser(UserDto userDto) {
         assertUserInfoIsValid(userDto);
         Role role = roleRepository.findByRole(RoleEnum.COACHEE);
         //TODO: passwordEncoder.encode(createSecuredUserDto.getPassword()));

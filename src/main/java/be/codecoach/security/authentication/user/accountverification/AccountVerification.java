@@ -24,7 +24,7 @@ public class AccountVerification {
 
     }
 
-    public AccountVerification(Long profileId, String verificationCode){
+    public AccountVerification(String profileId, String verificationCode){
         this.profileId = profileId;
         this.verificationCode = verificationCode;
     }

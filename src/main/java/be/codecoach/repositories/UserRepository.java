@@ -8,4 +8,5 @@ import be.codecoach.domain.User;
 public interface UserRepository extends JpaRepository<User, String> {
 
     User findByEmail(String email);
+    boolean existsByEmail(String email);
 }

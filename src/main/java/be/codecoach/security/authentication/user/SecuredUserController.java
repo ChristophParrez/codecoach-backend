@@ -62,13 +62,13 @@ public class SecuredUserController {
         return securedUserService.performPasswordChange(changeRequest);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
+    /*@ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void invalidFieldsException(IllegalStateException ex, HttpServletResponse response) throws IOException {
         LOGGER.info(ex.getMessage());
         response.sendError(400, ex.getMessage());
-    }
-
+    }*/
+/*
     boolean isEmailValid(String email) {
         if (email == null) return false;
 

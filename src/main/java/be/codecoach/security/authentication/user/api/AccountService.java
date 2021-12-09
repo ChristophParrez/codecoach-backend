@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface AccountService {
     Optional<? extends Account> findByEmail(String userName);
 
-    Account createAccount(CreateSecuredUserDto createSecuredUserDto);
+    Account createAccount(UserDto dto);
 
     boolean existsByEmail(String email);
 }

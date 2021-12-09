@@ -24,7 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Profile("production")
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
@@ -45,15 +45,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers("/**").permitAll()
+        http
+                .httpBasic().and().authorizeRequests()
+                //.antMatchers("/").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .and().cors();
+        //http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
+        /*http.cors().and().csrf().disable().authorizeRequests()
+                //.antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/security/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), authenticationFailureHandler(), jwtGenerator, accountService))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), authenticationFailureHandler(), jwtGenerator))
+                .formLogin().loginPage("/login").permitAll()
+                .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);*/
     }
 
     @Bean
