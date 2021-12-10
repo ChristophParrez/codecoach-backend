@@ -47,11 +47,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+
         SecuredUser securedUser = getSecuredUser(request);
-        System.out.println("Username: " + securedUser.getUsername());
-        System.out.println("Password: " + securedUser.getPassword());
-        System.out.println("Authorities: " + securedUser.getAuthorities());
+
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(securedUser.getUsername(), securedUser.getPassword()));
+
     }
 
     private SecuredUser getSecuredUser(HttpServletRequest request) {
