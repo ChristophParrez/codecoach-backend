@@ -83,7 +83,7 @@ public class User implements Account {
 
     @Override
     public void setPassword(String encode) {
-
+        this.password = encode;
     }
 
     @Override
