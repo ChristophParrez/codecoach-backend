@@ -34,7 +34,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         //ugly code and duplication from SecurityConfig.
         //I got no idea to do this better.
         //This basically means do not test security in these cases, something the SecurityConfig does also
-        if (request.getRequestURI().contains("/security") && request.getMethod().equals("POST")) {
+        //Team Runtime Terror Backend: added || request.getRequestURI().contains("/users"))
+        if ((request.getRequestURI().contains("/security") || request.getRequestURI().contains("/users") || request.getRequestURI().contains("/login")) && request.getMethod().equals("POST")) {
             filterChain.doFilter(request, response);
             return;
         }

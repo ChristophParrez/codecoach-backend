@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.accountService = accountService;
     }
 
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
@@ -69,7 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .permitAll()
         //http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
         /*http.cors().and().csrf().disable().authorizeRequests()
-                //.antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/security/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

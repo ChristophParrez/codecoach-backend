@@ -39,6 +39,7 @@ public class SecuredUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String userName) throws UsernameNotFoundException {
+        System.out.println("loadUserByUsername()");
         Account account = accountService.findByEmail(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
 
