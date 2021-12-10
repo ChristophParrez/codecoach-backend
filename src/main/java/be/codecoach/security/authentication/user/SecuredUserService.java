@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 
 @Service
@@ -42,8 +43,15 @@ public class SecuredUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
 
         Collection<RoleEnum> authorities = determineGrantedAuthorities(account);
+        System.out.println("loadUserByUsername(): " + authorities);
+        SecuredUser toPass = new SecuredUser(account.getEmail(), account.getPassword(), authorities, account.isAccountEnabled());
+        System.out.println(toPass);
+        System.out.println(passwordEncoder.matches("String12!", account.getPassword()));
+        System.out.println(Objects.equals(passwordEncoder.encode("String12!"), account.getPassword()));
 
-        return new SecuredUser(account.getEmail(), account.getPassword(), authorities, account.isAccountEnabled());
+        return toPass;
+
+        //return new SecuredUser(account.getEmail(), account.getPassword(), authorities, account.isAccountEnabled());
     }
 
     private Collection<RoleEnum> determineGrantedAuthorities(Account account) {

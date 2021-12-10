@@ -63,6 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain, Authentication authentication) {
 
+        System.out.println("test: " + authentication.getName());
         Account account = accountService.findByEmail(authentication.getName()).orElseThrow(() -> new RuntimeException("Could not find account"));
 
         String token = jwtGenerator.generateToken(account);

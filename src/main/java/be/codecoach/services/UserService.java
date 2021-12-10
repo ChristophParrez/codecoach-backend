@@ -41,7 +41,7 @@ public class UserService implements AccountService {
         assertUserInfoIsValid(userDto);
         Role role = roleRepository.findByRole(RoleEnum.COACHEE);
         User userToBeSaved = userMapper.toEntity(userDto, role);//added by Free while doing tests with security
-        //userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword())); //remove comment to use encoding //added by Free while doing tests with security
+        userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword())); //remove comment to use encoding //added by Free while doing tests with security
         return userRepository.save(userToBeSaved);
         //added by Free while doing tests with security
     }
