@@ -3,10 +3,13 @@ package be.codecoach.exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Null;
+import java.sql.SQLInvalidAuthorizationSpecException;
 
 @ControllerAdvice
 public class ExceptionManager {
@@ -39,6 +42,24 @@ public class ExceptionManager {
 
     @ExceptionHandler(RuntimeException.class)
     protected void runtimeException(RuntimeException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    protected void internalAuthenticationServiceException(InternalAuthenticationServiceException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    protected void nullPointerException(NullPointerException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    protected void userNotFoundException(UserNotFoundException exception, HttpServletResponse response) throws Exception {
         logger.error(exception.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }

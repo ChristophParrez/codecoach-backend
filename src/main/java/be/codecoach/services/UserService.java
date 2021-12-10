@@ -52,7 +52,7 @@ public class UserService implements AccountService {
 
     @Override
     public Optional<? extends Account> findByEmail(String email) {
-        return Optional.of(userRepository.findByEmail(email));
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
     @Override
