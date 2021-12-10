@@ -4,6 +4,7 @@ import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
+import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.user.api.Account;
