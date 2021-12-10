@@ -45,18 +45,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic().and().authorizeRequests()
-                //.antMatchers("/").permitAll()
+        http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .formLogin().loginPage("/login").permitAll()
                 .and()
-                .logout()
-                .permitAll()
-                .and().cors();
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        ;
+        // //.antMatchers("/").permitAll()
+                // .anyRequest().permitAll()
+                // .and()
+                // .formLogin()
+                // .loginPage("/login")
+                // .permitAll()
+                // .and()
+                // .logout()
+                // .permitAll()
         //http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
         /*http.cors().and().csrf().disable().authorizeRequests()
                 //.antMatchers("/**").permitAll()

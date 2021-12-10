@@ -24,13 +24,7 @@ public class UserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
-        try {
-            userService.registerUser(userDto);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED).body("Registration is successful");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public void registerUser(@RequestBody UserDto userDto) {
+        userService.registerUser(userDto);
     }
 }
