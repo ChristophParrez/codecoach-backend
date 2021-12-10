@@ -68,7 +68,7 @@ public class MemberValidator{
     private void assertPasswordValid(String password) {
         String pattern = "(?=.*[0-9])(?=.*[A-Z])(?=\\S+$).{8,}";
         if(!password.matches(pattern)){
-            throw new InvalidPasswordException("Password cannot be null");
+            throw new InvalidPasswordException("Password syntax must match input requirements");
         }
     }
 }
