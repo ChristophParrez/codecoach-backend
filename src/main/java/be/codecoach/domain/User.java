@@ -101,4 +101,24 @@ public class User implements Account {
     public void enableAccount() {
 
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
 }

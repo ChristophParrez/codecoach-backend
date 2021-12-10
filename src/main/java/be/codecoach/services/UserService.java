@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional //added by Free while doing tests with security
+@Transactional
 public class UserService implements AccountService {
 
     private final UserMapper userMapper;
@@ -26,7 +26,7 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
 
-    private final PasswordEncoder passwordEncoder; //added by Free while doing tests with security
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserMapper userMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
@@ -34,16 +34,15 @@ public class UserService implements AccountService {
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;//added by Free while doing tests with security
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Account registerUser(UserDto userDto) {
         assertUserInfoIsValid(userDto);
         Role role = roleRepository.findByRole(RoleEnum.COACHEE);
-        User userToBeSaved = userMapper.toEntity(userDto, role);//added by Free while doing tests with security
-        userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword())); //remove comment to use encoding //added by Free while doing tests with security
+        User userToBeSaved = userMapper.toEntity(userDto, role);
+        userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
         return userRepository.save(userToBeSaved);
-        //added by Free while doing tests with security
     }
 
     private void assertUserInfoIsValid(UserDto userDto) {
@@ -63,5 +62,24 @@ public class UserService implements AccountService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public User getUser(String userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()) {
+            throw new UserNotFoundException("No such user exists");
+        }
+        return user.get();
+    }
+
+    public UserDto getCoacheeProfileDto(String userId) {
+        return userMapper.toCoacheeProfileDto(getUser(userId));
+    }
+
+    public UserDto updateUser(String userId, UserDto userDto) {
+        User user = getUser(userId);
+
+        return null;
+
     }
 }

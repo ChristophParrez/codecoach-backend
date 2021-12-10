@@ -1,6 +1,7 @@
 package be.codecoach.api;
 
 import be.codecoach.api.dtos.UserDto;
+import be.codecoach.domain.User;
 import be.codecoach.exceptions.NotUniqueException;
 import be.codecoach.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,5 +27,18 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUser(@RequestBody UserDto userDto) {
         userService.registerUser(userDto);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUser(@PathVariable String userId){
+        return userService.getCoacheeProfileDto(userId);
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateUser(@PathVariable String userId,
+                              @RequestBody UserDto userDto) {
+        return userService.updateUser(userId, userDto);
     }
 }

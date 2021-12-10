@@ -27,4 +27,15 @@ public class UserMapper {
 
         return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
     }
+
+    public UserDto toCoacheeProfileDto(User user) {
+        return UserDto.Builder.anUserDto()
+                .withFirstName(user.getFirstName())
+                .withLastName(user.getLastName())
+                .withEmail(user.getEmail())
+                .withCompanyName(user.getCompanyName())
+                .withRoles(roleMapper.toDto(user.getRoles()))
+                .withPicture(user.getPicture())
+                .build();
+    }
 }
