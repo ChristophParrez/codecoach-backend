@@ -1,6 +1,8 @@
 package be.codecoach.domain;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -29,4 +31,9 @@ public class Role {
     @Column(name = "role_name")
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
+
+    @ManyToMany(mappedBy = "roles")
+    @Column(name = "users")
+    private Set<User> users;
+
 }

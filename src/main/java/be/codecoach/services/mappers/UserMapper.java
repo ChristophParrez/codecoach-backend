@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import be.codecoach.domain.User;
 
+import javax.persistence.SecondaryTable;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class UserMapper {
@@ -23,7 +25,7 @@ public class UserMapper {
 
     public User toEntity(UserDto dto, Role role) {
         CoachInformation coachInformation = dto.getCoachInformation() != null ? coachInformationMapper.toEntity(dto.getCoachInformation()) : null;
-        List<Role> roles = List.of(role);
+        Set<Role> roles = Set.of(role);
 
         return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
     }

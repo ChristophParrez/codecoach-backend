@@ -5,13 +5,14 @@ import be.codecoach.domain.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class RoleMapper {
 
-    public List<Role> toEntity(List<RoleDto> dto) {
-        return dto.stream().map(this::toEntity).collect(Collectors.toList());
+    public Set<Role> toEntity(Set<RoleDto> dto) {
+        return dto.stream().map(this::toEntity).collect(Collectors.toSet());
     }
 
     public Role toEntity(RoleDto dto) {
@@ -23,7 +24,7 @@ public class RoleMapper {
             .withRole(role.getRole())
             .build();}
 
-    public List<RoleDto> toDto(List<Role> roles) {
-        return roles.stream().map(this::toDto).collect(Collectors.toList());
+    public Set<RoleDto> toDto(Set<Role> roles) {
+        return roles.stream().map(this::toDto).collect(Collectors.toSet());
     }
 }
