@@ -25,6 +25,18 @@ public class User implements Account {
         this.coachInformation = coachInformation;
     }
 
+    private User(UserBuilder userBuilder){
+        this.userId = userBuilder.userId;
+        this.firstName = userBuilder.firstName;
+        this.lastName = userBuilder.lastName;
+        this.email = userBuilder.email;
+        this.companyName = userBuilder.companyName;
+        this.password = userBuilder.password;
+        this.roles = userBuilder.roles;
+        this.picture = userBuilder.picture;
+        this.coachInformation = userBuilder.coachInformation;
+    }
+
     @Id
     @Column(name = "user_id")
     @GeneratedValue(generator = "UUID")
@@ -151,4 +163,69 @@ public class User implements Account {
         return this.coachInformation;
     }
 
+    public static class UserBuilder extends Builder<User> {
+
+        private String userId;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String companyName;
+        private String password;
+        private Set<Role> roles;
+        private String picture;
+        private CoachInformation coachInformation;
+
+        private UserBuilder(){
+        }
+
+        @Override
+        public User build() {
+            return new User(this);
+        }
+
+        public UserBuilder withId(String userId){
+            this.userId = userId;
+            return this;
+        }
+
+        public UserBuilder withFirstName(String firstName){
+            this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder withLastName(String lastName){
+            this.lastName = lastName;
+            return this;
+        }
+
+        public UserBuilder withEmail(String email){
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder withCompanyName(String companyName){
+            this.companyName = companyName;
+            return this;
+        }
+
+        public UserBuilder withPassword(String password){
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder withRoles(Set<Role> roles){
+            this.roles = roles;
+            return this;
+        }
+
+        public UserBuilder withPicture(String picture){
+            this.picture = picture;
+            return this;
+        }
+
+        public UserBuilder withCoachInformation(CoachInformation coachInformation){
+            this.coachInformation = coachInformation;
+            return this;
+        }
+    }
 }

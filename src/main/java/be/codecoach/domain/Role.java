@@ -15,6 +15,12 @@ public class Role {
         this.role = role;
     }
 
+    private Role(RoleBuilder roleBuilder){
+        this.roleId = roleBuilder.roleId;
+        this.role = roleBuilder.role;
+        this.users = roleBuilder.users;
+    }
+
     public int getRoleId() {
         return roleId;
     }
@@ -48,5 +54,35 @@ public class Role {
     @Override
     public int hashCode() {
         return Objects.hash(role);
+    }
+
+    public static class RoleBuilder extends Builder<Role> {
+
+        private int roleId;
+        private RoleEnum role;
+        private Set<User> users;
+
+        private RoleBuilder(){
+        }
+
+        @Override
+        public Role build() {
+            return new Role(this);
+        }
+
+        public RoleBuilder withId(int roleId){
+            this.roleId = roleId;
+            return this;
+        }
+
+        public RoleBuilder withRoleEnum(RoleEnum role){
+            this.role = role;
+            return this;
+        }
+
+        public RoleBuilder withUsers(Set<User> users){
+            this.users = users;
+            return this;
+        }
     }
 }

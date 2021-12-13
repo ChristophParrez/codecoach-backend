@@ -11,9 +11,17 @@ import java.util.List;
 @Table(name = "coach_info")
 public class CoachInformation {
 
-    public CoachInformation() {}
+    public CoachInformation() {
+    }
 
     public CoachInformation(int coachXp, String introduction, String availability, List<CoachingTopic> coachingTopics) {
+        this.coachXp = coachXp;
+        this.introduction = introduction;
+        this.availability = availability;
+        this.coachingTopics = coachingTopics;
+    }
+
+    private CoachInformation(CoachInformationBuilder coachInformationBuilder) {
         this.coachXp = coachXp;
         this.introduction = introduction;
         this.availability = availability;
@@ -60,5 +68,47 @@ public class CoachInformation {
 
     public String getId() {
         return this.coachInfoId;
+    }
+
+    public static class CoachInformationBuilder extends Builder<CoachInformation> {
+
+        private String coachInfoId;
+        private int coachXp;
+        private String introduction;
+        private String availability;
+        private List<CoachingTopic> coachingTopics;
+
+        private CoachInformationBuilder() {
+        }
+
+        @Override
+        public CoachInformation build() {
+            return new CoachInformation(this);
+        }
+
+        public CoachInformationBuilder withCoachInfoId(String coachInfoId) {
+            this.coachInfoId = coachInfoId;
+            return this;
+        }
+
+        public CoachInformationBuilder withCoachXp(int coachXp) {
+            this.coachXp = coachXp;
+            return this;
+        }
+
+        public CoachInformationBuilder withIntroduction(String introduction) {
+            this.introduction = introduction;
+            return this;
+        }
+
+        public CoachInformationBuilder withAvailability(String availability) {
+            this.availability = availability;
+            return this;
+        }
+
+        public CoachInformationBuilder withCoachingTopics(List<CoachingTopic> coachingTopics) {
+            this.coachingTopics = coachingTopics;
+            return this;
+        }
     }
 }

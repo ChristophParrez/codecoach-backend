@@ -1,9 +1,9 @@
 package be.codecoach.domain;
 
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "topics")
@@ -13,6 +13,11 @@ public class Topic {
 
     public Topic(String name) {
         this.name = name;
+    }
+
+    private Topic(TopicBuilder topicBuilder){
+        this.topicId = topicBuilder.topicId;
+        this.name = topicBuilder.name;
     }
 
     @Id
@@ -33,5 +38,29 @@ public class Topic {
 
     public String getName() {
         return name;
+    }
+
+    public static class TopicBuilder extends Builder<Topic> {
+
+        private String topicId;
+        private String name;
+
+        private TopicBuilder(){
+        }
+
+        @Override
+        public Topic build() {
+            return new Topic(this);
+        }
+
+        public TopicBuilder withId(String topicId){
+            this.topicId = topicId;
+            return this;
+        }
+
+        public TopicBuilder withName(String name){
+            this.name = name;
+            return this;
+        }
     }
 }
