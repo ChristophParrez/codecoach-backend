@@ -4,6 +4,7 @@ import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
+import be.codecoach.exceptions.ForbiddenAccessException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
@@ -35,7 +36,6 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    //private final SecuredUserService securedUserService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
@@ -47,7 +47,6 @@ public class UserService implements AccountService {
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        //this.securedUserService = securedUserService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -89,18 +88,42 @@ public class UserService implements AccountService {
         return userMapper.toCoacheeProfileDto(getUser(userId));
     }
 
-    public void updateUser(String userId, UserDto userDto) {
-        //trying to get the roles from the token...
+    public UserDto getCoachProfileDto(String userId) {
+        return userMapper.toCoachProfileDto(getUser(userId));
+    }
+
+    public void becomeCoach(String userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
-        Set<String> roles = authentication.getAuthorities().stream()
-                .map(r -> r.getAuthority()).collect(Collectors.toSet());
-        System.out.println("roles; " + roles);
+
+        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        User user = getUser(userId);
+
+        if (hasUserRoleCoachee) {
+            if(!userId.equals(idFromDatabase)) {
+                throw new ForbiddenAccessException("You cannot change someone else's profile!");
+            }
+            user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
+        }
+
+    }
+
+    public void updateUser(String userId, UserDto userDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
 
         boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals("COACHEE"));
         boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
 
         User user = getUser(userId);
         if(hasUserRoleCoachee){
@@ -111,10 +134,12 @@ public class UserService implements AccountService {
                 user.setRoles(roleMapper.toEntity(userDto.getRoles()));
             }
             setUserFields(userDto, user);
+        } else if (hasUserRoleCoachee) {
+            if(!userId.equals(idFromDatabase)) {
+                throw new ForbiddenAccessException("You cannot change someone else's profile!");
+            }
+            setUserFields(userDto, user);
         }
-
-        //System.out.println(securedUserService.loadUserByUsername(userDto.getEmail()));
-
     }
 
     private void setUserFields(UserDto userDto, User user) {
@@ -130,11 +155,8 @@ public class UserService implements AccountService {
         if (userDto.getPicture() != null){
             user.setPicture(userDto.getPicture());
         }
-
-
-
-
     }
+
 
 
 }

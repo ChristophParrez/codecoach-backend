@@ -43,4 +43,10 @@ public class UserController {
                            ) {
         userService.updateUser(userId, userDto);
     }
+
+    @PatchMapping(path = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void becomeCoach(@PathVariable String userId) {
+        userService.becomeCoach(userId);
+    }
 }

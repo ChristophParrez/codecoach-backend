@@ -42,4 +42,19 @@ public class CoachInformation {
     @JoinColumn(name = "coaching_topics")
     private List<CoachingTopic> coachingTopics;
 
+    public int getCoachXp() {
+        return coachXp;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public List<CoachingTopic> getCoachingTopics() {
+        return coachingTopics;
+    }
 }

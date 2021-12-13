@@ -11,4 +11,9 @@ public class TopicMapper {
     public Topic toEntity(TopicDto dto){
         return new Topic(dto.getName());
     }
+
+    public TopicDto toDto(Topic topic) {
+        return TopicDto.Builder.aTopicDto().withName(topic.getName()).build();
+    }
+
 }

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Null;
-import java.sql.SQLInvalidAuthorizationSpecException;
 
 @ControllerAdvice
 public class ExceptionManager {

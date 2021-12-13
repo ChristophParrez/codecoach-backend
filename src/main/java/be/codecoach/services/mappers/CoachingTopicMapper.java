@@ -28,4 +28,14 @@ public class CoachingTopicMapper {
         return dto.stream().map(this::toEntity).collect(Collectors.toList());
     }
 
+    public CoachingTopicDto toDto(CoachingTopic coachingTopic){
+        return CoachingTopicDto.Builder.aCoachingTopicDto()
+                .withTopic(topicMapper.toDto(coachingTopic.getTopic()))
+                .withExperience(coachingTopic.getExperience())
+                .build();
+    }
+
+    public List<CoachingTopicDto> toDto(List<CoachingTopic> coachingTopics) {
+       return coachingTopics.stream().map(this::toDto).collect(Collectors.toList());
+    }
 }

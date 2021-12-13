@@ -42,8 +42,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if ((request.getRequestURI().contains("/security") && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("POST"))
+                || (request.getRequestURI().contains("/users") && request.getMethod().equals("GET"))
                 || request.getRequestURI().contains("/login")) {
-            System.out.println("We are in the famous condition...");
             filterChain.doFilter(request, response);
             return;
         }

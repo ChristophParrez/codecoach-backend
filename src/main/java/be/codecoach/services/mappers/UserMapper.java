@@ -40,4 +40,16 @@ public class UserMapper {
                 .withPicture(user.getPicture())
                 .build();
     }
+
+    public UserDto toCoachProfileDto(User user) {
+        return UserDto.Builder.anUserDto()
+                .withFirstName(user.getFirstName())
+                .withLastName(user.getLastName())
+                .withEmail(user.getEmail())
+                .withCompanyName(user.getCompanyName())
+                .withRoles(roleMapper.toDto(user.getRoles()))
+                .withPicture(user.getPicture())
+                .withCoachInformation(coachInformationMapper.toDto(user.getCoachInformation()))
+                .build();
+    }
 }
