@@ -9,6 +9,7 @@ import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
+import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +18,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class UserService implements AccountService {
 
     private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
     private final UserRepository userRepository;
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
-
     private final PasswordEncoder passwordEncoder;
+    //private final SecuredUserService securedUserService;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder/*, SecuredUserService securedUserService*/) {
         this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        //this.securedUserService = securedUserService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -79,8 +85,24 @@ public class UserService implements AccountService {
 
     public UserDto updateUser(String userId, UserDto userDto) {
         User user = getUser(userId);
+        if(hasUserRoleCoachee){
+            setUserFields(userDto, user);
+        }
+        if(hasUserRoleAdmin){
+            user.setRoles(roleMapper.toEntity(userDto.getRoles()));
+            setUserFields(userDto, user);
+        }
 
-        return null;
+        //System.out.println(securedUserService.loadUserByUsername(userDto.getEmail()));
 
     }
+
+    private void setUserFields(UserDto userDto, User user) {
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPicture(userDto.getPicture());
+    }
+
+
 }
