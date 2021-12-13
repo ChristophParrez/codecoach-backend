@@ -1,6 +1,7 @@
 package be.codecoach.services;
 
 import be.codecoach.api.dtos.UserDto;
+import be.codecoach.domain.CoachInformation;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
@@ -34,17 +35,19 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CoachInformationService coachInformationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder/*, SecuredUserService securedUserService*/) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder,/*, SecuredUserService securedUserService*/CoachInformationService coachInformationService) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.coachInformationService = coachInformationService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -87,6 +90,7 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoachProfileDto(String userId) {
+        //CoachInformation coachInformation = coachInformationService.getCoachInformation(getUser(userId).getCoachInformation().getId()).orElseThrow( () -> new UserNotFoundException("Could not load Coach information"));
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 

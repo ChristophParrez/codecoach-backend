@@ -57,4 +57,8 @@ public class CoachInformation {
     public List<CoachingTopic> getCoachingTopics() {
         return coachingTopics;
     }
+
+    public String getId() {
+        return this.coachInfoId;
+    }
 }
