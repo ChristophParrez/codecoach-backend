@@ -40,6 +40,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
+
         String token = Optional.ofNullable(request.getHeader("Authorization")).map(header -> header.replace("Bearer ", "")).orElse("");
         var authentication = jwtGenerator.convertToken(token);
         LOGGER.info("Authentication successful! " + authentication);

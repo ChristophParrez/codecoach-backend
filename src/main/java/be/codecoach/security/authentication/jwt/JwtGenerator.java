@@ -29,10 +29,11 @@ public class JwtGenerator {
     }
 
     public UsernamePasswordAuthenticationToken convertToken(String token) {
+        LOGGER.info("convertToken: ");
         if (isEmpty(token)) {
             return null;
         }
-
+        LOGGER.info("convertToken: checked for null token");
         Jws<Claims> parsedToken = null;
         try {
             parsedToken = Jwts.parser().setSigningKey(jwtSecret.getBytes()).parseClaimsJws(token);
@@ -47,17 +48,21 @@ public class JwtGenerator {
         } catch (IllegalArgumentException exception) {
             LOGGER.warn("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
         }
-
+        LOGGER.info("convertToken: JWS<Claims>");
         if(parsedToken == null){
             return null;
         }
+        LOGGER.info("convertToken: checked parsedToken for null");
 
         var username = parsedToken.getBody().getSubject();
+
+        LOGGER.info("convertToken: var username =" + username);
 
         List<String> authoritiesInToken = parsedToken.getBody().get("role", ArrayList.class);
         var authorities = authoritiesInToken.stream()
                 .map(RoleEnum::valueOf)
                 .collect(Collectors.toList());
+        LOGGER.info("convertToken: authorities =" + authorities);
 
         return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }

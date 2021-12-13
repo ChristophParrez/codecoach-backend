@@ -13,6 +13,8 @@ import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +85,22 @@ public class UserService implements AccountService {
         return userMapper.toCoacheeProfileDto(getUser(userId));
     }
 
-    public UserDto updateUser(String userId, UserDto userDto) {
+    public void updateUser(String userId, UserDto userDto) {
+        //trying to get the roles from the token...
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authorities: " + authentication);
+        Authentication authentication2 = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println("authorities Baeldung: " + currentPrincipalName);
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        System.out.println("roles; " + roles);
+
+        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
+        boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+
         User user = getUser(userId);
         if(hasUserRoleCoachee){
             setUserFields(userDto, user);
