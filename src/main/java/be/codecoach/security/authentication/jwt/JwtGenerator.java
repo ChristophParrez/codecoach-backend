@@ -54,7 +54,7 @@ public class JwtGenerator {
 
         var username = parsedToken.getBody().getSubject();
 
-        List<String> authoritiesInToken = parsedToken.getBody().get("rol", ArrayList.class);
+        List<String> authoritiesInToken = parsedToken.getBody().get("role", ArrayList.class);
         var authorities = authoritiesInToken.stream()
                 .map(RoleEnum::valueOf)
                 .collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class JwtGenerator {
                 .setAudience("secure-app")
                 .setSubject(account.getEmail())
                 .setExpiration(new Date(new Date().getTime() + TOKEN_TIME_TO_LIVE))
-                .claim("rol", account.getAuthorities())
+                .claim("role", account.getAuthorities())
                 .claim("id", account.getId())
                 .compact();
     }
