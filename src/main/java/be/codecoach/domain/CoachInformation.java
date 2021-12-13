@@ -81,6 +81,10 @@ public class CoachInformation {
         private CoachInformationBuilder() {
         }
 
+        public static CoachInformationBuilder coachInformation(){
+            return new CoachInformationBuilder();
+        }
+
         @Override
         public CoachInformation build() {
             return new CoachInformation(this);

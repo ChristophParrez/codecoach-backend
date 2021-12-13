@@ -65,6 +65,10 @@ public class Role {
         private RoleBuilder(){
         }
 
+        public static RoleBuilder role(){
+            return new RoleBuilder();
+        }
+
         @Override
         public Role build() {
             return new Role(this);

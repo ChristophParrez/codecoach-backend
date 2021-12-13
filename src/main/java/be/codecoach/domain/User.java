@@ -178,6 +178,10 @@ public class User implements Account {
         private UserBuilder(){
         }
 
+        public static UserBuilder user(){
+            return new UserBuilder();
+        }
+
         @Override
         public User build() {
             return new User(this);

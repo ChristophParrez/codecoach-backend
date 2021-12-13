@@ -48,6 +48,10 @@ public class Topic {
         private TopicBuilder(){
         }
 
+        public static TopicBuilder topic(){
+            return new TopicBuilder();
+        }
+
         @Override
         public Topic build() {
             return new Topic(this);

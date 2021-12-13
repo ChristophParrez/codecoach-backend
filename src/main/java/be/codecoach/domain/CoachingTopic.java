@@ -57,6 +57,10 @@ public class CoachingTopic {
         private CoachingTopicBuilder() {
         }
 
+        public static CoachingTopicBuilder coachingTopic(){
+            return new CoachingTopicBuilder();
+        }
+
         @Override
         public CoachingTopic build() {
             return new CoachingTopic(this);
