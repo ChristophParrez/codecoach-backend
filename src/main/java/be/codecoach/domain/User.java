@@ -147,4 +147,8 @@ public class User implements Account {
         this.picture = picture;
     }
 
+    public CoachInformation getCoachInformation() {
+        return this.coachInformation;
+    }
+
 }

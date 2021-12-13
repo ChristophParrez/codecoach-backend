@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class CoachInformationMapper {
 
-    private CoachingTopicMapper coachingTopicMapper;
+    private final CoachingTopicMapper coachingTopicMapper;
 
     @Autowired
     public CoachInformationMapper(CoachingTopicMapper coachingTopicMapper) {
@@ -21,5 +21,14 @@ public class CoachInformationMapper {
     public CoachInformation toEntity(CoachInformationDto dto) {
         List<CoachingTopic> coachingTopics = coachingTopicMapper.toEntity(dto.getCoachingTopics());
         return new CoachInformation(dto.getCoachXp(), dto.getIntroduction(), dto.getAvailability(), coachingTopics);
+    }
+
+    public CoachInformationDto toDto(CoachInformation coachInformation) {
+        return CoachInformationDto.Builder.aCoachInformationDto()
+                .withCoachXp(coachInformation.getCoachXp())
+                .withAvailability(coachInformation.getAvailability())
+                .withIntroduction(coachInformation.getIntroduction())
+                .withCoachingTopics(coachingTopicMapper.toDto(coachInformation.getCoachingTopics()))
+                .build();
     }
 }

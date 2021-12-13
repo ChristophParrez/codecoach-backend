@@ -62,6 +62,12 @@ public class ExceptionManager {
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenAccessException.class)
+    protected void forbiddenAccessException(ForbiddenAccessException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.FORBIDDEN.value(), exception.getMessage());
+    }
+
     // @Override
     // protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
     //                                                               HttpHeaders headers,

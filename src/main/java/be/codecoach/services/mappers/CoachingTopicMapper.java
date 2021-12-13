@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class CoachingTopicMapper {
 
-    private TopicMapper topicMapper;
+    private final TopicMapper topicMapper;
 
     @Autowired
     public CoachingTopicMapper(TopicMapper topicMapper) {

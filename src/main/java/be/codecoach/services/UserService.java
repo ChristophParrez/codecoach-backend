@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -63,7 +61,7 @@ public class UserService implements AccountService {
 
     @Override
     public Optional<? extends Account> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class UserService implements AccountService {
 
     public User getUser(String userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotFoundException("No such user exists");
         }
         return user.get();
@@ -126,10 +124,8 @@ public class UserService implements AccountService {
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
 
         User user = getUser(userId);
-        if(hasUserRoleCoachee){
-            setUserFields(userDto, user);
-        }
-        if(hasUserRoleAdmin){
+
+        if (hasUserRoleAdmin) {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleMapper.toEntity(userDto.getRoles()));
             }
@@ -143,16 +139,16 @@ public class UserService implements AccountService {
     }
 
     private void setUserFields(UserDto userDto, User user) {
-        if (userDto.getFirstName() != null){
+        if (userDto.getFirstName() != null) {
             user.setFirstName(userDto.getFirstName());
         }
-        if (userDto.getLastName() != null){
+        if (userDto.getLastName() != null) {
             user.setLastName(userDto.getLastName());
         }
-        if (userDto.getEmail() != null){
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        if (userDto.getPicture() != null){
+        if (userDto.getPicture() != null) {
             user.setPicture(userDto.getPicture());
         }
     }
