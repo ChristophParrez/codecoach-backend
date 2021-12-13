@@ -15,9 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Set;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -69,8 +65,8 @@ class UserControllerTest {
     @Test
     void registerUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/users")
-                .content(new ObjectMapper().writeValueAsString(new User("Glenn", "Verhaeghe", "gle@ver.be", "egov", "Pass1234", Set.of(new Role(RoleEnum.COACHEE)), null, null)))
+                        .post("/users")
+                        .content(new ObjectMapper().writeValueAsString(new User("Glenn", "Verhaeghe", "gle@ver.be", "egov", "Pass1234", Set.of(new Role(RoleEnum.COACHEE)), null, null)))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
