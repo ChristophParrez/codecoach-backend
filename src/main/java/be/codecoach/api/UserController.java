@@ -39,11 +39,8 @@ public class UserController {
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable String userId,
-                              @RequestBody UserDto userDto,
-                           Authentication auth
+                              @RequestBody UserDto userDto
                            ) {
-        //System.out.println(auth.getName());
-        //System.out.println(auth.getAuthorities());
         userService.updateUser(userId, userDto);
     }
 }

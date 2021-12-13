@@ -35,7 +35,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         //I got no idea to do this better.
         //This basically means do not test security in these cases, something the SecurityConfig does also
         //Team Runtime Terror Backend: added || request.getRequestURI().contains("/users"))
-        if (((request.getRequestURI().contains("/security") || request.getRequestURI().contains("/login")) && request.getMethod().equals("POST"))  || request.getRequestURI().contains("/users")) {
+        /*if (((request.getRequestURI().contains("/security") || request.getRequestURI().contains("/login")) && request.getMethod().equals("POST"))  || request.getRequestURI().contains("/users")) {
+            filterChain.doFilter(request, response);
+            return;
+        }*/
+
+        if ((request.getRequestURI().contains("/security") && request.getMethod().equals("POST"))
+                || (request.getRequestURI().contains("/users") && request.getMethod().equals("POST"))
+                || request.getRequestURI().contains("/login")) {
+            System.out.println("We are in the famous condition...");
             filterChain.doFilter(request, response);
             return;
         }

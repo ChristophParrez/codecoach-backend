@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/**").permitAll()
                 .and().authorizeRequests().antMatchers("/swagger**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.PUT, "/users/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.PUT, "/users/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), authenticationFailureHandler(), jwtGenerator, accountService))

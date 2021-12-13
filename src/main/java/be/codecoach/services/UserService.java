@@ -12,6 +12,8 @@ import be.codecoach.security.authentication.user.api.AccountService;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +36,8 @@ public class UserService implements AccountService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     //private final SecuredUserService securedUserService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder/*, SecuredUserService securedUserService*/) {
@@ -88,10 +92,7 @@ public class UserService implements AccountService {
     public void updateUser(String userId, UserDto userDto) {
         //trying to get the roles from the token...
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authorities: " + authentication);
-        Authentication authentication2 = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        System.out.println("authorities Baeldung: " + currentPrincipalName);
+        LOGGER.info("authorities: " + authentication);
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         System.out.println("roles; " + roles);
@@ -106,7 +107,9 @@ public class UserService implements AccountService {
             setUserFields(userDto, user);
         }
         if(hasUserRoleAdmin){
-            user.setRoles(roleMapper.toEntity(userDto.getRoles()));
+            if (userDto.getRoles() != null) {
+                user.setRoles(roleMapper.toEntity(userDto.getRoles()));
+            }
             setUserFields(userDto, user);
         }
 
@@ -115,10 +118,22 @@ public class UserService implements AccountService {
     }
 
     private void setUserFields(UserDto userDto, User user) {
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPicture(userDto.getPicture());
+        if (userDto.getFirstName() != null){
+            user.setFirstName(userDto.getFirstName());
+        }
+        if (userDto.getLastName() != null){
+            user.setLastName(userDto.getLastName());
+        }
+        if (userDto.getEmail() != null){
+            user.setEmail(userDto.getEmail());
+        }
+        if (userDto.getPicture() != null){
+            user.setPicture(userDto.getPicture());
+        }
+
+
+
+
     }
 
 
