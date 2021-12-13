@@ -6,6 +6,8 @@ import be.codecoach.security.authentication.user.accountverification.AccountVeri
 import be.codecoach.security.authentication.user.api.*;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.security.authentication.user.password.reset.PasswordResetService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
