@@ -3,6 +3,7 @@ package be.codecoach.api.dtos;
 import be.codecoach.domain.Role;
 
 import java.util.List;
+import java.util.Set;
 
 public class UserDto {
 
@@ -12,11 +13,11 @@ public class UserDto {
     private final String email;
     private final String companyName;
     private final String password;
-    private final List<RoleDto> roles;
+    private final Set<RoleDto> roles;
     private final String picture;
     private final CoachInformationDto coachInformation;
 
-    private UserDto(String userId, String firstName, String lastName, String email, String companyName, String password, List<RoleDto> roles, String picture, CoachInformationDto coachInformation) {
+    private UserDto(String userId, String firstName, String lastName, String email, String companyName, String password, Set<RoleDto> roles, String picture, CoachInformationDto coachInformation) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,7 +53,7 @@ public class UserDto {
         return password;
     }
 
-    public List<RoleDto> getRoles() {
+    public Set<RoleDto> getRoles() {
         return roles;
     }
 
@@ -71,7 +72,7 @@ public class UserDto {
         private String email;
         private String companyName;
         private String password;
-        private List<RoleDto> roles;
+        private Set<RoleDto> roles;
         private String picture;
         private CoachInformationDto coachInformation;
 
@@ -112,7 +113,7 @@ public class UserDto {
             return this;
         }
 
-        public Builder withRoles(List<RoleDto> roles) {
+        public Builder withRoles(Set<RoleDto> roles) {
             this.roles = roles;
             return this;
         }

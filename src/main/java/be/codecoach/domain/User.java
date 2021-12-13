@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -13,7 +14,7 @@ public class User implements Account {
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String companyName, String password, List<Role> roles, String picture, CoachInformation coachInformation) {
+    public User(String firstName, String lastName, String email, String companyName, String password, Set<Role> roles, String picture, CoachInformation coachInformation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -57,7 +58,7 @@ public class User implements Account {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @Column(name = "picture")
     private String picture;
@@ -114,7 +115,7 @@ public class User implements Account {
         return companyName;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
