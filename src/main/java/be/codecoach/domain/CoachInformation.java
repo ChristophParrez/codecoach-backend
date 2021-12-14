@@ -22,10 +22,10 @@ public class CoachInformation {
     }
 
     private CoachInformation(CoachInformationBuilder coachInformationBuilder) {
-        this.coachXp = coachXp;
-        this.introduction = introduction;
-        this.availability = availability;
-        this.coachingTopics = coachingTopics;
+        this.coachXp = coachInformationBuilder.coachXp;
+        this.introduction = coachInformationBuilder.introduction;
+        this.availability = coachInformationBuilder.availability;
+        this.coachingTopics = coachInformationBuilder.coachingTopics;
     }
 
     @Id
