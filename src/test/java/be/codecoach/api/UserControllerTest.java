@@ -1,5 +1,6 @@
 package be.codecoach.api;
 
+import be.codecoach.builder.UserTestBuilder;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
@@ -51,10 +52,13 @@ class UserControllerTest {
 
     MockMvc mockMvc;
 
+    User user = UserTestBuilder.anUser().build();
+
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+        userRepository.save(user);
     }
 
     @Test
@@ -80,7 +84,7 @@ class UserControllerTest {
     @Test
     void updateUserWithoutAuthorizationIsUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/users/123456")
+                        .put("/users/{id}", user.getId())
                         .content("""
                                 {"firstName" : "Jos" }
                                 """)
@@ -89,5 +93,16 @@ class UserControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /*void updateUserWithoutAuthorizationIsUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users/{id}", user.getId()).with(user("mertdemirol@gmail.com").password("Password123").roles("COACHEE"))
+                        .content("""
+                                {"firstName" : "Jos" }
+                                """)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
+*/
 
 }

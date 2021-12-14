@@ -1,5 +1,6 @@
 package be.codecoach.services;
 
+import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.CoachInformation;
 import be.codecoach.domain.Role;
@@ -11,6 +12,7 @@ import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
+import be.codecoach.services.mappers.CoachInformationMapper;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
@@ -35,19 +37,17 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CoachInformationService coachInformationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder,/*, SecuredUserService securedUserService*/CoachInformationService coachInformationService) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.coachInformationService = coachInformationService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -90,7 +90,6 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoachProfileDto(String userId) {
-        //CoachInformation coachInformation = coachInformationService.getCoachInformation(getUser(userId).getCoachInformation().getId()).orElseThrow( () -> new UserNotFoundException("Could not load Coach information"));
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 
@@ -107,7 +106,7 @@ public class UserService implements AccountService {
         User user = getUser(userId);
 
         if (hasUserRoleCoachee) {
-            if(!userId.equals(idFromDatabase)) {
+            if (!userId.equals(idFromDatabase)) {
                 throw new ForbiddenAccessException("You cannot change someone else's profile!");
             }
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
@@ -119,10 +118,8 @@ public class UserService implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
-        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
-        boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
+        boolean hasUserRoleAdmin = hasRole(authentication, "ADMIN");
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
@@ -133,16 +130,16 @@ public class UserService implements AccountService {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleMapper.toEntity(userDto.getRoles()));
             }
-            setUserFields(userDto, user);
+            setRegularUserFields(userDto, user);
         } else if (hasUserRoleCoachee) {
-            if(!userId.equals(idFromDatabase)) {
+            if (!userId.equals(idFromDatabase)) {
                 throw new ForbiddenAccessException("You cannot change someone else's profile!");
             }
-            setUserFields(userDto, user);
+            setRegularUserFields(userDto, user);
         }
     }
 
-    private void setUserFields(UserDto userDto, User user) {
+    private void setRegularUserFields(UserDto userDto, User user) {
         if (userDto.getFirstName() != null) {
             user.setFirstName(userDto.getFirstName());
         }
@@ -157,6 +154,36 @@ public class UserService implements AccountService {
         }
     }
 
+    private void setCoachFields(UserDto userDto, User user) {
+        CoachInformationDto coachInfo = userDto.getCoachInformation();
+        if (coachInfo.getAvailability() != null) {
+            user.getCoachInformation().setAvailability(coachInfo.getAvailability());
+        }
+        if (coachInfo.getIntroduction() != null) {
+            user.getCoachInformation().setIntroduction(coachInfo.getIntroduction());
+        }
+    }
 
 
+    public void updateCoach(String userId, UserDto userDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
+
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        User user = getUser(userId);
+
+        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
+            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+        }
+        setCoachFields(userDto, user);
+    }
+
+    private boolean hasRole(Authentication authentication, String roleName) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals(roleName));
+    }
 }
