@@ -1,7 +1,5 @@
 package be.codecoach.api.dtos;
 
-import be.codecoach.domain.Topic;
-
 public class CoachingTopicDto {
 
     private final String coachingTopicId;

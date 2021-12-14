@@ -1,8 +1,3 @@
---INSERT INTO topics (topic_id, name) values (0, 'Math');
---INSERT INTO topics (topic_id, name) values (1, 'Physics');
---INSERT INTO topics (topic_id, name) values (2, 'Yoga');
---INSERT INTO topics (topic_id, name) values (3, 'English');
-
 --INSERT INTO coach_info (coach_info_id, availability, coach_xp, introduction) values (0, 'Daily', 0, 'Hi!');
 --INSERT INTO coach_info (coach_info_id, availability, coach_xp, introduction) values (1, 'On wednesdays', 0, 'Hi!');
 --INSERT INTO coach_info (coach_info_id, availability, coach_xp, introduction) values (2, 'In the weekend', 0, 'Hi!');
@@ -25,3 +20,11 @@
 INSERT INTO roles (role_id, role_name) values (0, 'COACHEE');
 INSERT INTO roles (role_id, role_name) values (1, 'COACH');
 INSERT INTO roles (role_id, role_name) values (2, 'ADMIN');
+
+INSERT INTO topics (topic_id) values ('Java');
+INSERT INTO topics (topic_id) values ('HTML');
+INSERT INTO topics (topic_id) values ('CSS');
+INSERT INTO topics (topic_id) values ('JavaScript');
+INSERT INTO topics (topic_id) values ('Spring');
+INSERT INTO topics (topic_id) values ('Angular');
+INSERT INTO topics (topic_id) values ('SQL');

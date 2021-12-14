@@ -3,11 +3,9 @@ package be.codecoach.services;
 import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
-import be.codecoach.domain.CoachingTopic;
-import be.codecoach.domain.Role;
-import be.codecoach.domain.RoleEnum;
-import be.codecoach.domain.User;
+import be.codecoach.domain.*;
 import be.codecoach.exceptions.ForbiddenAccessException;
+import be.codecoach.exceptions.TopicException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
@@ -29,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,11 +40,13 @@ public class UserService implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final CoachingTopicMapper coachingTopicMapper;
     private final CoachingTopicRepository coachingTopicRepository;
+    private final TopicService topicService;
+    private final CoachInformationService coachInformationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
@@ -56,6 +55,8 @@ public class UserService implements AccountService {
         this.passwordEncoder = passwordEncoder;
         this.coachingTopicMapper = coachingTopicMapper;
         this.coachingTopicRepository = coachingTopicRepository;
+        this.topicService = topicService;
+        this.coachInformationService = coachInformationService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -98,6 +99,9 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoachProfileDto(String userId) {
+        if (getUser(userId).getCoachInformation() == null) {
+            return getCoacheeProfileDto(userId);
+        }
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 
@@ -105,19 +109,23 @@ public class UserService implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
-        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
+        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
 
         User user = getUser(userId);
 
-        if (hasUserRoleCoachee) {
+        if (hasUserRoleCoachee && !hasUserRoleCoach) {
             if (!userId.equals(idFromDatabase)) {
                 throw new ForbiddenAccessException("You cannot change someone else's profile!");
             }
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
+
+            CoachInformation coachInformation = new CoachInformation();
+            CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
+            user.setCoachInformation(savedCoachInformation);
         }
 
     }
@@ -200,7 +208,37 @@ public class UserService implements AccountService {
                 .anyMatch(r -> r.getAuthority().equals(roleName));
     }
 
-    public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {
+    public void addTopic(String userId, CoachingTopicDto coachingTopicDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
+
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        User user = getUser(userId);
+
+        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
+            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+        }
+
+        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName()).orElseThrow(() -> new TopicException("Topic not found"));
+        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
+
+        if (coachingTopics.size() >= 2) {
+            throw new TopicException("Max 2 topics allowed");
+        }
+
+        coachingTopics.add(coachingTopicMapper.toEntity(coachingTopicDto));
+        CoachingTopic coachingTopic = user.getCoachInformation().getCoachingTopics().stream()
+                .filter(top -> top.getTopic().equals(topic)).findFirst().orElseThrow(() -> new TopicException("Topic not found"));
+
+        coachingTopic.setExperience(coachingTopicDto.getExperience());
+        coachingTopic.setTopic(topic);
+    }
+
+        /*public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
@@ -217,12 +255,12 @@ public class UserService implements AccountService {
 
         List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
 
-        for(int i=0; i<coachingTopics.size(); i++) {
-            if(coachingTopics.get(i).getCoachingTopicId().equals(coachingTopicDto.getCoachingTopicId())) {
+        for (int i = 0; i < coachingTopics.size(); i++) {
+            if (coachingTopics.get(i).getCoachingTopicId().equals(coachingTopicDto.getCoachingTopicId())) {
                 coachingTopics.get(i).setTopic(coachingTopicMapper.toEntity(coachingTopicDto).getTopic());
                 coachingTopics.get(i).setExperience(coachingTopicMapper.toEntity(coachingTopicDto).getExperience());
                 break;
             }
         }
-    }
+    }*/
 }

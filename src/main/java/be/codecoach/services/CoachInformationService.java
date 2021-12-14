@@ -1,6 +1,5 @@
 package be.codecoach.services;
 
-import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.domain.CoachInformation;
 import be.codecoach.repositories.CoachInformationRepository;
 import org.springframework.stereotype.Service;
@@ -19,5 +18,9 @@ public class CoachInformationService {
 
     public Optional<CoachInformation> getCoachInformation(String coachInformationId) {
         return coachInformationRepository.findById(coachInformationId);
+    }
+
+    public CoachInformation save(CoachInformation coachInformation) {
+        return coachInformationRepository.save(coachInformation);
     }
 }
