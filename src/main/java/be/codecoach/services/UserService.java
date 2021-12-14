@@ -224,7 +224,7 @@ public class UserService implements AccountService {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }
 
-        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName()).orElseThrow(() -> new TopicException("Topic not found"));
+        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName()).orElseThrow(() -> new TopicException("Topic not found 1"));
         List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
 
         if (coachingTopics.size() >= 2) {
@@ -233,7 +233,7 @@ public class UserService implements AccountService {
 
         coachingTopics.add(coachingTopicMapper.toEntity(coachingTopicDto));
         CoachingTopic coachingTopic = user.getCoachInformation().getCoachingTopics().stream()
-                .filter(top -> top.getTopic().equals(topic)).findFirst().orElseThrow(() -> new TopicException("Topic not found"));
+                .filter(top -> top.getTopic().getName().equals(topic.getName())).findFirst().orElseThrow(() -> new TopicException("Topic not found 2"));
 
         coachingTopic.setExperience(coachingTopicDto.getExperience());
         coachingTopic.setTopic(topic);
