@@ -28,7 +28,7 @@ public class CoachController {
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void updateCoach(@PathVariable String userId,
                             @RequestBody UserDto userDto) {
         userService.updateCoach(userId, userDto);
