@@ -172,10 +172,10 @@ public class UserService implements AccountService {
         if (coachInfo.getIntroduction() != null) {
             user.getCoachInformation().setIntroduction(coachInfo.getIntroduction());
         }
-        if (coachingTopics != null) {
+        /*if (coachingTopics != null) {
             coachingTopics = coachingTopics.stream().filter(item -> item.getTopic() != null).collect(Collectors.toList());
             user.getCoachInformation().setCoachingTopics(coachingTopicMapper.toEntity(coachingTopics));
-        }
+        }*/
     }
 
     public void updateCoach(String userId, UserDto userDto) {
@@ -215,7 +215,14 @@ public class UserService implements AccountService {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }
 
-        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicDto.getCoachingTopicId()).orElseThrow( () -> new RuntimeException("No can do"));
-        coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
+        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
+
+        for(int i=0; i<coachingTopics.size(); i++) {
+            if(coachingTopics.get(i).getCoachingTopicId().equals(coachingTopicDto.getCoachingTopicId())) {
+                coachingTopics.get(i).setTopic(coachingTopicMapper.toEntity(coachingTopicDto).getTopic());
+                coachingTopics.get(i).setExperience(coachingTopicMapper.toEntity(coachingTopicDto).getExperience());
+                break;
+            }
+        }
     }
 }

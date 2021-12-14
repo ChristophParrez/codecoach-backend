@@ -40,6 +40,18 @@ public class CoachingTopic {
         this.experience = coachingTopicBuilder.experience;
     }
 
+    public String getCoachingTopicId() {
+        return coachingTopicId;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public void setExperience(double experience) {
+        this.experience = experience;
+    }
+
     public Topic getTopic() {
         return topic;
     }
