@@ -23,12 +23,14 @@ public class UserTestBuilder extends Builder<User> {
 
     public static UserTestBuilder anUser() {
         return new UserTestBuilder(UserBuilder.user()
+                .withId("12345")
                 .withFirstName("Mert")
                 .withLastName("Demirok")
                 .withEmail("mertdemirok@gmail.com")
                 .withCompanyName("FOD ECO")
                 .withPassword("Password123")
                 .withRoles(Set.of(aRole().build()))
+                .withPicture("url")
                 .withCoachInformation(aCoachInformation().build()));
     }
 
