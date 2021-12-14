@@ -37,21 +37,17 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CoachInformationService coachInformationService;
-    private final CoachInformationMapper coachInformationMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder,/*, SecuredUserService securedUserService*/CoachInformationService coachInformationService, CoachInformationMapper coachInformationMapper) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.coachInformationService = coachInformationService;
-        this.coachInformationMapper = coachInformationMapper;
     }
 
     public Account registerUser(UserDto userDto) {
