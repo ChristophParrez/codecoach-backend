@@ -209,7 +209,7 @@ public class UserService implements AccountService {
                 .anyMatch(r -> r.getAuthority().equals(roleName));
     }
 
-    public void addTopic(String userId, CoachingTopicDto coachingTopicDto) {
+    public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
