@@ -37,11 +37,21 @@ public class CoachController {
         userService.updateCoach(userId, userDto);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
+    public void addTopic(@PathVariable String userId,
+                         @RequestBody CoachingTopicDto coachingTopicDto) {
+        userService.addTopic(userId, coachingTopicDto);
+    }
+
+
+
+    /*@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void updateCoachingTopics(@PathVariable String userId,
                                      @RequestBody CoachingTopicDto coachingTopicDto) {
         userService.updateCoachingTopics(userId, coachingTopicDto);
-    }
+    }*/
 }
