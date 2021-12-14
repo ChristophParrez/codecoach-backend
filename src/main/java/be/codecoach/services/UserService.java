@@ -99,9 +99,9 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoachProfileDto(String userId) {
-        /*if(getUser(userId).getCoachInformation() == null) {
+        if (getUser(userId).getCoachInformation() == null) {
             return getCoacheeProfileDto(userId);
-        }*/
+        }
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 
@@ -109,15 +109,15 @@ public class UserService implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
-        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
+        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
 
         User user = getUser(userId);
 
-        if (hasUserRoleCoachee) {
+        if (hasUserRoleCoachee && !hasUserRoleCoach) {
             if (!userId.equals(idFromDatabase)) {
                 throw new ForbiddenAccessException("You cannot change someone else's profile!");
             }
@@ -126,7 +126,6 @@ public class UserService implements AccountService {
             CoachInformation coachInformation = new CoachInformation();
             CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
             user.setCoachInformation(savedCoachInformation);
-
         }
 
     }
