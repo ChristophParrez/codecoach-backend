@@ -118,10 +118,8 @@ public class UserService implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
-        boolean hasUserRoleCoachee = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("COACHEE"));
-        boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("ADMIN"));
+        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
+        boolean hasUserRoleAdmin = hasRole(authentication, "ADMIN");
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
@@ -171,8 +169,7 @@ public class UserService implements AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LOGGER.info("authorities: " + authentication);
 
-        boolean hasUserRoleCoach = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("COACH"));
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
@@ -182,8 +179,11 @@ public class UserService implements AccountService {
         if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }
-
         setCoachFields(userDto, user);
+    }
 
+    private boolean hasRole(Authentication authentication, String roleName) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals(roleName));
     }
 }
