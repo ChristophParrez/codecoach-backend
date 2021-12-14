@@ -4,6 +4,7 @@ import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
+import be.codecoach.exceptions.CoachingTopicException;
 import be.codecoach.exceptions.ForbiddenAccessException;
 import be.codecoach.exceptions.TopicException;
 import be.codecoach.exceptions.UserNotFoundException;
@@ -236,6 +237,26 @@ public class UserService implements AccountService {
 
         coachingTopic.setExperience(coachingTopicDto.getExperience());
         coachingTopic.setTopic(topic);
+    }
+
+    public void deleteCoachingTopic(String userId, String coachingTopicId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
+
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        User user = getUser(userId);
+
+        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
+            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+        }
+
+        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId).orElseThrow( () -> new CoachingTopicException("Coaching topic not found"));
+
+        coachingTopicRepository.delete(coachingTopic);
     }
 
         /*public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {

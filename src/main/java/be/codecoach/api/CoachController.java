@@ -45,6 +45,15 @@ public class CoachController {
         userService.addTopic(userId, coachingTopicDto);
     }
 
+    @DeleteMapping(path = "/{userId}/topics/{coachingTopicId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
+    public void deleteCoachingTopic(@PathVariable String userId, @PathVariable String coachingTopicId){
+        userService.deleteCoachingTopic(userId, coachingTopicId);
+    }
+
+
+
 
 
     /*@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
