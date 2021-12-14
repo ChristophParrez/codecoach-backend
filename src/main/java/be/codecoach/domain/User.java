@@ -159,6 +159,10 @@ public class User implements Account {
         this.picture = picture;
     }
 
+    public void setCoachInformation(CoachInformation coachInformation) {
+        this.coachInformation = coachInformation;
+    }
+
     public CoachInformation getCoachInformation() {
         return this.coachInformation;
     }
