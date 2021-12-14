@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,11 +41,12 @@ public class UserService implements AccountService {
     private final CoachingTopicMapper coachingTopicMapper;
     private final CoachingTopicRepository coachingTopicRepository;
     private final TopicService topicService;
+    private final CoachInformationService coachInformationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
@@ -56,6 +56,7 @@ public class UserService implements AccountService {
         this.coachingTopicMapper = coachingTopicMapper;
         this.coachingTopicRepository = coachingTopicRepository;
         this.topicService = topicService;
+        this.coachInformationService = coachInformationService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -98,6 +99,9 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoachProfileDto(String userId) {
+        /*if(getUser(userId).getCoachInformation() == null) {
+            return getCoacheeProfileDto(userId);
+        }*/
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 
@@ -118,6 +122,11 @@ public class UserService implements AccountService {
                 throw new ForbiddenAccessException("You cannot change someone else's profile!");
             }
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
+
+            CoachInformation coachInformation = new CoachInformation();
+            CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
+            user.setCoachInformation(savedCoachInformation);
+
         }
 
     }

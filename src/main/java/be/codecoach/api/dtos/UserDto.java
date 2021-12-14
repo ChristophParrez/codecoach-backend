@@ -1,8 +1,5 @@
 package be.codecoach.api.dtos;
 
-import be.codecoach.domain.Role;
-
-import java.util.List;
 import java.util.Set;
 
 public class UserDto {
