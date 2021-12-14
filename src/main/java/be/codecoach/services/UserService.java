@@ -3,11 +3,13 @@ package be.codecoach.services;
 import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
+import be.codecoach.domain.CoachingTopic;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
 import be.codecoach.exceptions.ForbiddenAccessException;
 import be.codecoach.exceptions.UserNotFoundException;
+import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.user.api.Account;
@@ -40,11 +42,12 @@ public class UserService implements AccountService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final CoachingTopicMapper coachingTopicMapper;
+    private final CoachingTopicRepository coachingTopicRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
@@ -52,6 +55,7 @@ public class UserService implements AccountService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.coachingTopicMapper = coachingTopicMapper;
+        this.coachingTopicRepository = coachingTopicRepository;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -168,7 +172,7 @@ public class UserService implements AccountService {
         if (coachInfo.getIntroduction() != null) {
             user.getCoachInformation().setIntroduction(coachInfo.getIntroduction());
         }
-        if (!coachingTopics.isEmpty()) {
+        if (coachingTopics != null) {
             coachingTopics = coachingTopics.stream().filter(item -> item.getTopic() != null).collect(Collectors.toList());
             user.getCoachInformation().setCoachingTopics(coachingTopicMapper.toEntity(coachingTopics));
         }
@@ -194,5 +198,24 @@ public class UserService implements AccountService {
     private boolean hasRole(Authentication authentication, String roleName) {
         return authentication.getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals(roleName));
+    }
+
+    public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
+
+        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        User user = getUser(userId);
+
+        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
+            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+        }
+
+        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicDto.getCoachingTopicId()).orElseThrow( () -> new RuntimeException("No can do"));
+        coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
     }
 }
