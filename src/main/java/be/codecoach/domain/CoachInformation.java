@@ -70,6 +70,10 @@ public class CoachInformation {
         this.availability = availability;
     }
 
+    public void setCoachingTopics(List<CoachingTopic> coachingTopics) {
+        this.coachingTopics = coachingTopics;
+    }
+
     public List<CoachingTopic> getCoachingTopics() {
         return coachingTopics;
     }

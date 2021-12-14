@@ -1,5 +1,6 @@
 package be.codecoach.api;
 
+import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/coaches")
@@ -28,9 +31,17 @@ public class CoachController {
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void updateCoach(@PathVariable String userId,
                             @RequestBody UserDto userDto) {
         userService.updateCoach(userId, userDto);
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
+    public void updateCoachingTopics(@PathVariable String userId,
+                                     @RequestBody CoachingTopicDto coachingTopicDto) {
+        userService.updateCoachingTopics(userId, coachingTopicDto);
     }
 }
