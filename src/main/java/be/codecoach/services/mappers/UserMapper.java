@@ -44,6 +44,7 @@ public class UserMapper {
 
     public UserDto toCoachProfileDto(User user) {
         return UserDto.Builder.anUserDto()
+                .withUserId(user.getId())
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withEmail(user.getEmail())
