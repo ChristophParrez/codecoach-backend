@@ -23,6 +23,21 @@ public class RoleTestBuilder extends Builder<Role> {
                 .withUsers(Set.of(User.UserBuilder.user().build())));
     }
 
+    public static RoleTestBuilder aRoleWithCoachee() {
+        return new RoleTestBuilder(RoleBuilder.role()
+                .withRoleEnum(RoleEnum.COACHEE));
+    }
+
+    public static RoleTestBuilder aRoleWithCoach() {
+        return new RoleTestBuilder(RoleBuilder.role()
+                .withRoleEnum(RoleEnum.COACH));
+    }
+
+    public static RoleTestBuilder aRoleWithAdmin() {
+        return new RoleTestBuilder(RoleBuilder.role()
+                .withRoleEnum(RoleEnum.ADMIN));
+    }
+
     @Override
     public Role build() {
         return roleBuilder.build();
