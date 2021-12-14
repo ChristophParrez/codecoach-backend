@@ -18,7 +18,7 @@ public class TopicTestBuilder extends Builder<Topic> {
 
     public static TopicTestBuilder aTopic() {
         return new TopicTestBuilder(TopicBuilder.topic()
-                .withId("12345")
+                //.withId("12345")
                 .withName("math"));
     }
 
