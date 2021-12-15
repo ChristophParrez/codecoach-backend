@@ -17,8 +17,6 @@ import be.codecoach.services.mappers.CoachingTopicMapper;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,8 +42,6 @@ public class UserService implements AccountService {
     private final CoachingTopicRepository coachingTopicRepository;
     private final TopicService topicService;
     private final CoachInformationService coachInformationService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService) {
@@ -108,53 +104,87 @@ public class UserService implements AccountService {
     }
 
     public void becomeCoach(String userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
-        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
         User user = getUser(userId);
 
-        if (hasUserRoleCoachee && !hasUserRoleCoach) {
-            if (!userId.equals(idFromDatabase)) {
-                throw new ForbiddenAccessException("You cannot change someone else's profile!");
-            }
+        if (hasRole("COACHEE") && !hasRole("COACH")) {
+            assertUserIsChangingOwnProfile(userId);
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
 
             CoachInformation coachInformation = new CoachInformation();
             CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
             user.setCoachInformation(savedCoachInformation);
         }
-
     }
 
     public void updateUser(String userId, UserDto userDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoachee = hasRole(authentication, "COACHEE");
-        boolean hasUserRoleAdmin = hasRole(authentication, "ADMIN");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
         User user = getUser(userId);
 
-        if (hasUserRoleAdmin) {
+        if (hasRole("ADMIN")) {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleMapper.toEntity(userDto.getRoles()));
             }
             setRegularUserFields(userDto, user);
-        } else if (hasUserRoleCoachee) {
-            if (!userId.equals(idFromDatabase)) {
-                throw new ForbiddenAccessException("You cannot change someone else's profile!");
-            }
+        } else if (hasRole("COACHEE")) {
+            assertUserIsChangingOwnProfile(userId);
             setRegularUserFields(userDto, user);
         }
+    }
+
+    public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
+        assertUserIsChangingOwnProfile(userId);
+        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
+                .orElseThrow(() -> new TopicException("Topic not found"));
+        User user = getUser(userId);
+        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
+
+        if (coachingTopics.size() >= 2) {
+            throw new TopicException("Max 2 topics allowed");
+        }
+
+        CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
+        coachingTopic.setExperience(coachingTopicDto.getExperience());
+        coachingTopic.setTopic(topic);
+        coachingTopics.add(coachingTopic);
+    }
+
+    public void deleteCoachingTopic(String userId, String coachingTopicId) {
+        assertUserIsChangingOwnProfile(userId);
+        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
+                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
+        coachingTopicRepository.delete(coachingTopic);
+    }
+
+    public void updateCoach(String userId, UserDto userDto) {
+        assertUserIsChangingOwnProfile(userId);
+        User user = getUser(userId);
+        setCoachFields(userDto, user);
+    }
+
+    public List<UserDto> getAllCoaches() {
+        return userMapper.toCoachProfileDto(userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(new Role(RoleEnum.COACH)))
+                .collect(Collectors.toList()));
+    }
+
+    private void assertUserIsChangingOwnProfile(String userId) {
+        if(!userId.equals(getAuthenticationIdFromDb())) {
+            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+        }
+    }
+
+    private Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private String getAuthenticationIdFromDb() {
+        return userRepository.findByEmail(getAuthentication().getName())
+                .orElseThrow(() -> new NullPointerException("Email from token was not found in the database."))
+                .getId();
+    }
+
+    private boolean hasRole(String roleName) {
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals(roleName));
     }
 
     private void setRegularUserFields(UserDto userDto, User user) {
@@ -174,7 +204,6 @@ public class UserService implements AccountService {
 
     private void setCoachFields(UserDto userDto, User user) {
         CoachInformationDto coachInfo = userDto.getCoachInformation();
-        List<CoachingTopicDto> coachingTopics = coachInfo.getCoachingTopics();
 
         if (coachInfo.getAvailability() != null) {
             user.getCoachInformation().setAvailability(coachInfo.getAvailability());
@@ -182,111 +211,5 @@ public class UserService implements AccountService {
         if (coachInfo.getIntroduction() != null) {
             user.getCoachInformation().setIntroduction(coachInfo.getIntroduction());
         }
-        /*if (coachingTopics != null) {
-            coachingTopics = coachingTopics.stream().filter(item -> item.getTopic() != null).collect(Collectors.toList());
-            user.getCoachInformation().setCoachingTopics(coachingTopicMapper.toEntity(coachingTopics));
-        }*/
     }
-
-    public void updateCoach(String userId, UserDto userDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
-        User user = getUser(userId);
-
-        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
-        }
-        setCoachFields(userDto, user);
-    }
-
-    private boolean hasRole(Authentication authentication, String roleName) {
-        return authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals(roleName));
-    }
-
-    public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
-        User user = getUser(userId);
-
-        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
-        }
-
-        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName()).orElseThrow(() -> new TopicException("Topic not found 1"));
-        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
-
-        if (coachingTopics.size() >= 2) {
-            throw new TopicException("Max 2 topics allowed");
-        }
-
-        coachingTopics.add(coachingTopicMapper.toEntity(coachingTopicDto));
-        CoachingTopic coachingTopic = user.getCoachInformation().getCoachingTopics().stream()
-                .filter(top -> top.getTopic().getName().equals(topic.getName())).findFirst().orElseThrow(() -> new TopicException("Topic not found 2"));
-
-        coachingTopic.setExperience(coachingTopicDto.getExperience());
-        coachingTopic.setTopic(topic);
-    }
-
-    public void deleteCoachingTopic(String userId, String coachingTopicId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
-        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
-        }
-
-        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId).orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
-
-        coachingTopicRepository.delete(coachingTopic);
-    }
-
-    public List<UserDto> getAllCoaches() {
-        return userMapper.toCoachProfileDto(userRepository.findAll().stream()
-                .filter(user -> user.getRoles().contains(new Role(RoleEnum.COACH)))
-                .collect(Collectors.toList()));
-    }
-
-        /*public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOGGER.info("authorities: " + authentication);
-
-        boolean hasUserRoleCoach = hasRole(authentication, "COACH");
-
-        String emailFromToken = authentication.getName();
-        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-
-        User user = getUser(userId);
-
-        if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
-        }
-
-        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
-
-        for (int i = 0; i < coachingTopics.size(); i++) {
-            if (coachingTopics.get(i).getCoachingTopicId().equals(coachingTopicDto.getCoachingTopicId())) {
-                coachingTopics.get(i).setTopic(coachingTopicMapper.toEntity(coachingTopicDto).getTopic());
-                coachingTopics.get(i).setExperience(coachingTopicMapper.toEntity(coachingTopicDto).getExperience());
-                break;
-            }
-        }
-    }*/
 }
