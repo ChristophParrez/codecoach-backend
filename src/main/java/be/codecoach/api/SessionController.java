@@ -32,8 +32,8 @@ public class SessionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<SessionDto> getSession(@RequestParam Role){
-
+    public List<SessionDto> getSession(@RequestParam){
+        return null;
     }
 
 }
