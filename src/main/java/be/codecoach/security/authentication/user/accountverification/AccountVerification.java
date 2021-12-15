@@ -20,11 +20,11 @@ public class AccountVerification {
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn = LocalDateTime.now();
 
-    private AccountVerification(){
+    private AccountVerification() {
 
     }
 
-    public AccountVerification(String profileId, String verificationCode){
+    public AccountVerification(String profileId, String verificationCode) {
         this.profileId = profileId;
         this.verificationCode = verificationCode;
     }

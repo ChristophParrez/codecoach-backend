@@ -9,13 +9,14 @@ import javax.persistence.Table;
 @Table(name = "topics")
 public class Topic {
 
-    public Topic() {}
+    public Topic() {
+    }
 
     public Topic(String name) {
         this.name = name;
     }
 
-    private Topic(TopicBuilder topicBuilder){
+    private Topic(TopicBuilder topicBuilder) {
         this.name = topicBuilder.name;
     }
 
@@ -32,10 +33,10 @@ public class Topic {
 
         private String name;
 
-        private TopicBuilder(){
+        private TopicBuilder() {
         }
 
-        public static TopicBuilder topic(){
+        public static TopicBuilder topic() {
             return new TopicBuilder();
         }
 
@@ -44,7 +45,7 @@ public class Topic {
             return new Topic(this);
         }
 
-        public TopicBuilder withName(String name){
+        public TopicBuilder withName(String name) {
             this.name = name;
             return this;
         }

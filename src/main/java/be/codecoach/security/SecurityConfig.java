@@ -9,7 +9,6 @@ import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -65,14 +64,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         ;
         // //.antMatchers("/").permitAll()
-                // .anyRequest().permitAll()
-                // .and()
-                // .formLogin()
-                // .loginPage("/login")
-                // .permitAll()
-                // .and()
-                // .logout()
-                // .permitAll()
+        // .anyRequest().permitAll()
+        // .and()
+        // .formLogin()
+        // .loginPage("/login")
+        // .permitAll()
+        // .and()
+        // .logout()
+        // .permitAll()
         //http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
         /*http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/security/**").permitAll()

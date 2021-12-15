@@ -11,9 +11,9 @@ public class SessionDto {
     private final String coachId;
     private final String coacheeId;
     private final String subject;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate date;
-    @JsonFormat(pattern="HH:mm")
+    @JsonFormat(pattern = "HH:mm")
     private final LocalTime time;
     private final LocationDto location;
     private final String remarks;

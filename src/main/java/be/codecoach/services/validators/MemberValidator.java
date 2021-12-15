@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MemberValidator{
+public class MemberValidator {
 
     private final UserRepository userRepository;
 
@@ -27,18 +27,19 @@ public class MemberValidator{
     }
 
     private void assertFieldsNotNull(UserDto userDto) {
-        if(inputEmpty(userDto.getFirstName())) {
+        if (inputEmpty(userDto.getFirstName())) {
             throw new NoInputException("First Name can not be null");
         }
-        if(inputEmpty(userDto.getLastName())) {
+        if (inputEmpty(userDto.getLastName())) {
             throw new NoInputException("Last Name can not be null");
         }
-        if(inputEmpty(userDto.getEmail())) {
+        if (inputEmpty(userDto.getEmail())) {
             throw new NoInputException("Email can not be null");
         }
-        if(inputEmpty(userDto.getPassword())) {
+        if (inputEmpty(userDto.getPassword())) {
             throw new NoInputException("Password can not be null");
-        }if(inputEmpty(userDto.getCompanyName())) {
+        }
+        if (inputEmpty(userDto.getCompanyName())) {
             throw new NoInputException("Company/team can not be null");
         }
 
@@ -54,20 +55,20 @@ public class MemberValidator{
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
 
-        if(!m.matches()) {
+        if (!m.matches()) {
             throw new InvalidEmailException("Email is invalid");
         }
     }
 
     private void assertEmailIsUnique(String email) {
-        if(userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new NotUniqueException("Email already exists!");
         }
     }
 
     private void assertPasswordValid(String password) {
         String pattern = "(?=.*[0-9])(?=.*[A-Z])(?=\\S+$).{8,}";
-        if(!password.matches(pattern)){
+        if (!password.matches(pattern)) {
             throw new InvalidPasswordException("Password syntax must match input requirements");
         }
     }

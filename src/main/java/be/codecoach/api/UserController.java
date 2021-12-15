@@ -1,15 +1,10 @@
 package be.codecoach.api;
 
 import be.codecoach.api.dtos.UserDto;
-import be.codecoach.domain.User;
-import be.codecoach.exceptions.NotUniqueException;
 import be.codecoach.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,15 +27,15 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getUser(@PathVariable String userId){
+    public UserDto getUser(@PathVariable String userId) {
         return userService.getCoacheeProfileDto(userId);
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable String userId,
-                              @RequestBody UserDto userDto
-                           ) {
+                           @RequestBody UserDto userDto
+    ) {
         userService.updateUser(userId, userDto);
     }
 

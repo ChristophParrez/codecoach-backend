@@ -1,6 +1,5 @@
 package be.codecoach.security.authorization;
 
-import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class AuthorizationService {
     }
 
     public boolean canAccessProfile(Authentication authentication, long profileIdentifier) {
-        return authentication.getAuthorities().contains(ADMIN) || accountService.findByEmail(authentication.getName()).map(Account::getId).map(id -> id.equals(profileIdentifier)).orElse(false);
+        return authentication.getAuthorities().contains(ADMIN);
     }
 
     public boolean canChangeRole(Authentication authentication) {

@@ -3,12 +3,8 @@ package be.codecoach.security.authentication.user;
 import be.codecoach.security.authentication.user.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RestController
 @RequestMapping(path = "/security/account")
@@ -56,7 +52,7 @@ public class SecuredUserController {
     @PreAuthorize("isAnonymous()")
     @PostMapping(consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", path = "/password")
     public PasswordChangeResultDto performPasswordChange(@RequestBody PasswordChangeRequestDto changeRequest) {
-        if(!isPasswordValid(changeRequest.getPassword())){
+        if (!isPasswordValid(changeRequest.getPassword())) {
             return new PasswordChangeResultDto(false);
         }
         return securedUserService.performPasswordChange(changeRequest);

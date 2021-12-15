@@ -4,7 +4,6 @@ package be.codecoach.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "coaching_topics")
@@ -69,7 +68,7 @@ public class CoachingTopic {
         private CoachingTopicBuilder() {
         }
 
-        public static CoachingTopicBuilder coachingTopic(){
+        public static CoachingTopicBuilder coachingTopic() {
             return new CoachingTopicBuilder();
         }
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class TopicMapper {
 
-    public Topic toEntity(TopicDto dto){
+    public Topic toEntity(TopicDto dto) {
         return new Topic(dto.getName());
     }
 
@@ -19,7 +19,7 @@ public class TopicMapper {
         return TopicDto.Builder.aTopicDto().withName(topic.getName()).build();
     }
 
-    public List<TopicDto> toDto(List<Topic> topics){
+    public List<TopicDto> toDto(List<Topic> topics) {
         return topics.stream().map(this::toDto).collect(Collectors.toList());
     }
 

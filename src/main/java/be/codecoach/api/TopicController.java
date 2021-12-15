@@ -21,7 +21,7 @@ public class TopicController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<TopicDto> getAllTopics(){
+    public List<TopicDto> getAllTopics() {
         return topicService.getAllTopics();
     }
 

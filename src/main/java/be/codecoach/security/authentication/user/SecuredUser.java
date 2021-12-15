@@ -12,7 +12,7 @@ public class SecuredUser implements UserDetails {
     private Collection<RoleEnum> authorities;
     private boolean enabled;
 
-    public SecuredUser(String username, String password, Collection<RoleEnum> authorities, boolean enabled){
+    public SecuredUser(String username, String password, Collection<RoleEnum> authorities, boolean enabled) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;

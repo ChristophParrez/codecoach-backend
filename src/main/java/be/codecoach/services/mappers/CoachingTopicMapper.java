@@ -28,7 +28,7 @@ public class CoachingTopicMapper {
         return dto.stream().map(this::toEntity).collect(Collectors.toList());
     }
 
-    public CoachingTopicDto toDto(CoachingTopic coachingTopic){
+    public CoachingTopicDto toDto(CoachingTopic coachingTopic) {
         return CoachingTopicDto.Builder.aCoachingTopicDto()
                 .withTopic(topicMapper.toDto(coachingTopic.getTopic()))
                 .withExperience(coachingTopic.getExperience())
@@ -36,6 +36,6 @@ public class CoachingTopicMapper {
     }
 
     public List<CoachingTopicDto> toDto(List<CoachingTopic> coachingTopics) {
-       return coachingTopics.stream().map(this::toDto).collect(Collectors.toList());
+        return coachingTopics.stream().map(this::toDto).collect(Collectors.toList());
     }
 }

@@ -25,7 +25,7 @@ public class CoachController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getCoach(@PathVariable String userId){
+    public UserDto getCoach(@PathVariable String userId) {
         return userService.getCoachProfileDto(userId);
     }
 
@@ -41,14 +41,14 @@ public class CoachController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void addCoachingTopic(@PathVariable String userId,
-                                @RequestBody CoachingTopicDto coachingTopicDto) {
+                                 @RequestBody CoachingTopicDto coachingTopicDto) {
         userService.addCoachingTopic(userId, coachingTopicDto);
     }
 
     @DeleteMapping(path = "/{userId}/topics/{coachingTopicId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
-    public void deleteCoachingTopic(@PathVariable String userId, @PathVariable String coachingTopicId){
+    public void deleteCoachingTopic(@PathVariable String userId, @PathVariable String coachingTopicId) {
         userService.deleteCoachingTopic(userId, coachingTopicId);
     }
 
@@ -57,7 +57,6 @@ public class CoachController {
     public List<UserDto> getAllCoaches() {
         return userService.getAllCoaches();
     }
-
 
 
     //might be usefull for story 37

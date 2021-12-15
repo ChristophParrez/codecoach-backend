@@ -6,7 +6,7 @@ public class TopicDto {
 
     private final String name;
 
-    private TopicDto(@JsonProperty("name")String name) {
+    private TopicDto(@JsonProperty("name") String name) {
         this.name = name;
     }
 

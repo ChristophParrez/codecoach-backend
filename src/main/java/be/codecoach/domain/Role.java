@@ -8,13 +8,14 @@ import java.util.Set;
 @Table(name = "roles")
 public class Role {
 
-    public Role() {}
+    public Role() {
+    }
 
     public Role(RoleEnum role) {
         this.role = role;
     }
 
-    private Role(RoleBuilder roleBuilder){
+    private Role(RoleBuilder roleBuilder) {
         this.roleId = roleBuilder.roleId;
         this.role = roleBuilder.role;
         this.users = roleBuilder.users;
@@ -61,10 +62,10 @@ public class Role {
         private RoleEnum role;
         private Set<User> users;
 
-        private RoleBuilder(){
+        private RoleBuilder() {
         }
 
-        public static RoleBuilder role(){
+        public static RoleBuilder role() {
             return new RoleBuilder();
         }
 
@@ -73,17 +74,17 @@ public class Role {
             return new Role(this);
         }
 
-        public RoleBuilder withId(int roleId){
+        public RoleBuilder withId(int roleId) {
             this.roleId = roleId;
             return this;
         }
 
-        public RoleBuilder withRoleEnum(RoleEnum role){
+        public RoleBuilder withRoleEnum(RoleEnum role) {
             this.role = role;
             return this;
         }
 
-        public RoleBuilder withUsers(Set<User> users){
+        public RoleBuilder withUsers(Set<User> users) {
             this.users = users;
             return this;
         }

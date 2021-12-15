@@ -1,7 +1,6 @@
 package be.codecoach.services.validators;
 
 import be.codecoach.api.dtos.SessionDto;
-import be.codecoach.domain.Session;
 import be.codecoach.exceptions.DateInThePastException;
 import be.codecoach.exceptions.NoInputException;
 import be.codecoach.exceptions.UnexpectedInputException;
@@ -76,7 +75,7 @@ public class SessionValidator {
         LocalDateTime dateTime = LocalDateTime.of(datePart, timePart);
 
         if (dateTime.isBefore(LocalDateTime.now())) {
-            String message =  "The requested date and time must be in the future. Requested date/time: " + dateTime + ". Now: " + LocalDateTime.now();
+            String message = "The requested date and time must be in the future. Requested date/time: " + dateTime + ". Now: " + LocalDateTime.now();
             throw new DateInThePastException(message);
         }
 

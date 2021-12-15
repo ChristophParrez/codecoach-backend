@@ -2,12 +2,10 @@ package be.codecoach.security.authentication.user;
 
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.RoleEnum;
+import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.security.authentication.user.accountverification.AccountVerificationService;
 import be.codecoach.security.authentication.user.api.*;
-import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.security.authentication.user.password.reset.PasswordResetService;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

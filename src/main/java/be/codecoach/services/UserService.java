@@ -253,7 +253,7 @@ public class UserService implements AccountService {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }
 
-        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId).orElseThrow( () -> new CoachingTopicException("Coaching topic not found"));
+        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId).orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
 
         coachingTopicRepository.delete(coachingTopic);
     }

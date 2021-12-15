@@ -19,7 +19,7 @@ public class SessionController {
     private final SessionService sessionService;
 
     @Autowired
-    public SessionController(SessionService sessionService){
+    public SessionController(SessionService sessionService) {
         this.sessionService = sessionService;
     }
 
@@ -32,7 +32,7 @@ public class SessionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<SessionDto> getSessions(@RequestParam String role){
+    public List<SessionDto> getSessions(@RequestParam String role) {
         return sessionService.getSessions(role);
     }
 

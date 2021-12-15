@@ -3,11 +3,10 @@ package be.codecoach.services.mappers;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.CoachInformation;
 import be.codecoach.domain.Role;
+import be.codecoach.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import be.codecoach.domain.User;
 
-import javax.persistence.SecondaryTable;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

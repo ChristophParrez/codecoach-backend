@@ -49,7 +49,7 @@ public class JwtGenerator {
             LOGGER.warn("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
         }
         LOGGER.info("convertToken: JWS<Claims>");
-        if(parsedToken == null){
+        if (parsedToken == null) {
             return null;
         }
         LOGGER.info("convertToken: checked parsedToken for null");

@@ -10,10 +10,12 @@ public interface Account {
     String getEmail();
 
     String getPassword();
+
     void setPassword(String encode);
 
     List<RoleEnum> getAuthorities();
 
     boolean isAccountEnabled();
+
     void enableAccount();
 }

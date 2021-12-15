@@ -93,7 +93,7 @@ public class CoachInformation {
         private CoachInformationBuilder() {
         }
 
-        public static CoachInformationBuilder coachInformation(){
+        public static CoachInformationBuilder coachInformation() {
             return new CoachInformationBuilder();
         }
 
