@@ -1,11 +1,13 @@
 package be.codecoach.services;
 
-import be.codecoach.domain.CoachingTopic;
+import be.codecoach.api.dtos.TopicDto;
 import be.codecoach.domain.Topic;
 import be.codecoach.repositories.TopicRepository;
+import be.codecoach.services.mappers.TopicMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,13 +15,19 @@ import java.util.Optional;
 public class TopicService {
 
     private final TopicRepository topicRepository;
+    private final TopicMapper topicMapper;
 
-    public TopicService(TopicRepository topicRepository) {
+    public TopicService(TopicRepository topicRepository, TopicMapper topicMapper) {
         this.topicRepository = topicRepository;
+        this.topicMapper = topicMapper;
     }
 
 
     public Optional<Topic> findById(String topicId) {
         return topicRepository.findById(topicId);
+    }
+
+    public List<TopicDto> getAllTopics() {
+        return topicMapper.toDto(topicRepository.findAll());
     }
 }
