@@ -6,6 +6,7 @@ import be.codecoach.domain.Session;
 import be.codecoach.domain.Status;
 import be.codecoach.domain.User;
 import be.codecoach.exceptions.ForbiddenAccessException;
+import be.codecoach.exceptions.InvalidInputException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.exceptions.WrongRoleException;
 import be.codecoach.repositories.RoleRepository;
@@ -22,7 +23,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -58,8 +62,6 @@ public class SessionService {
 
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
-        System.out.println("DB: " + idFromDatabase);
-        System.out.println("userId: " +userId);
         if (hasUserRoleCoachee) {
             if (!userId.equals(idFromDatabase)) {
                 throw new ForbiddenAccessException("You cannot request a session for somebody else.");
@@ -68,13 +70,13 @@ public class SessionService {
 
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
-        if(coachInDatabase.isEmpty()) {
+        if (coachInDatabase.isEmpty()) {
             throw new UserNotFoundException("No user was found with this coach id");
         }
-        if(coacheeInDatabase.isEmpty()) {
+        if (coacheeInDatabase.isEmpty()) {
             throw new UserNotFoundException("No user was found with this coachee id");
         }
-        if(!coachInDatabase.get().getRoles().contains(roleRepository.findByRole(RoleEnum.COACH))){
+        if (!coachInDatabase.get().getRoles().contains(roleRepository.findByRole(RoleEnum.COACH))) {
             throw new WrongRoleException("This user is not a coach. The user can't receive session requests");
         }
 
@@ -85,13 +87,33 @@ public class SessionService {
         return sessionRepository.save(sessionToBeSaved);
     }
 
-        private boolean hasRole(Authentication authentication, String roleName) {
-            return authentication.getAuthorities().stream()
-                    .anyMatch(r -> r.getAuthority().equals(roleName));
+    private boolean hasRole(Authentication authentication, String roleName) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals(roleName));
+    }
+
+    private void assertSessionInfoIsValid(SessionDto sessionDto) {
+        sessionValidator.validate(sessionDto);
+    }
+
+    public List<SessionDto> getSessions(String role) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("authorities: " + authentication);
+
+        String emailFromToken = authentication.getName();
+        String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
+
+        List<Session> allSessions = sessionRepository.findAll();
+        List<Session> sessionsToReturn;
+
+        if (role.equals("COACH")) {
+            sessionsToReturn = allSessions.stream().filter(session -> session.getCoach().getId().equals(idFromDatabase)).collect(Collectors.toList());
+        } else if (role.equals("COACHEE")) {
+            sessionsToReturn = allSessions.stream().filter(session -> session.getCoachee().getId().equals(idFromDatabase)).collect(Collectors.toList());
+        } else {
+            throw new InvalidInputException("Role not recognised");
         }
 
-        private void assertSessionInfoIsValid(SessionDto sessionDto) {
-            sessionValidator.validate(sessionDto);
-        }
-
+        return sessionMapper.toDto(sessionsToReturn);
+    }
 }

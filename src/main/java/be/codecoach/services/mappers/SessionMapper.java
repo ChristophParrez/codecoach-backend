@@ -40,8 +40,8 @@ public class SessionMapper {
                 .withLocation(locationMapper.toDto(session.getLocation()))
                 .withRemarks(session.getRemarks())
                 .withStatus(statusMapper.toDto(session.getStatus()))
-                .withCoachFeedback(feedbackMapper.toDto(session.getCoachFeedback()))
-                .withCoacheeFeedback(feedbackMapper.toDto(session.getCoacheeFeedback()))
+                .withCoachFeedback(session.getCoachFeedback() == null ? null : feedbackMapper.toDto(session.getCoachFeedback()))
+                .withCoacheeFeedback(session.getCoacheeFeedback() == null ? null : feedbackMapper.toDto(session.getCoacheeFeedback()))
                 .build();
     }
 

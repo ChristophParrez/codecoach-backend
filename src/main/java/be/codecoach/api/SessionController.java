@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sessions")
-@CrossOrigin(value = "http://localhost:4200/")
+@CrossOrigin
 public class SessionController {
 
     private final SessionService sessionService;
@@ -32,8 +32,8 @@ public class SessionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<SessionDto> getSession(){
-        return null;
+    public List<SessionDto> getSessions(@RequestParam String role){
+        return sessionService.getSessions(role);
     }
 
 }

@@ -98,24 +98,9 @@ public class ExceptionManager {
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
-    // @Override
-    // protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-    //                                                               HttpHeaders headers,
-    //                                                               HttpStatus status, WebRequest request) {
-    //     Map<String, Object> body = new LinkedHashMap<>();
-    //     body.put("timestamp", new Date());
-    //     body.put("status", status.value());
-    //
-    //     List<String> errors = ex.getBindingResult()
-    //             .getFieldErrors()
-    //             .stream()
-    //             .map(DefaultMessageSourceResolvable::getDefaultMessage)
-    //             .collect(Collectors.toList());
-    //
-    //     body.put("errors", errors);
-    //     return new ResponseEntity<>(body, headers, status);
-    // }
-
-
-
+    @ExceptionHandler(InvalidInputException.class)
+    protected void invalidInputException(InvalidInputException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 }
