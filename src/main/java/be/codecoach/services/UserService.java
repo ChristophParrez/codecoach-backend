@@ -42,9 +42,10 @@ public class UserService implements AccountService {
     private final CoachingTopicRepository coachingTopicRepository;
     private final TopicService topicService;
     private final CoachInformationService coachInformationService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService, AuthenticationService authenticationService) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
@@ -55,6 +56,7 @@ public class UserService implements AccountService {
         this.coachingTopicRepository = coachingTopicRepository;
         this.topicService = topicService;
         this.coachInformationService = coachInformationService;
+        this.authenticationService = authenticationService;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -167,24 +169,19 @@ public class UserService implements AccountService {
     }
 
     private void assertUserIsChangingOwnProfile(String userId) {
-        if(!userId.equals(getAuthenticationIdFromDb())) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
-        }
+        authenticationService.assertUserIsChangingOwnProfile(userId);
     }
 
     private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        return authenticationService.getAuthentication();
     }
 
     private String getAuthenticationIdFromDb() {
-        return userRepository.findByEmail(getAuthentication().getName())
-                .orElseThrow(() -> new NullPointerException("Email from token was not found in the database."))
-                .getId();
+        return authenticationService.getAuthenticationIdFromDb();
     }
 
     private boolean hasRole(String roleName) {
-        return getAuthentication().getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals(roleName));
+        return authenticationService.hasRole(roleName);
     }
 
     private void setRegularUserFields(UserDto userDto, User user) {

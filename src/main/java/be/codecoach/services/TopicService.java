@@ -22,7 +22,6 @@ public class TopicService {
         this.topicMapper = topicMapper;
     }
 
-
     public Optional<Topic> findById(String topicId) {
         return topicRepository.findById(topicId);
     }

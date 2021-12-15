@@ -26,11 +26,9 @@ public class SessionValidator {
         if (sessionDto.getCoachFeedback() != null) {
             throw new UnexpectedInputException("Coach feedback cannot be given before session takes place");
         }
-
     }
 
-
-    public void assertFieldsNotNull(SessionDto sessionDto) {
+    private void assertFieldsNotNull(SessionDto sessionDto) {
         if (inputEmpty(sessionDto.getCoacheeId())) {
             throw new NoInputException("Coachee must be provided");
         }
@@ -40,16 +38,6 @@ public class SessionValidator {
         if (inputEmpty(sessionDto.getSubject())) {
             throw new NoInputException("Subject must be provided");
         }
-        /*if (inputEmpty(sessionDto.getDate().toString())) {
-            throw new NoInputException("Date must be provided");
-        }
-        if (inputEmpty(sessionDto.getTime().toString())) {
-            throw new NoInputException("Time must be provided");
-        }
-        if (inputEmpty(sessionDto.getLocation().toString())) {
-            throw new NoInputException("Location must be provided");
-        }*/
-
     }
 
     private boolean inputEmpty(String input) {
@@ -66,7 +54,6 @@ public class SessionValidator {
         if (sessionDto.getTime() == null) {
             throw new NoInputException("Time must be provided");
         }
-
     }
 
     private void assertDateIsInTheFuture(SessionDto sessionDto) {
@@ -78,7 +65,5 @@ public class SessionValidator {
             String message = "The requested date and time must be in the future. Requested date/time: " + dateTime + ". Now: " + LocalDateTime.now();
             throw new DateInThePastException(message);
         }
-
     }
-
 }

@@ -1,6 +1,5 @@
 package be.codecoach.services;
 
-import be.codecoach.api.dtos.RoleDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.builder.UserTestBuilder;
 import be.codecoach.domain.Role;
@@ -15,12 +14,10 @@ import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -38,6 +35,7 @@ class UserServiceTest {
     private CoachingTopicRepository coachingTopicRepositoryMock;
     private TopicService topicServiceMock;
     private CoachInformationService coachInformationServiceMock;
+    private AuthenticationService authenticationServiceMock;
 
 
     @BeforeEach
@@ -52,9 +50,10 @@ class UserServiceTest {
         topicServiceMock = Mockito.mock(TopicService.class);
         coachInformationServiceMock = Mockito.mock(CoachInformationService.class);
         roleMapperMock = Mockito.mock(RoleMapper.class);
+        authenticationServiceMock = Mockito.mock(AuthenticationService.class);
         userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
                 roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
-                topicServiceMock, coachInformationServiceMock);
+                topicServiceMock, coachInformationServiceMock, authenticationServiceMock);
     }
 
     @Test
