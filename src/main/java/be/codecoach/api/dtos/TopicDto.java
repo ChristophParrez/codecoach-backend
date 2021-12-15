@@ -1,10 +1,12 @@
 package be.codecoach.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TopicDto {
 
     private final String name;
 
-    private TopicDto(String name) {
+    private TopicDto(@JsonProperty("name")String name) {
         this.name = name;
     }
 
