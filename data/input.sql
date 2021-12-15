@@ -28,3 +28,10 @@ INSERT INTO topics (topic_id) values ('JavaScript');
 INSERT INTO topics (topic_id) values ('Spring');
 INSERT INTO topics (topic_id) values ('Angular');
 INSERT INTO topics (topic_id) values ('SQL');
+
+INSERT INTO locations (name) values ('Online');
+INSERT INTO locations (name) values ('Face2Face');
+
+
+
+SET SCHEMA 'runtime';
