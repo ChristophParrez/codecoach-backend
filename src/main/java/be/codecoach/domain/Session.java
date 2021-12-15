@@ -54,4 +54,64 @@ public class Session {
     @OneToOne
     @JoinColumn(name = "coachee_feedback", referencedColumnName = "feedback_id")
     private Feedback coacheeFeedback;
+
+    public Session() {
+    }
+
+    public Session(User coach, User coachee, String subject, LocalDate date, LocalTime time, Location location, String remarks, Status status, Feedback coachFeedback, Feedback coacheeFeedback) {
+        this.coach = coach;
+        this.coachee = coachee;
+        this.subject = subject;
+        this.date = date;
+        this.time = time;
+        this.location = location;
+        this.remarks = remarks;
+        this.status = status;
+        this.coachFeedback = coachFeedback;
+        this.coacheeFeedback = coacheeFeedback;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public User getCoach() {
+        return coach;
+    }
+
+    public User getCoachee() {
+        return coachee;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public Feedback getCoachFeedback() {
+        return coachFeedback;
+    }
+
+    public Feedback getCoacheeFeedback() {
+        return coacheeFeedback;
+    }
 }

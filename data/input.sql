@@ -32,6 +32,6 @@ INSERT INTO topics (topic_id) values ('SQL');
 INSERT INTO locations (name) values ('Online');
 INSERT INTO locations (name) values ('Face2Face');
 
-
+INSERT INTO status (status_name) values ('REQUESTED');
 
 SET SCHEMA 'runtime';

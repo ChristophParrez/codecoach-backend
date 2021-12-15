@@ -13,10 +13,14 @@ public class Location {
     @Column(name = "name")
     private String name;
 
+    public Location() {
+    }
+
     public Location(String name) {
         this.name = name;
     }
 
-    public Location() {
+    public String getName() {
+        return name;
     }
 }

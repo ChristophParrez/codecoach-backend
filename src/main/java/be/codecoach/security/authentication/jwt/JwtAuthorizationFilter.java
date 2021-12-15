@@ -44,7 +44,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("GET"))
                 || request.getRequestURI().contains("/login")
-                || (request.getRequestURI().contains("/coaches") && request.getMethod().equals("GET"))
+                || (request.getRequestURI().contains("/coaches") && request.getMethod().equals("GET")
+                || (request.getRequestURI().contains("topics") && request.getMethod().equals("GET")))
         ) {
             filterChain.doFilter(request, response);
             return;

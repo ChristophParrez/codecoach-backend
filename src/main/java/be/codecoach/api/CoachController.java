@@ -41,7 +41,7 @@ public class CoachController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void addCoachingTopic(@PathVariable String userId,
-                         @RequestBody CoachingTopicDto coachingTopicDto) {
+                                @RequestBody CoachingTopicDto coachingTopicDto) {
         userService.addCoachingTopic(userId, coachingTopicDto);
     }
 

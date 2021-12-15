@@ -19,4 +19,8 @@ public class Status {
     public Status(String statusName) {
         this.statusName = statusName;
     }
+
+    public String getStatusName() {
+        return statusName;
+    }
 }
