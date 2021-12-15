@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -248,8 +249,6 @@ public class UserService implements AccountService {
         String emailFromToken = authentication.getName();
         String idFromDatabase = userRepository.findByEmail(emailFromToken).orElseThrow(() -> new NullPointerException("Email from token was not found in the database.")).getId();
 
-        User user = getUser(userId);
-
         if (hasUserRoleCoach && !userId.equals(idFromDatabase)) {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }
@@ -257,6 +256,12 @@ public class UserService implements AccountService {
         CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId).orElseThrow( () -> new CoachingTopicException("Coaching topic not found"));
 
         coachingTopicRepository.delete(coachingTopic);
+    }
+
+    public List<UserDto> getAllCoaches() {
+        return userMapper.toCoachProfileDto(userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(new Role(RoleEnum.COACH)))
+                .collect(Collectors.toList()));
     }
 
         /*public void updateCoachingTopics(String userId, CoachingTopicDto coachingTopicDto) {

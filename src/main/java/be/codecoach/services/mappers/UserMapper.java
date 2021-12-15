@@ -10,6 +10,7 @@ import be.codecoach.domain.User;
 import javax.persistence.SecondaryTable;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -42,6 +43,10 @@ public class UserMapper {
                 .build();
     }
 
+    public List<UserDto> toCoacheeProfileDto(List<User> users) {
+        return users.stream().map(this::toCoacheeProfileDto).collect(Collectors.toList());
+    }
+
     public UserDto toCoachProfileDto(User user) {
         return UserDto.Builder.anUserDto()
                 .withUserId(user.getId())
@@ -53,5 +58,9 @@ public class UserMapper {
                 .withPicture(user.getPicture())
                 .withCoachInformation(coachInformationMapper.toDto(user.getCoachInformation()))
                 .build();
+    }
+
+    public List<UserDto> toCoachProfileDto(List<User> users) {
+        return users.stream().map(this::toCoachProfileDto).collect(Collectors.toList());
     }
 }

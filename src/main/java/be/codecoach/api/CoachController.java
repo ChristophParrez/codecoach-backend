@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/coaches")
 @CrossOrigin(value = "http://localhost:4200/")
@@ -50,10 +52,15 @@ public class CoachController {
         userService.deleteCoachingTopic(userId, coachingTopicId);
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getAllCoaches() {
+        return userService.getAllCoaches();
+    }
 
 
 
-
+    //might be usefull for story 37
     /*@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
