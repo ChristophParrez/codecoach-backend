@@ -92,6 +92,12 @@ public class ExceptionManager {
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(DateInThePastException.class)
+    protected void dateInThePastException(DateInThePastException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
     // @Override
     // protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
     //                                                               HttpHeaders headers,
