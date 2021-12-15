@@ -61,28 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        ;
-        // //.antMatchers("/").permitAll()
-        // .anyRequest().permitAll()
-        // .and()
-        // .formLogin()
-        // .loginPage("/login")
-        // .permitAll()
-        // .and()
-        // .logout()
-        // .permitAll()
-        //http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
-        /*http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/security/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), authenticationFailureHandler(), jwtGenerator, accountService))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), authenticationFailureHandler(), jwtGenerator))
-                .formLogin().loginPage("/login").permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);*/
     }
 
     @Bean
