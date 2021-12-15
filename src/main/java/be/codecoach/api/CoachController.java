@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/coaches")
+@RequestMapping("coaches")
 @CrossOrigin
 public class CoachController {
 
