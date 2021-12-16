@@ -5,9 +5,11 @@ import be.codecoach.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("users")
@@ -45,5 +47,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void becomeCoach(@PathVariable String userId, HttpServletResponse response) {
         userService.becomeCoach(userId, response);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('COACHEE', 'COACH')")
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

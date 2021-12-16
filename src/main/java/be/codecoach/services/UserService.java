@@ -7,6 +7,7 @@ import be.codecoach.domain.*;
 import be.codecoach.exceptions.CoachingTopicException;
 import be.codecoach.exceptions.TopicException;
 import be.codecoach.exceptions.UserNotFoundException;
+import be.codecoach.exceptions.WrongRoleException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
@@ -197,5 +198,15 @@ public class UserService implements AccountService {
         if (coachInfo.getIntroduction() != null) {
             user.getCoachInformation().setIntroduction(coachInfo.getIntroduction());
         }
+    }
+
+    public List<UserDto> getAllUsers() {
+        System.out.println(authenticationService.hasRole("COACHEE"));
+        System.out.println(authenticationService.hasRole("COACH"));
+        System.out.println(authenticationService.hasRole("ADMIN"));
+        if(authenticationService.hasRole("COACHEE")) {
+            return userMapper.toCoacheeProfileDto(userRepository.findAll());
+        }
+        throw new WrongRoleException("No go");
     }
 }

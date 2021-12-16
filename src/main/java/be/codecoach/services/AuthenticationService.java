@@ -17,11 +17,12 @@ public class AuthenticationService {
 
     public void assertUserIsChangingOwnProfile(String userId, String message) {
         if (!userId.equals(getAuthenticationIdFromDb())) {
-            throw new ForbiddenAccessException("You cannot change someone else's profile!");
+            throw new ForbiddenAccessException(message);
         }
     }
 
     public boolean hasRole(String roleName) {
+        System.out.println(getAuthentication().getAuthorities());
         return getAuthentication().getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals(roleName));
     }
