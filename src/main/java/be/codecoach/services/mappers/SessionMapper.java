@@ -22,8 +22,7 @@ public class SessionMapper {
         this.feedbackMapper = feedbackMapper;
     }
 
-    public Session toEntity(SessionDto dto, User coach, User coachee, Status status) {
-        Location location = locationMapper.toEntity(dto.getLocation());
+    public Session toEntity(SessionDto dto, User coach, User coachee, Status status, Location location) {
         Feedback coachFeedback = dto.getCoachFeedback() != null ? feedbackMapper.toEntity(dto.getCoachFeedback(), coach) : null;
         Feedback coacheeFeedback = dto.getCoacheeFeedback() != null ? feedbackMapper.toEntity(dto.getCoacheeFeedback(), coachee) : null;
 

@@ -31,9 +31,10 @@ public class SessionService {
     private final AuthenticationService authenticationService;
     private final FeedbackMapper feedbackMapper;
     private final FeedbackRepository feedbackRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository) {
+    public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.sessionRepository = sessionRepository;
@@ -43,6 +44,7 @@ public class SessionService {
         this.authenticationService = authenticationService;
         this.feedbackMapper = feedbackMapper;
         this.feedbackRepository = feedbackRepository;
+        this.locationRepository = locationRepository;
     }
 
     public void requestSession(SessionDto sessionDto) {
@@ -65,7 +67,8 @@ public class SessionService {
         assertSessionInfoIsValid(sessionDto);
 
         Status status = statusRepository.getById("REQUESTED");
-        Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status);
+        Location location = locationRepository.getById(sessionDto.getLocation().getName());
+        Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
         sessionRepository.save(sessionToBeSaved);
     }
 
