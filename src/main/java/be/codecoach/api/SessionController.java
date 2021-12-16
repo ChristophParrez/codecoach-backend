@@ -1,6 +1,7 @@
 package be.codecoach.api;
 
 
+import be.codecoach.api.dtos.FeedbackDto;
 import be.codecoach.api.dtos.SessionDto;
 import be.codecoach.services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,13 @@ public class SessionController {
     public void updateSessionStatus(@PathVariable String sessionId,
                                     @RequestParam String newStatus) {
         sessionService.updateSessionStatus(sessionId, newStatus);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{sessionId}/feedback")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('COACHEE', 'COACH')")
+    public void giveFeedback(@PathVariable String sessionId,
+                             @RequestBody FeedbackDto feedbackDto){
+        sessionService.giveFeedback(sessionId, feedbackDto);
     }
 }

@@ -38,6 +38,7 @@ INSERT INTO status (status_name) values ('DONE WAITING FOR FEEDBACK');
 INSERT INTO status (status_name) values ('FINISHED FEEDBACK GIVEN');
 INSERT INTO status (status_name) values ('FINISHED AUTOMATICALLY CLOSED');
 INSERT INTO status (status_name) values ('FINISHED CANCELLED BY COACHEE');
+INSERT INTO status (status_name) values ('FINISHED CANCELLED BY COACH');
 INSERT INTO status (status_name) values ('DECLINED');
 
 

@@ -1,17 +1,11 @@
 package be.codecoach.services;
 
+import be.codecoach.api.dtos.FeedbackDto;
 import be.codecoach.api.dtos.SessionDto;
-import be.codecoach.domain.RoleEnum;
-import be.codecoach.domain.Session;
-import be.codecoach.domain.Status;
-import be.codecoach.domain.User;
-import be.codecoach.exceptions.InvalidInputException;
-import be.codecoach.exceptions.UserNotFoundException;
-import be.codecoach.exceptions.WrongRoleException;
-import be.codecoach.repositories.RoleRepository;
-import be.codecoach.repositories.SessionRepository;
-import be.codecoach.repositories.StatusRepository;
-import be.codecoach.repositories.UserRepository;
+import be.codecoach.domain.*;
+import be.codecoach.exceptions.*;
+import be.codecoach.repositories.*;
+import be.codecoach.services.mappers.FeedbackMapper;
 import be.codecoach.services.mappers.SessionMapper;
 import be.codecoach.services.validators.SessionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,9 +29,11 @@ public class SessionService {
     private final SessionMapper sessionMapper;
     private final StatusRepository statusRepository;
     private final AuthenticationService authenticationService;
+    private final FeedbackMapper feedbackMapper;
+    private final FeedbackRepository feedbackRepository;
 
     @Autowired
-    public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService) {
+    public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.sessionRepository = sessionRepository;
@@ -46,6 +41,8 @@ public class SessionService {
         this.sessionMapper = sessionMapper;
         this.statusRepository = statusRepository;
         this.authenticationService = authenticationService;
+        this.feedbackMapper = feedbackMapper;
+        this.feedbackRepository = feedbackRepository;
     }
 
     public void requestSession(SessionDto sessionDto) {
@@ -113,12 +110,13 @@ public class SessionService {
             if (session.getStatus().getStatusName().equals("REQUESTED")
                     && (newStatus.equals("ACCEPTED") || newStatus.equals("DECLINED"))) {
                 session.setStatus(status);
+            } else if (session.getStatus().getStatusName().equals("ACCEPTED")
+                    && newStatus.equals("FINISHED CANCELLED BY COACH")) {
+                session.setStatus(status);
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
             }
-        }
-
-        if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
+        } else if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
             // authenticationService.assertUserIsChangingOwnProfile(coacheeId, FORBIDDEN_ACCESS_MESSAGE);
 
@@ -131,11 +129,53 @@ public class SessionService {
         }
     }
 
-    private String checkIfCoachOrCoachee(String coachId, String coacheeId) {
+    /*private String checkIfCoachOrCoachee(String coachId, String coacheeId) {
         if (authenticationService.getAuthenticationIdFromDb().equals(coachId)) {
             return coachId;
         } else {
             return coacheeId;
+        }
+    }*/
+
+    public void giveFeedback(String sessionId, FeedbackDto feedbackDto) {
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new InvalidInputException("Session Not found"));
+
+        if (session.getStatus().getStatusName().equals("FINISHED FEEDBACK GIVEN")) {
+            throw new IllegalArgumentException("Feedback has already been provided by both coach and coachee");
+        }
+
+        if (!session.getStatus().getStatusName().equals("DONE WAITING FOR FEEDBACK")) {
+            throw new IllegalArgumentException("You cannot give feedback before a session is finished.");
+        }
+
+        String coachId = session.getCoach().getId();
+        String coacheeId = session.getCoachee().getId();
+
+        User feedbackGiver = userRepository.findById(authenticationService.getAuthenticationIdFromDb())
+                .orElseThrow();
+        Feedback feedback = feedbackMapper.toEntity(feedbackDto, feedbackGiver);
+
+        if (authenticationService.hasRole("COACH")
+                && coachId.equals(feedbackGiver.getId())) {
+            if (session.getCoachFeedback() != null) {
+                throw new FeedbackAlreadyProvidedException("Coach feedback has already been provided");
+            }
+            feedback = feedbackRepository.save(feedback);
+            session.setCoachFeedback(feedback);
+        } else if (authenticationService.hasRole("COACHEE")
+                && coacheeId.equals(feedbackGiver.getId())) {
+            if (session.getCoacheeFeedback() != null) {
+                throw new FeedbackAlreadyProvidedException("Coachee feedback has already been provided");
+            }
+            feedback = feedbackRepository.save(feedback);
+            session.setCoacheeFeedback(feedback);
+        } else {
+            throw new ForbiddenAccessException("You cannot give feedback for someone else's session");
+        }
+
+        if (session.getCoachFeedback() != null && session.getCoacheeFeedback() != null) {
+            session.setStatus(statusRepository.getById("FINISHED FEEDBACK GIVEN"));
         }
     }
 }

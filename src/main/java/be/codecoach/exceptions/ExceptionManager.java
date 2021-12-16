@@ -103,4 +103,10 @@ public class ExceptionManager {
         logger.error(exception.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
+
+    @ExceptionHandler(FeedbackAlreadyProvidedException.class)
+    protected void feedbackAlreadyProvidedException(FeedbackAlreadyProvidedException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 }

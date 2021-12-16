@@ -118,4 +118,12 @@ public class Session {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public void setCoachFeedback(Feedback coachFeedback) {
+        this.coachFeedback = coachFeedback;
+    }
+
+    public void setCoacheeFeedback(Feedback coacheeFeedback) {
+        this.coacheeFeedback = coacheeFeedback;
+    }
 }
