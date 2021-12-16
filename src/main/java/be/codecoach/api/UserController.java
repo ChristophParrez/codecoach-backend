@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("users")
 @CrossOrigin
@@ -41,7 +43,7 @@ public class UserController {
 
     @PatchMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void becomeCoach(@PathVariable String userId) {
-        userService.becomeCoach(userId);
+    public void becomeCoach(@PathVariable String userId, HttpServletResponse response) {
+        userService.becomeCoach(userId, response);
     }
 }

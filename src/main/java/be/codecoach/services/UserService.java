@@ -10,6 +10,7 @@ import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
+import be.codecoach.security.authentication.jwt.JwtGenerator;
 import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
 import be.codecoach.services.mappers.CoachingTopicMapper;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,9 +42,10 @@ public class UserService implements AccountService {
     private final TopicService topicService;
     private final CoachInformationService coachInformationService;
     private final AuthenticationService authenticationService;
+    private final JwtGenerator jwtGenerator;
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService, AuthenticationService authenticationService) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService, AuthenticationService authenticationService, JwtGenerator jwtGenerator) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
@@ -54,6 +57,7 @@ public class UserService implements AccountService {
         this.topicService = topicService;
         this.coachInformationService = coachInformationService;
         this.authenticationService = authenticationService;
+        this.jwtGenerator = jwtGenerator;
     }
 
     public Account registerUser(UserDto userDto) {
@@ -102,7 +106,7 @@ public class UserService implements AccountService {
         return userMapper.toCoachProfileDto(getUser(userId));
     }
 
-    public void becomeCoach(String userId) {
+    public void becomeCoach(String userId, HttpServletResponse response) {
         User user = getUser(userId);
 
         if (authenticationService.hasRole("COACHEE")
@@ -113,6 +117,15 @@ public class UserService implements AccountService {
             CoachInformation coachInformation = new CoachInformation();
             CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
             user.setCoachInformation(savedCoachInformation);
+
+            /*  ***  TOKEN  *** */
+            Account account = findByEmail(authenticationService.getEmailFromAuthentication())
+                    .orElseThrow(() -> new RuntimeException("Could not find account"));
+
+            String token = jwtGenerator.generateToken(account);
+
+            response.addHeader("Authorization", "Bearer " + token);
+            response.addHeader("Access-Control-Expose-Headers", "Authorization");
         }
     }
 

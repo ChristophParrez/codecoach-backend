@@ -35,4 +35,8 @@ public class AuthenticationService {
                 .orElseThrow(() -> new NullPointerException("Email from token was not found in the database."))
                 .getId();
     }
+
+    public String getEmailFromAuthentication() {
+        return getAuthentication().getName();
+    }
 }
