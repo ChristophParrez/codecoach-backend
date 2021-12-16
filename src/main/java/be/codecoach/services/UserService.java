@@ -60,14 +60,6 @@ public class UserService implements AccountService {
         this.jwtGenerator = jwtGenerator;
     }
 
-    private Account registerUser(UserDto userDto) {
-        assertUserInfoIsValid(userDto);
-        Role role = roleRepository.findByRole(RoleEnum.COACHEE);
-        User userToBeSaved = userMapper.toEntity(userDto, role);
-        userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        return userRepository.save(userToBeSaved);
-    }
-
     private void assertUserInfoIsValid(UserDto userDto) {
         memberValidator.validate(userDto);
     }
@@ -78,8 +70,12 @@ public class UserService implements AccountService {
     }
 
     @Override
-    public Account createAccount(UserDto dto) {
-        return registerUser(dto);
+    public Account createAccount(UserDto userDto) {
+        assertUserInfoIsValid(userDto);
+        Role role = roleRepository.findByRole(RoleEnum.COACHEE);
+        User userToBeSaved = userMapper.toEntity(userDto, role);
+        userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        return userRepository.save(userToBeSaved);
     }
 
     @Override
