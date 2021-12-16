@@ -145,8 +145,8 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new InvalidInputException("Session Not found"));
 
-        if (session.getStatus().getStatusName().equals("FINISHED FEEDBACK GIVEN")) {
-            throw new IllegalArgumentException("Feedback has already been provided by both coach and coachee");
+        if (session.getStatus().getStatusName().contains("FINISHED")) {
+            throw new IllegalArgumentException("Session has been archived. Cannot add feedback anymore. ");
         }
 
         if (!session.getStatus().getStatusName().equals("DONE WAITING FOR FEEDBACK")) {
@@ -180,6 +180,10 @@ public class SessionService {
 
         if (session.getCoachFeedback() != null && session.getCoacheeFeedback() != null) {
             session.setStatus(statusRepository.getById("FINISHED FEEDBACK GIVEN"));
+
+            User coach = userRepository.findById(coachId).orElseThrow();
+            int previousXp = coach.getCoachInformation().getCoachXp();
+            coach.getCoachInformation().setCoachXp(previousXp+10);
         }
     }
 }

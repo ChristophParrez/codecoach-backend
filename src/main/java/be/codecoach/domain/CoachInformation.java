@@ -82,6 +82,10 @@ public class CoachInformation {
         return this.coachInfoId;
     }
 
+    public void setCoachXp(int coachXp) {
+        this.coachXp = coachXp;
+    }
+
     public static class CoachInformationBuilder extends Builder<CoachInformation> {
 
         private String coachInfoId;
