@@ -15,7 +15,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public void assertUserIsChangingOwnProfile(String userId) {
+    public void assertUserIsChangingOwnProfile(String userId, String message) {
         if (!userId.equals(getAuthenticationIdFromDb())) {
             throw new ForbiddenAccessException("You cannot change someone else's profile!");
         }

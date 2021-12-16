@@ -34,9 +34,11 @@ INSERT INTO locations (name) values ('Face2Face');
 
 INSERT INTO status (status_name) values ('REQUESTED');
 INSERT INTO status (status_name) values ('ACCEPTED');
-INSERT INTO status (status_name) values ('DONE (WAITING FOR FEEDBACK)');
-INSERT INTO status (status_name) values ('FINISHED(FEEDBACK GIVEN)');
-INSERT INTO status (status_name) values ('FINISHED (AUTOMATICALLY CLOSED');
+INSERT INTO status (status_name) values ('DONE WAITING FOR FEEDBACK');
+INSERT INTO status (status_name) values ('FINISHED FEEDBACK GIVEN');
+INSERT INTO status (status_name) values ('FINISHED AUTOMATICALLY CLOSED');
+INSERT INTO status (status_name) values ('FINISHED CANCELLED BY COACHEE');
+INSERT INTO status (status_name) values ('DECLINED');
 
 
 SET SCHEMA 'runtime';
