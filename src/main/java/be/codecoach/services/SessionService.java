@@ -47,7 +47,7 @@ public class SessionService {
 
     public void requestSession(SessionDto sessionDto) {
         String userId = sessionDto.getCoacheeId();
-        assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId);
 
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
@@ -70,7 +70,7 @@ public class SessionService {
     }
 
     public List<SessionDto> getSessions(String role) {
-        String idFromDatabase = getAuthenticationIdFromDb();
+        String idFromDatabase = authenticationService.getAuthenticationIdFromDb();
 
         List<Session> allSessions = sessionRepository.findAll();
         List<Session> sessionsToReturn;
@@ -84,14 +84,6 @@ public class SessionService {
         }
 
         return sessionMapper.toDto(sessionsToReturn);
-    }
-
-    private void assertUserIsChangingOwnProfile(String userId) {
-        authenticationService.assertUserIsChangingOwnProfile(userId);
-    }
-
-    private String getAuthenticationIdFromDb() {
-        return authenticationService.getAuthenticationIdFromDb();
     }
 
     private void assertSessionInfoIsValid(SessionDto sessionDto) {

@@ -5,7 +5,6 @@ import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
 import be.codecoach.exceptions.CoachingTopicException;
-import be.codecoach.exceptions.ForbiddenAccessException;
 import be.codecoach.exceptions.TopicException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.CoachingTopicRepository;
@@ -18,8 +17,6 @@ import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,8 +105,9 @@ public class UserService implements AccountService {
     public void becomeCoach(String userId) {
         User user = getUser(userId);
 
-        if (hasRole("COACHEE") && !hasRole("COACH")) {
-            assertUserIsChangingOwnProfile(userId);
+        if (authenticationService.hasRole("COACHEE")
+                && !authenticationService.hasRole("COACH")) {
+            authenticationService.assertUserIsChangingOwnProfile(userId);
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
 
             CoachInformation coachInformation = new CoachInformation();
@@ -121,19 +119,19 @@ public class UserService implements AccountService {
     public void updateUser(String userId, UserDto userDto) {
         User user = getUser(userId);
 
-        if (hasRole("ADMIN")) {
+        if (authenticationService.hasRole("ADMIN")) {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleMapper.toEntity(userDto.getRoles()));
             }
             setRegularUserFields(userDto, user);
-        } else if (hasRole("COACHEE")) {
-            assertUserIsChangingOwnProfile(userId);
+        } else if (authenticationService.hasRole("COACHEE")) {
+            authenticationService.assertUserIsChangingOwnProfile(userId);
             setRegularUserFields(userDto, user);
         }
     }
 
     public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
-        assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId);
         Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
                 .orElseThrow(() -> new TopicException("Topic not found"));
         User user = getUser(userId);
@@ -150,14 +148,14 @@ public class UserService implements AccountService {
     }
 
     public void deleteCoachingTopic(String userId, String coachingTopicId) {
-        assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId);
         CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
                 .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
         coachingTopicRepository.delete(coachingTopic);
     }
 
     public void updateCoach(String userId, UserDto userDto) {
-        assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId);
         User user = getUser(userId);
         setCoachFields(userDto, user);
     }
@@ -166,22 +164,6 @@ public class UserService implements AccountService {
         return userMapper.toCoachProfileDto(userRepository.findAll().stream()
                 .filter(user -> user.getRoles().contains(new Role(RoleEnum.COACH)))
                 .collect(Collectors.toList()));
-    }
-
-    private void assertUserIsChangingOwnProfile(String userId) {
-        authenticationService.assertUserIsChangingOwnProfile(userId);
-    }
-
-    private Authentication getAuthentication() {
-        return authenticationService.getAuthentication();
-    }
-
-    private String getAuthenticationIdFromDb() {
-        return authenticationService.getAuthenticationIdFromDb();
-    }
-
-    private boolean hasRole(String roleName) {
-        return authenticationService.hasRole(roleName);
     }
 
     private void setRegularUserFields(UserDto userDto, User user) {
