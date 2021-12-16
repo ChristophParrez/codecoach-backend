@@ -24,7 +24,7 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUser(@RequestBody UserDto userDto) {
-        userService.registerUser(userDto);
+        userService.createAccount(userDto);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")

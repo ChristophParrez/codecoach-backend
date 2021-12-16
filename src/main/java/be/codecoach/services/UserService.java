@@ -60,7 +60,7 @@ public class UserService implements AccountService {
         this.jwtGenerator = jwtGenerator;
     }
 
-    public Account registerUser(UserDto userDto) {
+    private Account registerUser(UserDto userDto) {
         assertUserInfoIsValid(userDto);
         Role role = roleRepository.findByRole(RoleEnum.COACHEE);
         User userToBeSaved = userMapper.toEntity(userDto, role);
@@ -118,11 +118,7 @@ public class UserService implements AccountService {
             CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
             user.setCoachInformation(savedCoachInformation);
 
-            /*  ***  TOKEN  *** */
-            Account account = findByEmail(authenticationService.getEmailFromAuthentication())
-                    .orElseThrow(() -> new RuntimeException("Could not find account"));
-
-            String token = jwtGenerator.generateToken(account);
+            String token = jwtGenerator.generateToken(user);
 
             response.addHeader("Authorization", "Bearer " + token);
             response.addHeader("Access-Control-Expose-Headers", "Authorization");
