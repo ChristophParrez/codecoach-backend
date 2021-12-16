@@ -67,7 +67,8 @@ public class SessionService {
         assertSessionInfoIsValid(sessionDto);
 
         Status status = statusRepository.getById("REQUESTED");
-        Location location = locationRepository.getById(sessionDto.getLocation().getName());
+        Location location = locationRepository.findById(sessionDto.getLocation().getName())
+                .orElseThrow( () -> new InvalidInputException("This location is not available."));
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
         sessionRepository.save(sessionToBeSaved);
     }
