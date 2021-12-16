@@ -5,6 +5,7 @@ import be.codecoach.builder.UserTestBuilder;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
+import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
@@ -14,10 +15,14 @@ import be.codecoach.services.mappers.CoachingTopicMapper;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -61,7 +66,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registerUser() {
+    void givenUserDto_whenCallCreateAccount_ThenSaveMethodFromUserRepositoryIsCalled() {
         // GIVEN
         User user = UserTestBuilder.anUser().build();
         Role role = new Role(RoleEnum.COACHEE);
@@ -74,26 +79,60 @@ class UserServiceTest {
         when(userMapperMock.toEntity(userDto, role)).thenReturn(user);
         when(passwordEncoderMock.encode(any())).thenReturn(user.getPassword());
 
-        userService.registerUser(userDto);
+        userService.createAccount(userDto);
 
         // THEN
         Mockito.verify(userRepositoryMock).save(user);
     }
 
     @Test
-    void findByEmail() {
+    void givenUserEmail_whenCallFindByEmail_thenFindByEmailFromUserRepositoryIsCalled() {
+        // GIVEN
+        String email = "mert@gmail.com";
+
+        // WHEN
+        userService.findByEmail(email);
+
+        // THEN
+        Mockito.verify(userRepositoryMock).findByEmail(email);
     }
 
     @Test
-    void createAccount() {
+    void givenUserEmail_whenCallExistsByEmail_thenExistsByEmailFromUserRepositoryIsCalled() {
+        // GIVEN
+        String email = "mert@gmail.com";
+
+        // WHEN
+        userService.existsByEmail(email);
+
+        // THEN
+        Mockito.verify(userRepositoryMock).existsByEmail(email);
     }
 
     @Test
-    void existsByEmail() {
+    void givenPresentUserId_whenCallGetUser_thenFindByIdIsCalledFromUserRepository() {
+        // GIVEN
+        User user = UserTestBuilder.anUser().build();
+
+        // WHEN
+        when(userRepositoryMock.findById(user.getId())).thenReturn(java.util.Optional.of(user));
+        userService.getUser(user.getId());
+
+        // THEN
+        Mockito.verify(userRepositoryMock).findById(user.getId());
     }
 
     @Test
-    void getUser() {
+    void givenNonPresentUserId_whenCallGetUser_thenUserNotFoundExceptionIsThrown() {
+        // GIVEN
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        when(userRepositoryMock.findById(userId)).thenReturn(Optional.empty());
+
+        // THEN
+        Assertions.assertThatExceptionOfType(UserNotFoundException.class)
+                .isThrownBy(() -> userService.getUser(userId));
     }
 
     @Test
