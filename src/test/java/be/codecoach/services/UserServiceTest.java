@@ -19,6 +19,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -44,7 +46,6 @@ class UserServiceTest {
     private AuthenticationService authenticationServiceMock;
     private AccountService accountServiceMock;
     private JwtGenerator jwtGeneratorMock;
-
 
     @BeforeEach
     void setUp() {
@@ -136,11 +137,62 @@ class UserServiceTest {
     }
 
     @Test
-    void getCoacheeProfileDto() {
+    void givenCoacheeUserId_whenCallGetCoacheeProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
+        // GIVEN
+        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
+                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
+                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userServiceSpy = Mockito.spy(userService);
+
+        User user = UserTestBuilder.anUser().build();
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        Mockito.doReturn(user).when(userServiceSpy).getUser(userId);
+        when(userMapperMock.toCoacheeProfileDto(user)).thenReturn(any(UserDto.class));
+        userServiceSpy.getCoacheeProfileDto(userId);
+
+        // THEN
+        Mockito.verify(userMapperMock).toCoacheeProfileDto(user);
     }
 
     @Test
-    void getCoachProfileDto() {
+    void givenCoachUserId_whenCallGetCoachProfileDto_thenToCoachProfileDtoFromUserMapperIsCalled() {
+        // GIVEN
+        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
+                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
+                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userServiceSpy = Mockito.spy(userService);
+
+        User user = UserTestBuilder.anUser().build();
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        Mockito.doReturn(user).when(userServiceSpy).getUser(userId);
+        when(userMapperMock.toCoacheeProfileDto(user)).thenReturn(any(UserDto.class));
+        userServiceSpy.getCoachProfileDto(userId);
+
+        // THEN
+        Mockito.verify(userMapperMock).toCoachProfileDto(user);
+    }
+    @Test
+    void givenUserIdThatBelongsToAUserWhoHasNullCoachInformation_whenCallGetCoachProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
+        // GIVEN
+        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
+                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
+                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userServiceSpy = Mockito.spy(userService);
+
+        User user = UserTestBuilder.anEmptyUser().build();
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        Mockito.doReturn(user).when(userServiceSpy).getUser(userId);
+        when(userMapperMock.toCoacheeProfileDto(user)).thenReturn(any(UserDto.class));
+        userServiceSpy.getCoachProfileDto(userId);
+
+        // THEN
+        Mockito.verify(userMapperMock).toCoacheeProfileDto(user);
     }
 
     @Test
