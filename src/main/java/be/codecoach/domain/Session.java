@@ -114,4 +114,8 @@ public class Session {
     public Feedback getCoacheeFeedback() {
         return coacheeFeedback;
     }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

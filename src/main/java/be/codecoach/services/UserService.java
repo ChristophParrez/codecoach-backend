@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService implements AccountService {
 
+    private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot change someone else's profile!";
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRepository userRepository;
@@ -107,7 +109,7 @@ public class UserService implements AccountService {
 
         if (authenticationService.hasRole("COACHEE")
                 && !authenticationService.hasRole("COACH")) {
-            authenticationService.assertUserIsChangingOwnProfile(userId);
+            authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
 
             CoachInformation coachInformation = new CoachInformation();
@@ -130,13 +132,13 @@ public class UserService implements AccountService {
             }
             setRegularUserFields(userDto, user);
         } else if (authenticationService.hasRole("COACHEE")) {
-            authenticationService.assertUserIsChangingOwnProfile(userId);
+            authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
             setRegularUserFields(userDto, user);
         }
     }
 
     public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
-        authenticationService.assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
         Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
                 .orElseThrow(() -> new TopicException("Topic not found"));
         User user = getUser(userId);
@@ -153,14 +155,14 @@ public class UserService implements AccountService {
     }
 
     public void deleteCoachingTopic(String userId, String coachingTopicId) {
-        authenticationService.assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
         CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
                 .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
         coachingTopicRepository.delete(coachingTopic);
     }
 
     public void updateCoach(String userId, UserDto userDto) {
-        authenticationService.assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
         setCoachFields(userDto, user);
     }

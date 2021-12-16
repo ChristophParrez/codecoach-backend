@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class SessionService {
+
+    private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot update sessions for somebody else";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -47,7 +50,7 @@ public class SessionService {
 
     public void requestSession(SessionDto sessionDto) {
         String userId = sessionDto.getCoacheeId();
-        authenticationService.assertUserIsChangingOwnProfile(userId);
+        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
 
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
@@ -89,4 +92,51 @@ public class SessionService {
     private void assertSessionInfoIsValid(SessionDto sessionDto) {
         sessionValidator.validate(sessionDto);
     }
+
+    public void updateSessionStatus(String sessionId, String newStatus) {
+
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new InvalidInputException("Session Not found"));
+
+        String coachId = session.getCoach().getId();
+        String coacheeId = session.getCoachee().getId();
+
+        newStatus = newStatus.replaceAll("_", " ");
+
+        Status status = statusRepository.findById(newStatus)
+                .orElseThrow(() -> new InvalidInputException("Status not found"));
+
+        if (authenticationService.hasRole("COACH") && coachId.equals(authenticationService.getAuthenticationIdFromDb())) {
+
+            // authenticationService.assertUserIsChangingOwnProfile(coachId, FORBIDDEN_ACCESS_MESSAGE);
+
+            if (session.getStatus().getStatusName().equals("REQUESTED")
+                    && (newStatus.equals("ACCEPTED") || newStatus.equals("DECLINED"))) {
+                session.setStatus(status);
+            } else {
+                throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
+            }
+        }
+
+        if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
+
+            // authenticationService.assertUserIsChangingOwnProfile(coacheeId, FORBIDDEN_ACCESS_MESSAGE);
+
+            if ((session.getStatus().getStatusName().equals("REQUESTED") || (session.getStatus().getStatusName().equals("ACCEPTED")))
+                    && newStatus.equals("FINISHED CANCELLED BY COACHEE")) {
+                session.setStatus(status);
+            } else {
+                throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
+            }
+        }
+    }
+
+    private String checkIfCoachOrCoachee(String coachId, String coacheeId) {
+        if (authenticationService.getAuthenticationIdFromDb().equals(coachId)) {
+            return coachId;
+        } else {
+            return coacheeId;
+        }
+    }
 }
+

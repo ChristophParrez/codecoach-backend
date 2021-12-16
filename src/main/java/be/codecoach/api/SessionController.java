@@ -36,4 +36,10 @@ public class SessionController {
         return sessionService.getSessions(role);
     }
 
+    @PatchMapping(path = "/{sessionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateSessionStatus(@PathVariable String sessionId,
+                                    @RequestParam String newStatus) {
+        sessionService.updateSessionStatus(sessionId, newStatus);
+    }
 }
