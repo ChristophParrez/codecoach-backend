@@ -79,10 +79,12 @@ public class SessionService {
         List<Session> allSessions = sessionRepository.findAll();
         List<Session> sessionsToReturn;
 
-        if (role.equals("COACH") && authenticationService.hasRole("COACH")) {
+        if ("COACH".equals(role) && authenticationService.hasRole("COACH")) {
             sessionsToReturn = allSessions.stream().filter(session -> session.getCoach().getId().equals(idFromDatabase)).collect(Collectors.toList());
-        } else if (role.equals("COACHEE") && authenticationService.hasRole("COACHEE")) {
+        } else if ("COACHEE".equals(role) && authenticationService.hasRole("COACHEE")) {
             sessionsToReturn = allSessions.stream().filter(session -> session.getCoachee().getId().equals(idFromDatabase)).collect(Collectors.toList());
+        } else if (authenticationService.hasRole("ADMIN")) {
+            sessionsToReturn = allSessions;
         } else {
             throw new InvalidInputException("Role not recognised or invalid");
         }

@@ -22,7 +22,7 @@ public class AuthenticationService {
     }
 
     public boolean hasRole(String roleName) {
-        System.out.println(getAuthentication().getAuthorities());
+        System.out.println("Authorities from hasRole(): " + getAuthentication().getAuthorities());
         return getAuthentication().getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals(roleName));
     }
@@ -32,7 +32,8 @@ public class AuthenticationService {
     }
 
     public String getAuthenticationIdFromDb() {
-        return userRepository.findByEmail(getAuthentication().getName())
+                System.out.println("getAuthenticationIdFromDb() -> getAuthentication().getName() = " + getEmailFromAuthentication());
+        return userRepository.findByEmail(getEmailFromAuthentication())
                 .orElseThrow(() -> new NullPointerException("Email from token was not found in the database."))
                 .getId();
     }

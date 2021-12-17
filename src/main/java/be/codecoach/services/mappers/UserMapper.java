@@ -48,6 +48,17 @@ public class UserMapper {
                 .build();
     }
 
+    public UserDto toCoacheeProfileDtoWithoutRole(User user) {
+        return UserDto.Builder.anUserDto()
+                .withUserId(user.getId())
+                .withFirstName(user.getFirstName())
+                .withLastName(user.getLastName())
+                .withEmail(user.getEmail())
+                .withCompanyName(user.getCompanyName())
+                .withPicture(user.getPicture())
+                .build();
+    }
+
     public List<UserDto> toCoacheeProfileDto(List<User> users) {
         return users.stream().map(this::toCoacheeProfileDto).collect(Collectors.toList());
     }

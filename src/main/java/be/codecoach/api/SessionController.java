@@ -33,7 +33,8 @@ public class SessionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<SessionDto> getSessions(@RequestParam String role) {
+    @PreAuthorize("hasAnyAuthority('COACHEE', 'COACH', 'ADMIN')")
+    public List<SessionDto> getSessions(@RequestParam(required = false) String role) {
         return sessionService.getSessions(role);
     }
 

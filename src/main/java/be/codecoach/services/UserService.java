@@ -95,7 +95,18 @@ public class UserService implements AccountService {
     }
 
     public UserDto getCoacheeProfileDto(String userId) {
-        return userMapper.toCoacheeProfileDto(getUser(userId));
+        if(authenticationService.getAuthentication() == null) {
+            System.out.println("No auth");
+        } else {
+            System.out.println("Auth present");
+        }
+
+        if(authenticationService.hasRole("ADMIN")
+            || authenticationService.getAuthenticationIdFromDb().equals(userId)){
+            System.out.println("Got here");
+            return userMapper.toCoacheeProfileDto(getUser(userId));
+        }
+        return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
     }
 
     public UserDto getCoachProfileDto(String userId) {

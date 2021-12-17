@@ -40,20 +40,25 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }*/
 
-        if ((request.getRequestURI().contains("/security") && request.getMethod().equals("POST"))
+        LOGGER.info("Getting token");
+        String token = Optional.ofNullable(request.getHeader("Authorization")).map(header -> header.replace("Bearer ", "")).orElse("");
+        LOGGER.info("Token: " + token);
+        var authentication = jwtGenerator.convertToken(token);
+        LOGGER.info("Authentication: " + authentication);
+
+        if (authentication == null && ((request.getRequestURI().contains("/security") && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("POST"))
-                || (request.getRequestURI().contains("/users/") && request.getMethod().equals("GET"))
+                || (request.getRequestURI().contains("/users") && request.getMethod().equals("GET"))
                 || request.getRequestURI().contains("/login")
                 || (request.getRequestURI().contains("/coaches") && request.getMethod().equals("GET")
-                || (request.getRequestURI().contains("topics") && request.getMethod().equals("GET")))
+                || (request.getRequestURI().contains("topics") && request.getMethod().equals("GET"))))
         ) {
             filterChain.doFilter(request, response);
             return;
         }
 
 
-        String token = Optional.ofNullable(request.getHeader("Authorization")).map(header -> header.replace("Bearer ", "")).orElse("");
-        var authentication = jwtGenerator.convertToken(token);
+
         LOGGER.info("Authentication successful! " + authentication);
         if (authentication == null) {
             authenticationFailureHandler.onAuthenticationFailure(request, response, new AuthenticationCredentialsNotFoundException(""));
