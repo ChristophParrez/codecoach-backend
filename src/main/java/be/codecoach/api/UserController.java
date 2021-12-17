@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('COACHEE', 'COACH')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }

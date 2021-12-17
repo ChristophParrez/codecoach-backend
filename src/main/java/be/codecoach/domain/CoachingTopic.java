@@ -18,7 +18,7 @@ public class CoachingTopic {
     )
     private String coachingTopicId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "topic", referencedColumnName = "topic_id")
     private Topic topic;
 

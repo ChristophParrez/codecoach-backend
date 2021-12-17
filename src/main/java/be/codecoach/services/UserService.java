@@ -201,10 +201,7 @@ public class UserService implements AccountService {
     }
 
     public List<UserDto> getAllUsers() {
-        System.out.println(authenticationService.hasRole("COACHEE"));
-        System.out.println(authenticationService.hasRole("COACH"));
-        System.out.println(authenticationService.hasRole("ADMIN"));
-        if(authenticationService.hasRole("COACHEE")) {
+        if(authenticationService.hasRole("ADMIN")) {
             return userMapper.toCoacheeProfileDto(userRepository.findAll());
         }
         throw new WrongRoleException("No go");
