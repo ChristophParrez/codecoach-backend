@@ -63,10 +63,6 @@ public class UserService implements AccountService {
         this.jwtGenerator = jwtGenerator;
     }
 
-    private void assertUserInfoIsValid(UserDto userDto) {
-        memberValidator.validate(userDto);
-    }
-
     @Override
     public Optional<? extends Account> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -147,35 +143,6 @@ public class UserService implements AccountService {
         }
     }
 
-    public void addCoachingTopics(String userId, List<CoachingTopicDto> coachingTopicDtos) {
-
-        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
-        User user = getUser(userId);
-
-        List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
-
-        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
-            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
-                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
-
-            if(coachingTopics.size() >= 2) {
-                throw new TopicException("Max 2 topics allowed");
-            }
-
-            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
-            coachingTopic.setExperience(coachingTopicDto.getExperience());
-            coachingTopic.setTopic(topic);
-            coachingTopics.add(coachingTopic);
-        }
-    }
-
-    public void deleteCoachingTopic(String userId, String coachingTopicId) {
-        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
-        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
-                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
-        coachingTopicRepository.delete(coachingTopic);
-    }
-
     public void updateCoach(String userId, UserDto userDto) {
         authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
@@ -186,6 +153,29 @@ public class UserService implements AccountService {
         return userMapper.toCoachProfileDto(userRepository.findAll().stream()
                 .filter(user -> user.getRoles().contains(new Role(RoleEnum.COACH)))
                 .collect(Collectors.toList()));
+    }
+
+    public List<UserDto> getAllUsers() {
+        if (authenticationService.hasRole("ADMIN")) {
+            return userMapper.toCoacheeProfileDto(userRepository.findAll());
+        }
+        throw new WrongRoleException("No go");
+    }
+
+    public void updateCoachingTopics(String userId, List<CoachingTopicDto> coachingTopicDtos) {
+        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+        assertNotTooManyTopicsAreProvided(coachingTopicDtos);
+        assertTopicsAreUnique(coachingTopicDtos);
+
+        List<CoachingTopic> coachingTopics = getCoachingTopicsForUser(userId);
+        deleteCoachingTopics(coachingTopics);
+        addCoachingTopics(coachingTopicDtos, coachingTopics);
+
+
+    }
+
+    private void assertUserInfoIsValid(UserDto userDto) {
+        memberValidator.validate(userDto);
     }
 
     private void setRegularUserFields(UserDto userDto, User user) {
@@ -214,10 +204,47 @@ public class UserService implements AccountService {
         }
     }
 
-    public List<UserDto> getAllUsers() {
-        if (authenticationService.hasRole("ADMIN")) {
-            return userMapper.toCoacheeProfileDto(userRepository.findAll());
+    private void assertNotTooManyTopicsAreProvided(List<CoachingTopicDto> coachingTopicDtos) {
+        if(coachingTopicDtos.size() > 2) {
+            throw new TopicException("Max 2 topics allowed");
         }
-        throw new WrongRoleException("No go");
+    }
+
+    private void assertTopicsAreUnique(List<CoachingTopicDto> coachingTopicDtos) {
+        if(coachingTopicDtos.size() == 2) {
+            if(coachingTopicDtos.get(0).getTopic().getName().equals(coachingTopicDtos.get(1).getTopic().getName())) {
+                throw new TopicException("A coach cannot teach the same topic twice");
+            }
+        }
+    }
+
+    private List<CoachingTopic> getCoachingTopicsForUser(String userId) {
+        User user = getUser(userId);
+        return user.getCoachInformation().getCoachingTopics();
+    }
+
+    private void deleteCoachingTopics(List<CoachingTopic> coachingTopics) {
+
+        for(CoachingTopic coachingTopic : coachingTopics) {
+            deleteCoachingTopic(coachingTopic.getCoachingTopicId());
+        }
+    }
+
+    private void deleteCoachingTopic(String coachingTopicId) {
+        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
+                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
+        coachingTopicRepository.delete(coachingTopic);
+    }
+
+    private void addCoachingTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
+        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
+            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
+                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
+
+            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
+            coachingTopic.setExperience(coachingTopicDto.getExperience());
+            coachingTopic.setTopic(topic);
+            coachingTopics.add(coachingTopic);
+        }
     }
 }

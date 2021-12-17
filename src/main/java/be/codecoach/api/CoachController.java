@@ -37,32 +37,17 @@ public class CoachController {
         userService.updateCoach(userId, userDto);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
-    public void addCoachingTopics(@PathVariable String userId,
-                                 @RequestBody List<CoachingTopicDto> coachingTopicDtos) {
-        userService.addCoachingTopics(userId, coachingTopicDtos);
-    }
-
-    @DeleteMapping(path = "/{userId}/topics/{coachingTopicId}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
-    public void deleteCoachingTopic(@PathVariable String userId, @PathVariable String coachingTopicId) {
-        userService.deleteCoachingTopic(userId, coachingTopicId);
-    }
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAllCoaches() {
         return userService.getAllCoaches();
     }
 
-    /*@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
     public void updateCoachingTopics(@PathVariable String userId,
-                                     @RequestBody CoachingTopicDto coachingTopicDto) {
-        userService.updateCoachingTopics(userId, coachingTopicDto);
-    }*/
+                                     @RequestBody List<CoachingTopicDto> coachingTopicDtos) {
+        userService.updateCoachingTopics(userId, coachingTopicDtos);
+    }
 }
