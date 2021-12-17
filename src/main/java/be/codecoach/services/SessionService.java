@@ -109,8 +109,6 @@ public class SessionService {
 
         if (authenticationService.hasRole("COACH") && coachId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
-            // authenticationService.assertUserIsChangingOwnProfile(coachId, FORBIDDEN_ACCESS_MESSAGE);
-
             if (session.getStatus().getStatusName().equals("REQUESTED")
                     && (newStatus.equals("ACCEPTED") || newStatus.equals("DECLINED"))) {
                 session.setStatus(status);
@@ -122,8 +120,6 @@ public class SessionService {
             }
         } else if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
-            // authenticationService.assertUserIsChangingOwnProfile(coacheeId, FORBIDDEN_ACCESS_MESSAGE);
-
             if ((session.getStatus().getStatusName().equals("REQUESTED") || (session.getStatus().getStatusName().equals("ACCEPTED")))
                     && newStatus.equals("FINISHED CANCELLED BY COACHEE")) {
                 session.setStatus(status);
@@ -132,14 +128,6 @@ public class SessionService {
             }
         }
     }
-
-    /*private String checkIfCoachOrCoachee(String coachId, String coacheeId) {
-        if (authenticationService.getAuthenticationIdFromDb().equals(coachId)) {
-            return coachId;
-        } else {
-            return coacheeId;
-        }
-    }*/
 
     public void giveFeedback(String sessionId, FeedbackDto feedbackDto) {
         Session session = sessionRepository.findById(sessionId)
