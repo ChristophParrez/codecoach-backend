@@ -122,7 +122,7 @@ class UserServiceTest {
                 .isThrownBy(() -> userService.getUser(userId));
     }
 
-    /*@Test
+    @Test
     void givenCoacheeUserId_whenCallGetCoacheeProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
         UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
@@ -139,8 +139,8 @@ class UserServiceTest {
         userServiceSpy.getCoacheeProfileDto(userId);
 
         // THEN
-        Mockito.verify(userMapperMock).toCoacheeProfileDto(user);
-    }*/
+        Mockito.verify(userMapperMock).toCoacheeProfileDtoWithoutRole(user);
+    }
 
     @Test
     void givenCoachUserId_whenCallGetCoachProfileDto_thenToCoachProfileDtoFromUserMapperIsCalled() {
@@ -161,7 +161,7 @@ class UserServiceTest {
         // THEN
         Mockito.verify(userMapperMock).toCoachProfileDto(user);
     }
-    /*@Test
+    @Test
     void givenUserIdThatBelongsToAUserWhoHasNullCoachInformation_whenCallGetCoachProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
         UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
@@ -177,8 +177,8 @@ class UserServiceTest {
         userServiceSpy.getCoachProfileDto(userId);
 
         // THEN
-        Mockito.verify(userMapperMock).toCoacheeProfileDto(user);
-    }*/
+        Mockito.verify(userMapperMock).toCoacheeProfileDtoWithoutRole(user);
+    }
 
     @Test
     void becomeCoach() {

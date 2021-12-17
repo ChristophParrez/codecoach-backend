@@ -80,12 +80,12 @@ public class UserService implements AccountService {
 
     public UserDto getCoacheeProfileDto(String userId) {
 
-        if (authenticationService.getEmailFromAuthentication().equals("anonymousUser")) {
+        if ("anonymousUser".equals(authenticationService.getEmailFromAuthentication())) {
             return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
         }
 
         if (authenticationService.hasRole("ADMIN")
-                || authenticationService.getAuthenticationIdFromDb().equals(userId)) {
+                || userId.equals(authenticationService.getAuthenticationIdFromDb())) {
             return userMapper.toCoacheeProfileDto(getUser(userId));
         }
         return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
