@@ -4,17 +4,13 @@ import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
-import be.codecoach.exceptions.CoachingTopicException;
-import be.codecoach.exceptions.TopicException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.exceptions.WrongRoleException;
-import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.jwt.JwtGenerator;
 import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
-import be.codecoach.services.mappers.CoachingTopicMapper;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
@@ -40,24 +36,20 @@ public class UserService implements AccountService {
     private final MemberValidator memberValidator;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CoachingTopicMapper coachingTopicMapper;
-    private final CoachingTopicRepository coachingTopicRepository;
-    private final TopicService topicService;
+    private final CoachingTopicService coachingTopicService;
     private final CoachInformationService coachInformationService;
     private final AuthenticationService authenticationService;
     private final JwtGenerator jwtGenerator;
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicMapper coachingTopicMapper, CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachInformationService coachInformationService, AuthenticationService authenticationService, JwtGenerator jwtGenerator) {
+    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicService coachingTopicService, CoachInformationService coachInformationService, AuthenticationService authenticationService, JwtGenerator jwtGenerator) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.coachingTopicMapper = coachingTopicMapper;
-        this.coachingTopicRepository = coachingTopicRepository;
-        this.topicService = topicService;
+        this.coachingTopicService = coachingTopicService;
         this.coachInformationService = coachInformationService;
         this.authenticationService = authenticationService;
         this.jwtGenerator = jwtGenerator;
@@ -162,14 +154,11 @@ public class UserService implements AccountService {
 
     public void updateCoachingTopics(String userId, List<CoachingTopicDto> coachingTopicDtos) {
         authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
-        assertNotTooManyTopicsAreProvided(coachingTopicDtos);
-        assertTopicsAreUnique(coachingTopicDtos);
+        coachingTopicService.assertInputIsValid(coachingTopicDtos);
 
         List<CoachingTopic> coachingTopics = getCoachingTopicsForUser(userId);
-        deleteCoachingTopics(coachingTopics);
-        addCoachingTopics(coachingTopicDtos, coachingTopics);
 
-
+        coachingTopicService.updateTopics(coachingTopicDtos, coachingTopics);
     }
 
     private void assertUserInfoIsValid(UserDto userDto) {
@@ -202,47 +191,8 @@ public class UserService implements AccountService {
         }
     }
 
-    private void assertNotTooManyTopicsAreProvided(List<CoachingTopicDto> coachingTopicDtos) {
-        if(coachingTopicDtos.size() > 2) {
-            throw new TopicException("Max 2 topics allowed");
-        }
-    }
-
-    private void assertTopicsAreUnique(List<CoachingTopicDto> coachingTopicDtos) {
-        if(coachingTopicDtos.size() == 2) {
-            if(coachingTopicDtos.get(0).getTopic().getName().equals(coachingTopicDtos.get(1).getTopic().getName())) {
-                throw new TopicException("A coach cannot teach the same topic twice");
-            }
-        }
-    }
-
     private List<CoachingTopic> getCoachingTopicsForUser(String userId) {
         User user = getUser(userId);
         return user.getCoachInformation().getCoachingTopics();
-    }
-
-    private void deleteCoachingTopics(List<CoachingTopic> coachingTopics) {
-
-        for(CoachingTopic coachingTopic : coachingTopics) {
-            deleteCoachingTopic(coachingTopic.getCoachingTopicId());
-        }
-    }
-
-    private void deleteCoachingTopic(String coachingTopicId) {
-        CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
-                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
-        coachingTopicRepository.delete(coachingTopic);
-    }
-
-    private void addCoachingTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
-        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
-            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
-                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
-
-            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
-            coachingTopic.setExperience(coachingTopicDto.getExperience());
-            coachingTopic.setTopic(topic);
-            coachingTopics.add(coachingTopic);
-        }
     }
 }

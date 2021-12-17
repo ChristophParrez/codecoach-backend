@@ -6,12 +6,9 @@ import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
 import be.codecoach.exceptions.UserNotFoundException;
-import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.jwt.JwtGenerator;
-import be.codecoach.security.authentication.user.api.AccountService;
-import be.codecoach.services.mappers.CoachingTopicMapper;
 import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
@@ -19,8 +16,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -39,12 +34,10 @@ class UserServiceTest {
     private MemberValidator memberValidatorMock;
     private RoleRepository roleRepositoryMock;
     private PasswordEncoder passwordEncoderMock;
-    private CoachingTopicMapper coachingTopicMapperMock;
-    private CoachingTopicRepository coachingTopicRepositoryMock;
+    private CoachingTopicService coachingTopicServiceMock;
     private TopicService topicServiceMock;
     private CoachInformationService coachInformationServiceMock;
     private AuthenticationService authenticationServiceMock;
-    private AccountService accountServiceMock;
     private JwtGenerator jwtGeneratorMock;
 
     @BeforeEach
@@ -54,16 +47,15 @@ class UserServiceTest {
         memberValidatorMock = Mockito.mock(MemberValidator.class);
         roleRepositoryMock = Mockito.mock(RoleRepository.class);
         passwordEncoderMock = Mockito.mock(PasswordEncoder.class);
-        coachingTopicMapperMock = Mockito.mock(CoachingTopicMapper.class);
-        coachingTopicRepositoryMock = Mockito.mock(CoachingTopicRepository.class);
+        coachingTopicServiceMock = Mockito.mock(CoachingTopicService.class);
         topicServiceMock = Mockito.mock(TopicService.class);
         coachInformationServiceMock = Mockito.mock(CoachInformationService.class);
         roleMapperMock = Mockito.mock(RoleMapper.class);
         authenticationServiceMock = Mockito.mock(AuthenticationService.class);
         jwtGeneratorMock = Mockito.mock(JwtGenerator.class);
-        userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
-                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock,
+                memberValidatorMock, roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+                coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
     }
 
     @Test
@@ -140,8 +132,8 @@ class UserServiceTest {
     void givenCoacheeUserId_whenCallGetCoacheeProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
         UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
-                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+                roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+                coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
         User user = UserTestBuilder.anUser().build();
@@ -159,9 +151,9 @@ class UserServiceTest {
     @Test
     void givenCoachUserId_whenCallGetCoachProfileDto_thenToCoachProfileDtoFromUserMapperIsCalled() {
         // GIVEN
-        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
-                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock,
+                memberValidatorMock, roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+                coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
         User user = UserTestBuilder.anUser().build();
@@ -179,8 +171,8 @@ class UserServiceTest {
     void givenUserIdThatBelongsToAUserWhoHasNullCoachInformation_whenCallGetCoachProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
         UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicMapperMock, coachingTopicRepositoryMock,
-                topicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+                roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+                coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
         User user = UserTestBuilder.anEmptyUser().build();
