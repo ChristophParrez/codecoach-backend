@@ -29,13 +29,11 @@ class UserServiceTest {
 
     private UserService userService;
     private UserMapper userMapperMock;
-    private RoleMapper roleMapperMock;
+    private RoleService roleServiceMock;
     private UserRepository userRepositoryMock;
     private MemberValidator memberValidatorMock;
-    private RoleRepository roleRepositoryMock;
     private PasswordEncoder passwordEncoderMock;
     private CoachingTopicService coachingTopicServiceMock;
-    private TopicService topicServiceMock;
     private CoachInformationService coachInformationServiceMock;
     private AuthenticationService authenticationServiceMock;
     private JwtGenerator jwtGeneratorMock;
@@ -45,16 +43,14 @@ class UserServiceTest {
         userMapperMock = Mockito.mock(UserMapper.class);
         userRepositoryMock = Mockito.mock(UserRepository.class);
         memberValidatorMock = Mockito.mock(MemberValidator.class);
-        roleRepositoryMock = Mockito.mock(RoleRepository.class);
+        roleServiceMock = Mockito.mock(RoleService.class);
         passwordEncoderMock = Mockito.mock(PasswordEncoder.class);
         coachingTopicServiceMock = Mockito.mock(CoachingTopicService.class);
-        topicServiceMock = Mockito.mock(TopicService.class);
         coachInformationServiceMock = Mockito.mock(CoachInformationService.class);
-        roleMapperMock = Mockito.mock(RoleMapper.class);
         authenticationServiceMock = Mockito.mock(AuthenticationService.class);
         jwtGeneratorMock = Mockito.mock(JwtGenerator.class);
-        userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock,
-                memberValidatorMock, roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+        userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock,
+                memberValidatorMock, passwordEncoderMock, coachingTopicServiceMock,
                 coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
     }
 
@@ -68,7 +64,7 @@ class UserServiceTest {
         // WHEN
         doNothing().when(memberValidatorMock).validate(userDto);
 
-        when(roleRepositoryMock.findByRole(RoleEnum.COACHEE)).thenReturn(role);
+        when(roleServiceMock.findByRole(RoleEnum.COACHEE)).thenReturn(role);
         when(userMapperMock.toEntity(userDto, role)).thenReturn(user);
         when(passwordEncoderMock.encode(any())).thenReturn(user.getPassword());
 
@@ -131,8 +127,8 @@ class UserServiceTest {
     @Test
     void givenCoacheeUserId_whenCallGetCoacheeProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
-        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+        UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
+                passwordEncoderMock, coachingTopicServiceMock,
                 coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
@@ -151,8 +147,8 @@ class UserServiceTest {
     @Test
     void givenCoachUserId_whenCallGetCoachProfileDto_thenToCoachProfileDtoFromUserMapperIsCalled() {
         // GIVEN
-        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock,
-                memberValidatorMock, roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
+        UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock,
+                memberValidatorMock, passwordEncoderMock, coachingTopicServiceMock,
                 coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
@@ -170,9 +166,8 @@ class UserServiceTest {
     @Test
     void givenUserIdThatBelongsToAUserWhoHasNullCoachInformation_whenCallGetCoachProfileDto_thenToCoacheeProfileDtoFromUserMapperIsCalled() {
         // GIVEN
-        UserService userService = new UserService(userMapperMock, roleMapperMock, userRepositoryMock, memberValidatorMock,
-                roleRepositoryMock, passwordEncoderMock, coachingTopicServiceMock,
-                coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
+                passwordEncoderMock, coachingTopicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
         UserService userServiceSpy = Mockito.spy(userService);
 
         User user = UserTestBuilder.anEmptyUser().build();

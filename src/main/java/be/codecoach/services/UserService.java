@@ -6,12 +6,10 @@ import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.exceptions.WrongRoleException;
-import be.codecoach.repositories.RoleRepository;
 import be.codecoach.repositories.UserRepository;
 import be.codecoach.security.authentication.jwt.JwtGenerator;
 import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
-import be.codecoach.services.mappers.RoleMapper;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +29,9 @@ public class UserService implements AccountService {
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot change someone else's profile!";
 
     private final UserMapper userMapper;
-    private final RoleMapper roleMapper;
+    private final RoleService roleService;
     private final UserRepository userRepository;
     private final MemberValidator memberValidator;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final CoachingTopicService coachingTopicService;
     private final CoachInformationService coachInformationService;
@@ -42,12 +39,11 @@ public class UserService implements AccountService {
     private final JwtGenerator jwtGenerator;
 
     @Autowired
-    public UserService(UserMapper userMapper, RoleMapper roleMapper, UserRepository userRepository, MemberValidator memberValidator, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CoachingTopicService coachingTopicService, CoachInformationService coachInformationService, AuthenticationService authenticationService, JwtGenerator jwtGenerator) {
+    public UserService(UserMapper userMapper, RoleService roleService, UserRepository userRepository, MemberValidator memberValidator, PasswordEncoder passwordEncoder, CoachingTopicService coachingTopicService, CoachInformationService coachInformationService, AuthenticationService authenticationService, JwtGenerator jwtGenerator) {
         this.userMapper = userMapper;
-        this.roleMapper = roleMapper;
+        this.roleService = roleService;
         this.userRepository = userRepository;
         this.memberValidator = memberValidator;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.coachingTopicService = coachingTopicService;
         this.coachInformationService = coachInformationService;
@@ -63,7 +59,7 @@ public class UserService implements AccountService {
     @Override
     public Account createAccount(UserDto userDto) {
         assertUserInfoIsValid(userDto);
-        Role role = roleRepository.findByRole(RoleEnum.COACHEE);
+        Role role = roleService.findByRole(RoleEnum.COACHEE);
         User userToBeSaved = userMapper.toEntity(userDto, role);
         userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
         return userRepository.save(userToBeSaved);
@@ -108,7 +104,7 @@ public class UserService implements AccountService {
         if (authenticationService.hasRole("COACHEE")
                 && !authenticationService.hasRole("COACH")) {
             authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
-            user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
+            user.getRoles().add(roleService.findByRole(RoleEnum.COACH));
 
             user.setCoachInformation(coachInformationService.save(new CoachInformation()));
 
@@ -124,7 +120,7 @@ public class UserService implements AccountService {
 
         if (authenticationService.hasRole("ADMIN")) {
             if (userDto.getRoles() != null) {
-                user.setRoles(roleMapper.toEntity(userDto.getRoles()));
+                user.setRoles(roleService.mapToEntity(userDto.getRoles()));
             }
             setRegularUserFields(userDto, user);
         } else if (authenticationService.hasRole("COACHEE")) {
