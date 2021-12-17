@@ -49,7 +49,7 @@ public class SessionService {
 
     public void requestSession(SessionDto sessionDto) {
         String userId = sessionDto.getCoacheeId();
-        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
 
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());

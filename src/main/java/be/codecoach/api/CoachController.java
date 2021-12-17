@@ -40,9 +40,9 @@ public class CoachController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")
-    public void addCoachingTopic(@PathVariable String userId,
-                                 @RequestBody CoachingTopicDto coachingTopicDto) {
-        userService.addCoachingTopic(userId, coachingTopicDto);
+    public void addCoachingTopics(@PathVariable String userId,
+                                 @RequestBody List<CoachingTopicDto> coachingTopicDtos) {
+        userService.addCoachingTopics(userId, coachingTopicDtos);
     }
 
     @DeleteMapping(path = "/{userId}/topics/{coachingTopicId}")

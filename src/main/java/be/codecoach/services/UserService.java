@@ -96,12 +96,12 @@ public class UserService implements AccountService {
 
     public UserDto getCoacheeProfileDto(String userId) {
 
-        if(authenticationService.getEmailFromAuthentication().equals("anonymousUser")) {
+        if (authenticationService.getEmailFromAuthentication().equals("anonymousUser")) {
             return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
         }
 
-        if(authenticationService.hasRole("ADMIN")
-            || authenticationService.getAuthenticationIdFromDb().equals(userId)){
+        if (authenticationService.hasRole("ADMIN")
+                || authenticationService.getAuthenticationIdFromDb().equals(userId)) {
             return userMapper.toCoacheeProfileDto(getUser(userId));
         }
         return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
@@ -119,7 +119,7 @@ public class UserService implements AccountService {
 
         if (authenticationService.hasRole("COACHEE")
                 && !authenticationService.hasRole("COACH")) {
-            authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
+            authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
 
             CoachInformation coachInformation = new CoachInformation();
@@ -142,37 +142,42 @@ public class UserService implements AccountService {
             }
             setRegularUserFields(userDto, user);
         } else if (authenticationService.hasRole("COACHEE")) {
-            authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
+            authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
             setRegularUserFields(userDto, user);
         }
     }
 
-    public void addCoachingTopic(String userId, CoachingTopicDto coachingTopicDto) {
-        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
-        Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
-                .orElseThrow(() -> new TopicException("Topic not found"));
+    public void addCoachingTopics(String userId, List<CoachingTopicDto> coachingTopicDtos) {
+
+        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
+
         List<CoachingTopic> coachingTopics = user.getCoachInformation().getCoachingTopics();
 
-        if (coachingTopics.size() >= 2) {
-            throw new TopicException("Max 2 topics allowed");
-        }
+        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
+            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
+                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
 
-        CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
-        coachingTopic.setExperience(coachingTopicDto.getExperience());
-        coachingTopic.setTopic(topic);
-        coachingTopics.add(coachingTopic);
+            if(coachingTopics.size() >= 2) {
+                throw new TopicException("Max 2 topics allowed");
+            }
+
+            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
+            coachingTopic.setExperience(coachingTopicDto.getExperience());
+            coachingTopic.setTopic(topic);
+            coachingTopics.add(coachingTopic);
+        }
     }
 
     public void deleteCoachingTopic(String userId, String coachingTopicId) {
-        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
         CoachingTopic coachingTopic = coachingTopicRepository.findById(coachingTopicId)
                 .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
         coachingTopicRepository.delete(coachingTopic);
     }
 
     public void updateCoach(String userId, UserDto userDto) {
-        authenticationService.assertUserIsChangingOwnProfile(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
         setCoachFields(userDto, user);
     }
@@ -210,7 +215,7 @@ public class UserService implements AccountService {
     }
 
     public List<UserDto> getAllUsers() {
-        if(authenticationService.hasRole("ADMIN")) {
+        if (authenticationService.hasRole("ADMIN")) {
             return userMapper.toCoacheeProfileDto(userRepository.findAll());
         }
         throw new WrongRoleException("No go");

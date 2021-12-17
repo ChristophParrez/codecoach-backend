@@ -15,8 +15,8 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public void assertUserIsChangingOwnProfile(String userId, String message) {
-        if (!userId.equals(getAuthenticationIdFromDb())) {
+    public void assertUserIsChangingOwnProfileOrIsAdmin(String userId, String message) {
+        if (!userId.equals(getAuthenticationIdFromDb()) && !hasRole("ADMIN")) {
             throw new ForbiddenAccessException(message);
         }
     }
