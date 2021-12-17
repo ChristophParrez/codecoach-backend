@@ -118,9 +118,7 @@ public class UserService implements AccountService {
             authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
             user.getRoles().add(roleRepository.findByRole(RoleEnum.COACH));
 
-            CoachInformation coachInformation = new CoachInformation();
-            CoachInformation savedCoachInformation = coachInformationService.save(coachInformation);
-            user.setCoachInformation(savedCoachInformation);
+            user.setCoachInformation(coachInformationService.save(new CoachInformation()));
 
             String token = jwtGenerator.generateToken(user);
 
