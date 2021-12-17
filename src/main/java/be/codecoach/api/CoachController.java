@@ -58,8 +58,6 @@ public class CoachController {
         return userService.getAllCoaches();
     }
 
-
-    //might be usefull for story 37
     /*@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}/topics")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('COACH', 'ADMIN')")

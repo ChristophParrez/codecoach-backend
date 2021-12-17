@@ -29,4 +29,11 @@ public class TopicService {
     public List<TopicDto> getAllTopics() {
         return topicMapper.toDto(topicRepository.findAll());
     }
+
+    public void createTopic(TopicDto topicDto) {
+        if(topicRepository.existsById(topicDto.getName())) {
+            throw new IllegalArgumentException("Topic already saved");
+        }
+        topicRepository.save(topicMapper.toEntity(topicDto));
+    }
 }
