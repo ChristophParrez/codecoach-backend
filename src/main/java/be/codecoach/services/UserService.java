@@ -56,6 +56,7 @@ public class UserService implements AccountService {
 
     @Override
     public Optional<? extends Account> findByEmail(String email) {
+        logger.info("Looking up User with Email address: " + email);
         return userRepository.findByEmail(email);
     }
 
