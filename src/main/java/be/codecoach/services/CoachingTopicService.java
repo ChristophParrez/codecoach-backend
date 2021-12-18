@@ -10,6 +10,7 @@ import be.codecoach.services.mappers.CoachingTopicMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,17 +33,39 @@ public class CoachingTopicService {
         assertTopicsAreUnique(coachingTopicDtos);
     }
 
-    public void updateTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
-        deleteCoachingTopics(coachingTopics);
-        addCoachingTopics(coachingTopicDtos, coachingTopics);
+    public List<CoachingTopic> updateTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
+        deleteCoachingTopicsFromDb(coachingTopics);
+        return addCoachingTopics(coachingTopicDtos);
     }
 
     private Optional<CoachingTopic> findById(String coachingTopicId) {
         return coachingTopicRepository.findById(coachingTopicId);
     }
 
-    private void delete(CoachingTopic coachingTopic) {
+    public void deleteCoachingTopicsFromDb(List<CoachingTopic> coachingTopics) {
+        coachingTopics.stream().map(CoachingTopic::getCoachingTopicId).forEach(this::deleteCoachingTopic);
+    }
+
+    private void deleteCoachingTopic(String coachingTopicId) {
+        CoachingTopic coachingTopic = findById(coachingTopicId)
+                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
         coachingTopicRepository.delete(coachingTopic);
+    }
+
+    public List<CoachingTopic> addCoachingTopics(List<CoachingTopicDto> coachingTopicDtos) {
+        List<CoachingTopic> coachingTopics = new ArrayList<>();
+        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
+            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
+                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
+
+            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
+            coachingTopic.setExperience(coachingTopicDto.getExperience());
+            coachingTopic.setTopic(topic);
+            coachingTopicRepository.save(coachingTopic);
+            coachingTopics.add(coachingTopic);
+        }
+
+        return coachingTopics;
     }
 
     private void assertNotTooManyTopicsAreProvided(List<CoachingTopicDto> coachingTopicDtos) {
@@ -56,31 +79,6 @@ public class CoachingTopicService {
             if(coachingTopicDtos.get(0).getTopic().getName().equals(coachingTopicDtos.get(1).getTopic().getName())) {
                 throw new TopicException("A coach cannot teach the same topic twice");
             }
-        }
-    }
-
-    private void deleteCoachingTopics(List<CoachingTopic> coachingTopics) {
-
-        for(CoachingTopic coachingTopic : coachingTopics) {
-            deleteCoachingTopic(coachingTopic.getCoachingTopicId());
-        }
-    }
-
-    private void deleteCoachingTopic(String coachingTopicId) {
-        CoachingTopic coachingTopic = findById(coachingTopicId)
-                .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
-        delete(coachingTopic);
-    }
-
-    private void addCoachingTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
-        for(CoachingTopicDto coachingTopicDto : coachingTopicDtos) {
-            Topic topic = topicService.findById(coachingTopicDto.getTopic().getName())
-                    .orElseThrow(() -> new TopicException("Topic " + coachingTopicDto.getTopic().getName() + " was not found"));
-
-            CoachingTopic coachingTopic = coachingTopicMapper.toEntity(coachingTopicDto);
-            coachingTopic.setExperience(coachingTopicDto.getExperience());
-            coachingTopic.setTopic(topic);
-            coachingTopics.add(coachingTopic);
         }
     }
 }

@@ -46,7 +46,7 @@ public class CoachInformation {
     @Column(name = "availability")
     private String availability;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "coaching_topics")
     private List<CoachingTopic> coachingTopics;
 

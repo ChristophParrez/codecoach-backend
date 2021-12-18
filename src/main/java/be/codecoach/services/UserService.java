@@ -12,6 +12,8 @@ import be.codecoach.security.authentication.user.api.Account;
 import be.codecoach.security.authentication.user.api.AccountService;
 import be.codecoach.services.mappers.UserMapper;
 import be.codecoach.services.validators.MemberValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class UserService implements AccountService {
 
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot change someone else's profile!";
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserMapper userMapper;
     private final RoleService roleService;
@@ -154,7 +157,12 @@ public class UserService implements AccountService {
 
         List<CoachingTopic> coachingTopics = getCoachingTopicsForUser(userId);
 
-        coachingTopicService.updateTopics(coachingTopicDtos, coachingTopics);
+        coachingTopicService.deleteCoachingTopicsFromDb(coachingTopics);
+
+        coachingTopics = coachingTopicService.addCoachingTopics(coachingTopicDtos);
+
+
+        getUser(userId).getCoachInformation().setCoachingTopics(coachingTopics);
     }
 
     private void assertUserInfoIsValid(UserDto userDto) {
