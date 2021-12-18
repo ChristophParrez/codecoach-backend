@@ -123,7 +123,7 @@ public class UserService implements AccountService {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleService.mapToEntity(userDto.getRoles()));
             }
-            if(userDto.getUserId().equals(authenticationService.getAuthenticationIdFromDb())) {
+            if(userId.equals(authenticationService.getAuthenticationIdFromDb())) {
                 updateToken(user, response);
             }
             setRegularUserFields(userDto, user);
