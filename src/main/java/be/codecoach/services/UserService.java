@@ -112,19 +112,17 @@ public class UserService implements AccountService {
 
             user.setCoachInformation(coachInformationService.save(new CoachInformation()));
 
-            String token = jwtGenerator.generateToken(user);
-
-            response.addHeader("Authorization", "Bearer " + token);
-            response.addHeader("Access-Control-Expose-Headers", "Authorization");
+            updateToken(user, response);
         }
     }
 
-    public void updateUser(String userId, UserDto userDto) {
+    public void updateUser(String userId, UserDto userDto, HttpServletResponse response) {
         User user = getUser(userId);
 
         if (authenticationService.hasRole("ADMIN")) {
             if (userDto.getRoles() != null) {
                 user.setRoles(roleService.mapToEntity(userDto.getRoles()));
+                updateToken(user, response);
             }
             setRegularUserFields(userDto, user);
         } else if (authenticationService.hasRole("COACHEE")) {
@@ -199,5 +197,12 @@ public class UserService implements AccountService {
     private List<CoachingTopic> getCoachingTopicsForUser(String userId) {
         User user = getUser(userId);
         return user.getCoachInformation().getCoachingTopics();
+    }
+
+    private void updateToken(User user, HttpServletResponse response) {
+        String token = jwtGenerator.generateToken(user);
+
+        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
     }
 }

@@ -38,9 +38,10 @@ public class UserController {
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable String userId,
-                           @RequestBody UserDto userDto
+                           @RequestBody UserDto userDto,
+                           HttpServletResponse response
     ) {
-        userService.updateUser(userId, userDto);
+        userService.updateUser(userId, userDto, response);
     }
 
     @PatchMapping(path = "/{userId}")
