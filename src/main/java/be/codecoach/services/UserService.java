@@ -2,6 +2,7 @@ package be.codecoach.services;
 
 import be.codecoach.api.dtos.CoachInformationDto;
 import be.codecoach.api.dtos.CoachingTopicDto;
+import be.codecoach.api.dtos.RoleDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
 import be.codecoach.exceptions.UserNotFoundException;
@@ -20,8 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,7 +124,11 @@ public class UserService implements AccountService {
 
         if (authenticationService.hasRole("ADMIN")) {
             if (userDto.getRoles() != null) {
-                user.setRoles(roleService.mapToEntity(userDto.getRoles()));
+                Set<Role> roles = new HashSet<>();
+                for (RoleDto roleDto : userDto.getRoles()) {
+                    roles.add(roleService.findByRole(roleDto.getRole()));
+                }
+                user.setRoles(roles);
             }
             if(userId.equals(authenticationService.getAuthenticationIdFromDb())) {
                 updateToken(user, response);
