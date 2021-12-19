@@ -6,6 +6,8 @@ import be.codecoach.exceptions.InvalidPasswordException;
 import be.codecoach.exceptions.NoInputException;
 import be.codecoach.exceptions.NotUniqueException;
 import be.codecoach.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class MemberValidator {
 
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(MemberValidator.class);
 
     @Autowired
     public MemberValidator(UserRepository userRepository) {
@@ -27,6 +30,7 @@ public class MemberValidator {
     }
 
     private void assertFieldsNotNull(UserDto userDto) {
+        logger.info("Validating account info for " + userDto.getEmail());
         if (inputEmpty(userDto.getFirstName())) {
             throw new NoInputException("First Name can not be null");
         }
@@ -42,7 +46,7 @@ public class MemberValidator {
         if (inputEmpty(userDto.getCompanyName())) {
             throw new NoInputException("Company/team can not be null");
         }
-
+        logger.info("Account info for user " + userDto.getEmail() + " is valid");
     }
 
     private boolean inputEmpty(String input) {

@@ -75,25 +75,30 @@ public class UserService implements AccountService {
 
     @Override
     public boolean existsByEmail(String email) {
+        logger.info("Checking if email address " + email + " is registered");
         return userRepository.existsByEmail(email);
     }
 
     public User getUser(String userId) {
+        logger.info("Looking up a user by id " + userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             throw new UserNotFoundException("No such user exists");
         }
+        logger.info("User with id " + userId + " found");
         return user.get();
     }
 
     public UserDto getCoacheeProfileDto(String userId) {
 
         if (authenticationService.getEmailFromAuthentication() == null || authenticationService.getEmailFromAuthentication().equals("anonymousUser")) {
+            logger.info("User is unauthenticated");
             return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
         }
 
         if (authenticationService.hasRole("ADMIN")
                 || authenticationService.getAuthenticationIdFromDb().equals(userId)) {
+            logger.info("User is ADMIN or accessing his or her own profile");
             return userMapper.toCoacheeProfileDto(getUser(userId));
         }
         return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
@@ -101,6 +106,7 @@ public class UserService implements AccountService {
 
     public UserDto getCoachProfileDto(String userId) {
         if (getUser(userId).getCoachInformation() == null) {
+            logger.info("User with id " + userId + " is not a coach. Returning coachee profile");
             return getCoacheeProfileDto(userId);
         }
         return userMapper.toCoachProfileDto(getUser(userId));
@@ -115,8 +121,8 @@ public class UserService implements AccountService {
             user.getRoles().add(roleService.findByRole(RoleEnum.COACH));
 
             user.setCoachInformation(coachInformationService.save(new CoachInformation()));
-
             updateToken(user, response);
+            logger.info("COACH role added for user " + userId);
         }
     }
 
