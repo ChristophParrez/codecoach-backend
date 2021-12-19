@@ -92,21 +92,22 @@ public class UserService implements AccountService {
     public UserDto getCoacheeProfileDto(String userId) {
 
         if (authenticationService.getEmailFromAuthentication() == null || authenticationService.getEmailFromAuthentication().equals("anonymousUser")) {
-            logger.info("User is unauthenticated");
+            logger.info("User is unauthenticated. Returning COACHEE profile without role.");
             return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
         }
 
         if (authenticationService.hasRole("ADMIN")
                 || authenticationService.getAuthenticationIdFromDb().equals(userId)) {
-            logger.info("User is ADMIN or accessing his or her own profile");
+            logger.info("User is ADMIN or accessing own profile. Returning COACHEE profile with role.");
             return userMapper.toCoacheeProfileDto(getUser(userId));
         }
+        logger.info("User is not ADMIN nor accessing own profile. Returning COACHEE profile without role");
         return userMapper.toCoacheeProfileDtoWithoutRole(getUser(userId));
     }
 
     public UserDto getCoachProfileDto(String userId) {
         if (getUser(userId).getCoachInformation() == null) {
-            logger.info("User with id " + userId + " is not a coach. Returning coachee profile");
+            logger.info("User with id " + userId + " is not a COACH. Returning COACHEE profile");
             return getCoacheeProfileDto(userId);
         }
         return userMapper.toCoachProfileDto(getUser(userId));
@@ -141,9 +142,11 @@ public class UserService implements AccountService {
                 updateToken(user, response);
             }
             setRegularUserFields(userDto, user);
+            logger.info("Profile updated by ADMIN");
         } else if (authenticationService.hasRole("COACHEE")) {
             authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
             setRegularUserFields(userDto, user);
+            logger.info("Profile updated by user " + userId);
         }
     }
 
@@ -151,6 +154,7 @@ public class UserService implements AccountService {
         authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
         setCoachFields(userDto, user);
+        logger.info("COACH profile updated for user " + userId);
     }
 
     public List<UserDto> getAllCoaches() {
@@ -161,6 +165,7 @@ public class UserService implements AccountService {
 
     public List<UserDto> getAllUsers() {
         if (authenticationService.hasRole("ADMIN")) {
+            logger.info("Returning all user profiles requested by ADMIN");
             return userMapper.toCoacheeProfileDto(userRepository.findAll());
         }
         throw new WrongRoleException("No go");
