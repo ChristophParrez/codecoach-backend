@@ -23,7 +23,6 @@ public class SessionService {
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot update sessions for somebody else";
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final SessionRepository sessionRepository;
     private final SessionValidator sessionValidator;
     private final SessionMapper sessionMapper;
@@ -31,12 +30,10 @@ public class SessionService {
     private final AuthenticationService authenticationService;
     private final FeedbackMapper feedbackMapper;
     private final FeedbackRepository feedbackRepository;
-    private final LocationRepository locationRepository;
 
     @Autowired
     public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.sessionRepository = sessionRepository;
         this.sessionValidator = sessionValidator;
         this.sessionMapper = sessionMapper;
@@ -44,37 +41,26 @@ public class SessionService {
         this.authenticationService = authenticationService;
         this.feedbackMapper = feedbackMapper;
         this.feedbackRepository = feedbackRepository;
-        this.locationRepository = locationRepository;
     }
 
     public void requestSession(SessionDto sessionDto) {
         authenticationService.assertUserHasRightsToPerformAction(sessionDto.getCoacheeId(), FORBIDDEN_ACCESS_MESSAGE);
 
-        /*From here until next comment, extract method? Maybe even add it to the assertSessionInfoIsValid*/
+        sessionValidator.validateRawInput(sessionDto);
+
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
+        sessionValidator.assertGivenIdsAreValid(coachInDatabase, coacheeInDatabase);
 
-        if (coachInDatabase.isEmpty()) {
-            throw new UserNotFoundException("No user was found with this coach id");
-        }
-        if (coacheeInDatabase.isEmpty()) {
-            throw new UserNotFoundException("No user was found with this coachee id");
-        }
-        if (!coachInDatabase.get().getRoles().contains(roleRepository.findByRole(RoleEnum.COACH))) {
-            throw new WrongRoleException("This user is not a coach. The user can't receive session requests");
-        }
+        Location location = sessionValidator.validateLocationMatchesGivenPossibilities(sessionDto.getLocation().getName());
+        Status status = sessionValidator.getStatusFromRepository("REQUESTED");
 
-        /* */
-
-        sessionValidator.validate(sessionDto);
-
-        Location location = locationRepository.findById(sessionDto.getLocation().getName())
-                .orElseThrow( () -> new InvalidInputException("This location is not available."));
-
-        Status status = statusRepository.getById("REQUESTED");
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
+
         sessionRepository.save(sessionToBeSaved);
     }
+
+
 
     public List<SessionDto> getSessions(String role) {
         String idFromDatabase = authenticationService.getAuthenticationIdFromDb();

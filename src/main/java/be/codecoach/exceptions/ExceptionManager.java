@@ -109,4 +109,10 @@ public class ExceptionManager {
         logger.error(exception.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
+
+    @ExceptionHandler(DatabaseException.class)
+    protected void databaseException(DatabaseException exception, HttpServletResponse response) throws Exception {
+        logger.error(exception.getMessage());
+        response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
+    }
 }
