@@ -19,7 +19,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public void assertUserIsChangingOwnProfileOrIsAdmin(String userId, String message) {
+    public void assertUserHasRightsToPerformAction(String userId, String message) {
         if (!userId.equals(getAuthenticationIdFromDb()) && !hasRole("ADMIN")) {
             throw new ForbiddenAccessException(message);
         }

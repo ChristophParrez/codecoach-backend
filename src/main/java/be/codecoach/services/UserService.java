@@ -118,7 +118,7 @@ public class UserService implements AccountService {
 
         if (authenticationService.hasRole("COACHEE")
                 && !authenticationService.hasRole("COACH")) {
-            authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+            authenticationService.assertUserHasRightsToPerformAction(userId, FORBIDDEN_ACCESS_MESSAGE);
             user.getRoles().add(roleService.findByRole(RoleEnum.COACH));
 
             user.setCoachInformation(coachInformationService.save(new CoachInformation()));
@@ -144,14 +144,14 @@ public class UserService implements AccountService {
             setRegularUserFields(userDto, user);
             logger.info("Profile updated by ADMIN");
         } else if (authenticationService.hasRole("COACHEE")) {
-            authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+            authenticationService.assertUserHasRightsToPerformAction(userId, FORBIDDEN_ACCESS_MESSAGE);
             setRegularUserFields(userDto, user);
             logger.info("Profile updated by user " + userId);
         }
     }
 
     public void updateCoach(String userId, UserDto userDto) {
-        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserHasRightsToPerformAction(userId, FORBIDDEN_ACCESS_MESSAGE);
         User user = getUser(userId);
         setCoachFields(userDto, user);
         logger.info("COACH profile updated for user " + userId);
@@ -172,7 +172,7 @@ public class UserService implements AccountService {
     }
 
     public void updateCoachingTopics(String userId, List<CoachingTopicDto> coachingTopicDtos) {
-        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserHasRightsToPerformAction(userId, FORBIDDEN_ACCESS_MESSAGE);
         coachingTopicService.assertInputIsValid(coachingTopicDtos);
 
         List<CoachingTopic> coachingTopics = getCoachingTopicsForUser(userId);

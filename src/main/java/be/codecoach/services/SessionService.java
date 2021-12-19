@@ -48,9 +48,9 @@ public class SessionService {
     }
 
     public void requestSession(SessionDto sessionDto) {
-        String userId = sessionDto.getCoacheeId();
-        authenticationService.assertUserIsChangingOwnProfileOrIsAdmin(userId, FORBIDDEN_ACCESS_MESSAGE);
+        authenticationService.assertUserHasRightsToPerformAction(sessionDto.getCoacheeId(), FORBIDDEN_ACCESS_MESSAGE);
 
+        /*From here until next comment, extract method? Maybe even add it to the assertSessionInfoIsValid*/
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
 
@@ -64,11 +64,14 @@ public class SessionService {
             throw new WrongRoleException("This user is not a coach. The user can't receive session requests");
         }
 
-        assertSessionInfoIsValid(sessionDto);
+        /* */
 
-        Status status = statusRepository.getById("REQUESTED");
+        sessionValidator.validate(sessionDto);
+
         Location location = locationRepository.findById(sessionDto.getLocation().getName())
                 .orElseThrow( () -> new InvalidInputException("This location is not available."));
+
+        Status status = statusRepository.getById("REQUESTED");
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
         sessionRepository.save(sessionToBeSaved);
     }
@@ -90,10 +93,6 @@ public class SessionService {
         }
 
         return sessionMapper.toDto(sessionsToReturn);
-    }
-
-    private void assertSessionInfoIsValid(SessionDto sessionDto) {
-        sessionValidator.validate(sessionDto);
     }
 
     public void updateSessionStatus(String sessionId, String newStatus) {
