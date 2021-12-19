@@ -1,7 +1,5 @@
 SET SCHEMA 'runtime';
 
-ALTER TABLE coaching_topics RENAME COLUMN coaching_topics TO coach_info_id;
-
 INSERT INTO roles (role_id, role_name) values (0, 'COACHEE');
 INSERT INTO roles (role_id, role_name) values (1, 'COACH');
 INSERT INTO roles (role_id, role_name) values (2, 'ADMIN');

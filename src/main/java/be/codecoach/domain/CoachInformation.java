@@ -47,7 +47,7 @@ public class CoachInformation {
     private String availability;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "coaching_topics")
+    @JoinColumn(name = "coaching_info_id")
     private List<CoachingTopic> coachingTopics;
 
     public int getCoachXp() {
