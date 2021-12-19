@@ -23,7 +23,6 @@ public class SessionService {
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot update sessions for somebody else";
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final SessionRepository sessionRepository;
     private final SessionValidator sessionValidator;
     private final SessionMapper sessionMapper;
@@ -31,12 +30,10 @@ public class SessionService {
     private final AuthenticationService authenticationService;
     private final FeedbackMapper feedbackMapper;
     private final FeedbackRepository feedbackRepository;
-    private final LocationRepository locationRepository;
 
     @Autowired
     public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.sessionRepository = sessionRepository;
         this.sessionValidator = sessionValidator;
         this.sessionMapper = sessionMapper;
@@ -44,7 +41,6 @@ public class SessionService {
         this.authenticationService = authenticationService;
         this.feedbackMapper = feedbackMapper;
         this.feedbackRepository = feedbackRepository;
-        this.locationRepository = locationRepository;
     }
 
     public void requestSession(SessionDto sessionDto) {
