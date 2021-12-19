@@ -5,6 +5,7 @@ import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.api.dtos.RoleDto;
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.domain.*;
+import be.codecoach.exceptions.NotUniqueException;
 import be.codecoach.exceptions.UserNotFoundException;
 import be.codecoach.exceptions.WrongRoleException;
 import be.codecoach.repositories.UserRepository;
@@ -185,6 +186,9 @@ public class UserService implements AccountService {
             user.setLastName(userDto.getLastName());
         }
         if (userDto.getEmail() != null) {
+            if (userRepository.existsByEmail(userDto.getEmail()) && !user.getEmail().equals(userDto.getEmail())) {
+                throw new NotUniqueException("This email address is already used!");
+            }
             user.setEmail(userDto.getEmail());
         }
         if (userDto.getPicture() != null) {
