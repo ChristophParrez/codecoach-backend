@@ -50,31 +50,21 @@ public class SessionService {
     public void requestSession(SessionDto sessionDto) {
         authenticationService.assertUserHasRightsToPerformAction(sessionDto.getCoacheeId(), FORBIDDEN_ACCESS_MESSAGE);
 
-        /*From here until next comment, extract method? Maybe even add it to the assertSessionInfoIsValid*/
+        sessionValidator.validateRawInput(sessionDto);
+
         Optional<User> coachInDatabase = userRepository.findById(sessionDto.getCoachId());
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
+        sessionValidator.assertGivenIdsAreValid(coachInDatabase, coacheeInDatabase);
 
-        if (coachInDatabase.isEmpty()) {
-            throw new UserNotFoundException("No user was found with this coach id");
-        }
-        if (coacheeInDatabase.isEmpty()) {
-            throw new UserNotFoundException("No user was found with this coachee id");
-        }
-        if (!coachInDatabase.get().getRoles().contains(roleRepository.findByRole(RoleEnum.COACH))) {
-            throw new WrongRoleException("This user is not a coach. The user can't receive session requests");
-        }
+        Location location = sessionValidator.validateLocationMatchesGivenPossibilities(sessionDto.getLocation().getName());
+        Status status = sessionValidator.getStatusFromRepository("REQUESTED");
 
-        /* */
-
-        sessionValidator.validate(sessionDto);
-
-        Location location = locationRepository.findById(sessionDto.getLocation().getName())
-                .orElseThrow( () -> new InvalidInputException("This location is not available."));
-
-        Status status = statusRepository.getById("REQUESTED");
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
+
         sessionRepository.save(sessionToBeSaved);
     }
+
+
 
     public List<SessionDto> getSessions(String role) {
         String idFromDatabase = authenticationService.getAuthenticationIdFromDb();
