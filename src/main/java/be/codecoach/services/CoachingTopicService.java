@@ -7,6 +7,8 @@ import be.codecoach.exceptions.CoachingTopicException;
 import be.codecoach.exceptions.TopicException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.services.mappers.CoachingTopicMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class CoachingTopicService {
     private final CoachingTopicRepository coachingTopicRepository;
     private final TopicService topicService;
     private final CoachingTopicMapper coachingTopicMapper;
+    private static final Logger logger = LoggerFactory.getLogger(CoachingTopicService.class);
 
     public CoachingTopicService(CoachingTopicRepository coachingTopicRepository, TopicService topicService, CoachingTopicMapper coachingTopicMapper) {
         this.coachingTopicRepository = coachingTopicRepository;
@@ -29,13 +32,10 @@ public class CoachingTopicService {
     }
 
     public void assertInputIsValid(List<CoachingTopicDto> coachingTopicDtos) {
+        logger.info("Validating coaching topics input is valid");
         assertNotTooManyTopicsAreProvided(coachingTopicDtos);
         assertTopicsAreUnique(coachingTopicDtos);
-    }
-
-    public List<CoachingTopic> updateTopics(List<CoachingTopicDto> coachingTopicDtos, List<CoachingTopic> coachingTopics) {
-        deleteCoachingTopicsFromDb(coachingTopics);
-        return addCoachingTopics(coachingTopicDtos);
+        logger.info("Coaching topics input is valid");
     }
 
     private Optional<CoachingTopic> findById(String coachingTopicId) {
@@ -50,6 +50,7 @@ public class CoachingTopicService {
         CoachingTopic coachingTopic = findById(coachingTopicId)
                 .orElseThrow(() -> new CoachingTopicException("Coaching topic not found"));
         coachingTopicRepository.delete(coachingTopic);
+        logger.info("Coaching topic with Id " + coachingTopicId + " has been deleted");
     }
 
     public List<CoachingTopic> addCoachingTopics(List<CoachingTopicDto> coachingTopicDtos) {

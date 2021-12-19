@@ -138,7 +138,7 @@ public class UserService implements AccountService {
                 }
                 user.setRoles(roles);
             }
-            if(userId.equals(authenticationService.getAuthenticationIdFromDb())) {
+            if (userId.equals(authenticationService.getAuthenticationIdFromDb())) {
                 updateToken(user, response);
             }
             setRegularUserFields(userDto, user);
@@ -180,7 +180,6 @@ public class UserService implements AccountService {
         coachingTopicService.deleteCoachingTopicsFromDb(coachingTopics);
 
         coachingTopics = coachingTopicService.addCoachingTopics(coachingTopicDtos);
-
 
         getUser(userId).getCoachInformation().setCoachingTopics(coachingTopics);
     }
