@@ -4,6 +4,7 @@ import be.codecoach.api.dtos.CoachingTopicDto;
 import be.codecoach.domain.CoachingTopic;
 import be.codecoach.domain.Topic;
 import be.codecoach.exceptions.CoachingTopicException;
+import be.codecoach.exceptions.InvalidInputException;
 import be.codecoach.exceptions.TopicException;
 import be.codecoach.repositories.CoachingTopicRepository;
 import be.codecoach.services.mappers.CoachingTopicMapper;
@@ -35,6 +36,7 @@ public class CoachingTopicService {
         logger.info("Validating coaching topics input is valid");
         assertNotTooManyTopicsAreProvided(coachingTopicDtos);
         assertTopicsAreUnique(coachingTopicDtos);
+        assertExperienceIsWithinRange(coachingTopicDtos);
         logger.info("Coaching topics input is valid");
     }
 
@@ -80,6 +82,17 @@ public class CoachingTopicService {
             if(coachingTopicDtos.get(0).getTopic().getName().equals(coachingTopicDtos.get(1).getTopic().getName())) {
                 throw new TopicException("A coach cannot teach the same topic twice");
             }
+        }
+    }
+
+    private void assertExperienceIsWithinRange(List<CoachingTopicDto> coachingTopicDtos) {
+        int amountOfInvalidExperiences = (int) coachingTopicDtos.stream()
+                .map(CoachingTopicDto::getExperience)
+                .filter(experience -> experience < 1 || experience > 7)
+                .count();
+
+        if(amountOfInvalidExperiences > 0) {
+            throw new InvalidInputException("Experience has to be in a range between 1 and 7");
         }
     }
 }

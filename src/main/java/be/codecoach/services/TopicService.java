@@ -36,4 +36,14 @@ public class TopicService {
         }
         topicRepository.save(topicMapper.toEntity(topicDto));
     }
+
+    /*public void deleteTopic(TopicDto topicDto) {
+        if(!topicRepository.existsById(topicDto.getName())) {
+            throw new IllegalArgumentException("Topic already saved");
+        }
+        // get all coaches
+        // delete topic from all coaches
+
+        topicRepository.delete(topicMapper.toEntity(topicDto));
+    }*/
 }
