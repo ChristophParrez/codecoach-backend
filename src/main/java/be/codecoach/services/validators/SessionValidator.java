@@ -72,9 +72,6 @@ public class SessionValidator {
         if (inputEmpty(sessionDto.getSubject())) {
             throw new NoInputException("Subject must be provided");
         }
-        if (inputEmpty(sessionDto.getRemarks())) {
-            throw new NoInputException("Remarks must be provided");
-        }
     }
 
     private boolean inputEmpty(String input) {
