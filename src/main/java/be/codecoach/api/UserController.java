@@ -2,6 +2,7 @@ package be.codecoach.api;
 
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.services.UserService;
+import be.codecoach.twilio.SmsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,10 +17,12 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
 
+    private final SmsSender sms;
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(SmsSender sms, UserService userService) {
+        this.sms = sms;
         this.userService = userService;
     }
 
@@ -32,6 +35,7 @@ public class UserController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable String userId) {
+        sms.sendMessage();
         return userService.getCoacheeProfileDto(userId);
     }
 
