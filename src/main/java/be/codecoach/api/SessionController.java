@@ -19,19 +19,17 @@ import java.util.List;
 public class SessionController {
 
     private final SessionService sessionService;
-    private final SmsSender sms;
 
     @Autowired
-    public SessionController(SessionService sessionService, SmsSender sms) {
+    public SessionController(SessionService sessionService) {
         this.sessionService = sessionService;
-        this.sms = sms;
+
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('COACHEE')")
     public void requestSession(@RequestBody SessionDto sessionDto) {
-        sms.sendMessage();
         sessionService.requestSession(sessionDto);
     }
 
