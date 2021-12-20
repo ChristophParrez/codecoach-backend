@@ -17,12 +17,10 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
 
-    private final SmsSender sms;
     private final UserService userService;
 
     @Autowired
-    public UserController(SmsSender sms, UserService userService) {
-        this.sms = sms;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -35,7 +33,6 @@ public class UserController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable String userId) {
-        sms.sendMessage();
         return userService.getCoacheeProfileDto(userId);
     }
 
