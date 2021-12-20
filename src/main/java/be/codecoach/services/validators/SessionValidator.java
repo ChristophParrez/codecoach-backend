@@ -1,7 +1,10 @@
 package be.codecoach.services.validators;
 
 import be.codecoach.api.dtos.SessionDto;
-import be.codecoach.domain.*;
+import be.codecoach.domain.Location;
+import be.codecoach.domain.RoleEnum;
+import be.codecoach.domain.Status;
+import be.codecoach.domain.User;
 import be.codecoach.exceptions.*;
 import be.codecoach.repositories.LocationRepository;
 import be.codecoach.repositories.RoleRepository;
@@ -105,11 +108,8 @@ public class SessionValidator {
     }
 
     public void assertCoachHasRequestedTopic(Optional<User> coachInDatabase, SessionDto sessionDto) {
-        coachInDatabase.get().getCoachInformation().getCoachingTopics().stream()
-                .map(CoachingTopic::getTopic)
-                .map(Topic::getName)
-                .filter(name -> name.equals(sessionDto.getSubject()))
-                .findAny()
-                .orElseThrow( () -> new InvalidInputException("Given coach does not have " + sessionDto.getSubject()));
+        if (!coachInDatabase.get().getCoachInformation().getCoachingTopics().contains(sessionDto.getSubject())) {
+            throw new InvalidInputException("Given coach does not have " + sessionDto.getSubject());
+        }
     }
 }
