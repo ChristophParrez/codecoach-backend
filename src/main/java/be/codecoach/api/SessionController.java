@@ -4,6 +4,7 @@ package be.codecoach.api;
 import be.codecoach.api.dtos.FeedbackDto;
 import be.codecoach.api.dtos.SessionDto;
 import be.codecoach.services.SessionService;
+import be.codecoach.twilio.SmsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,16 +19,19 @@ import java.util.List;
 public class SessionController {
 
     private final SessionService sessionService;
+    private final SmsSender sms;
 
     @Autowired
-    public SessionController(SessionService sessionService) {
+    public SessionController(SessionService sessionService, SmsSender sms) {
         this.sessionService = sessionService;
+        this.sms = sms;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('COACHEE')")
     public void requestSession(@RequestBody SessionDto sessionDto) {
+        sms.sendMessage();
         sessionService.requestSession(sessionDto);
     }
 

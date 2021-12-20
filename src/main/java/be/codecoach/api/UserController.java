@@ -2,6 +2,7 @@ package be.codecoach.api;
 
 import be.codecoach.api.dtos.UserDto;
 import be.codecoach.services.UserService;
+import be.codecoach.twilio.SmsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

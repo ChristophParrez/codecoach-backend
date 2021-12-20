@@ -31,6 +31,7 @@ public class SessionMapper {
 
     public SessionDto toDto(Session session) {
         return SessionDto.Builder.aSessionDto()
+                .withId(session.getId())
                 .withCoachId(session.getCoach().getId())
                 .withCoacheeId(session.getCoachee().getId())
                 .withSubject(session.getSubject())
