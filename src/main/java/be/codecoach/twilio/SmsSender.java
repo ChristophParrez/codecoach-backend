@@ -8,18 +8,18 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
-@PropertySource("application-twilio.properties")
+//@PropertySource("application-twilio.properties")
 public class SmsSender {
 
 
 
-    @Value("${TWILIO_ACCOUNT_SID}")
+   /* @Value("${TWILIO_ACCOUNT_SID}")
     public String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
     @Value("${TWILIO_AUTH_TOKEN}")
     public String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
-
+*/
     public void sendMessage() {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        /*Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
                         new PhoneNumber("+32472491759"),
                         new PhoneNumber("+15855968249"),
@@ -27,7 +27,7 @@ public class SmsSender {
                 .create();
 
         System.out.println(ACCOUNT_SID);
-        System.out.println(AUTH_TOKEN);
+        System.out.println(AUTH_TOKEN);*/
     }
 
 }
