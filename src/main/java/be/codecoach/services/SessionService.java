@@ -32,7 +32,7 @@ public class SessionService {
     private final FeedbackRepository feedbackRepository;
 
     @Autowired
-    public SessionService(UserRepository userRepository, RoleRepository roleRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
+    public SessionService(UserRepository userRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
         this.sessionValidator = sessionValidator;
