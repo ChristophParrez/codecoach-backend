@@ -72,6 +72,9 @@ public class SessionValidator {
         if (inputEmpty(sessionDto.getSubject())) {
             throw new NoInputException("Subject must be provided");
         }
+        if (inputEmpty(sessionDto.getRemarks())) {
+            throw new NoInputException("Remarks must be provided");
+        }
     }
 
     private boolean inputEmpty(String input) {
@@ -105,5 +108,11 @@ public class SessionValidator {
     public Status getStatusFromRepository(String status) {
         return statusRepository.findById("REQUESTED")
                 .orElseThrow( () -> new DatabaseException("Database seems to have been modified! Was trying to fetch REQUESTED status from database in order to link it to the session, but REQUESTED was not found in the database."));
+    }
+
+    public void assertCoachHasRequestedTopic(Optional<User> coachInDatabase, SessionDto sessionDto) {
+        if (!coachInDatabase.get().getCoachInformation().getCoachingTopics().contains(sessionDto.getSubject())) {
+            throw new InvalidInputException("Given coach does not have " + sessionDto.getSubject());
+        }
     }
 }

@@ -52,6 +52,8 @@ public class SessionService {
         Optional<User> coacheeInDatabase = userRepository.findById(sessionDto.getCoacheeId());
         sessionValidator.assertGivenIdsAreValid(coachInDatabase, coacheeInDatabase);
 
+        sessionValidator.assertCoachHasRequestedTopic(coachInDatabase, sessionDto);
+
         Location location = sessionValidator.validateLocationMatchesGivenPossibilities(sessionDto.getLocation().getName());
         Status status = sessionValidator.getStatusFromRepository("REQUESTED");
 
