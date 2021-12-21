@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class SessionService {
 
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot update sessions for somebody else";
+    private static final Logger logger = LoggerFactory.getLogger(SessionService.class);
 
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
