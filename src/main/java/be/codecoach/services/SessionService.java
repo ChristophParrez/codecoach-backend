@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,6 +84,8 @@ public class SessionService {
 
         List<Session> allSessions = sessionRepository.findAll();
         List<Session> sessionsToReturn;
+
+        UpdateFinishedSessions(allSessions);
 
         if ("COACH".equals(role) && authenticationService.hasRole("COACH")) {
             sessionsToReturn = allSessions.stream().filter(session -> session.getCoach().getId().equals(idFromDatabase)).collect(Collectors.toList());
