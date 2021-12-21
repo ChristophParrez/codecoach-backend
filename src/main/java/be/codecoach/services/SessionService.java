@@ -39,6 +39,7 @@ public class SessionService {
     public static final String STATUS_FINISHED_CANCELLED_BY_COACHEE = "FINISHED_CANCELLED_BY_COACHEE";
     public static final String STATUS_FINISHED = "FINISHED";
     public static final String STATUS_FINISHED_FEEDBACK_GIVEN = "FINISHED_FEEDBACK_GIVEN";
+    public static final String STATUS_FINISHED_AUTOMATICALLY_CLOSED = "FINISHED_AUTOMATICALLY_CLOSED";
 
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
@@ -109,13 +110,28 @@ public class SessionService {
     }
 
     private void UpdateFinishedSessions(List<Session> allSessions) {
+        UpdateFinishedAcceptedSessions(allSessions);
+        UpdateFinishedRequestedSessions(allSessions);
+    }
+
+    private void UpdateFinishedAcceptedSessions(List<Session> allSessions) {
         Status statusDone = statusRepository.findById(STATUS_DONE_WAITING_FOR_FEEDBACK)
-                .orElseThrow(() -> new DatabaseException("DONE WAITING FOR FEEDBACK not found in the database"));
+                .orElseThrow(() -> new DatabaseException(STATUS_DONE_WAITING_FOR_FEEDBACK + " not found in the database."));
 
         allSessions.stream()
                 .filter(session -> STATUS_ACCEPTED.equals(session.getStatus().getStatusName()))
                 .filter(session -> LocalDateTime.of(session.getDate(), session.getTime()).isBefore(LocalDateTime.now()))
                 .forEach(session -> session.setStatus(statusDone));
+    }
+
+    private void UpdateFinishedRequestedSessions(List<Session> allSessions) {
+        Status statusFinishedAutomaticaly = statusRepository.findById(STATUS_FINISHED_AUTOMATICALLY_CLOSED)
+                .orElseThrow(() -> new DatabaseException(STATUS_FINISHED_AUTOMATICALLY_CLOSED + " not found in database."));
+
+        allSessions.stream()
+                .filter(session -> STATUS_REQUESTED.equals(session.getStatus().getStatusName()))
+                .filter(session -> LocalDateTime.of(session.getDate(), session.getTime()).isBefore(LocalDateTime.now()))
+                .forEach(session -> session.setStatus(statusFinishedAutomaticaly));
     }
 
     public void updateSessionStatus(String sessionId, String newStatus) {
