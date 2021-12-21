@@ -31,14 +31,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-        //ugly code and duplication from SecurityConfig.
-        //I got no idea to do this better.
-        //This basically means do not test security in these cases, something the SecurityConfig does also
-        //Team Runtime Terror Backend: added || request.getRequestURI().contains("/users"))
-        /*if (((request.getRequestURI().contains("/security") || request.getRequestURI().contains("/login")) && request.getMethod().equals("POST"))  || request.getRequestURI().contains("/users")) {
-            filterChain.doFilter(request, response);
-            return;
-        }*/
 
         LOGGER.info("Getting token");
         String token = Optional.ofNullable(request.getHeader("Authorization")).map(header -> header.replace("Bearer ", "")).orElse("");
@@ -46,6 +38,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         var authentication = jwtGenerator.convertToken(token);
         LOGGER.info("Authentication: " + authentication);
 
+        //ugly code and duplication from SecurityConfig.
+        //I got no idea to do this better.
+        //This basically means do not test security in these cases, something the SecurityConfig does also
         if (authentication == null && ((request.getRequestURI().contains("/security") && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("POST"))
                 || (request.getRequestURI().contains("/users") && request.getMethod().equals("GET"))
