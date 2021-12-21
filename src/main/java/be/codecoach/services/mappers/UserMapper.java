@@ -26,14 +26,14 @@ public class UserMapper {
     public User toEntity(UserDto dto) {
         CoachInformation coachInformation = dto.getCoachInformation() != null ? coachInformationMapper.toEntity(dto.getCoachInformation()) : null;
         Set<Role> roles = roleMapper.toEntity(dto.getRoles());
-        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
+        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getTelephoneNumber(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
     }
 
     public User toEntity(UserDto dto, Role role) {
         CoachInformation coachInformation = dto.getCoachInformation() != null ? coachInformationMapper.toEntity(dto.getCoachInformation()) : null;
         Set<Role> roles = Set.of(role);
 
-        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
+        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getTelephoneNumber(), dto.getCompanyName(), dto.getPassword(), roles, dto.getPicture(), coachInformation);
     }
 
     public UserDto toCoacheeProfileDto(User user) {
@@ -42,6 +42,7 @@ public class UserMapper {
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withEmail(user.getEmail())
+                .withTelephoneNumber(user.getTelephoneNumber())
                 .withCompanyName(user.getCompanyName())
                 .withRoles(roleMapper.toDto(user.getRoles()))
                 .withPicture(user.getPicture())
@@ -54,6 +55,7 @@ public class UserMapper {
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withEmail(user.getEmail())
+                .withTelephoneNumber(user.getTelephoneNumber())
                 .withCompanyName(user.getCompanyName())
                 .withPicture(user.getPicture())
                 .build();
@@ -69,6 +71,7 @@ public class UserMapper {
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withEmail(user.getEmail())
+                .withTelephoneNumber(user.getTelephoneNumber())
                 .withCompanyName(user.getCompanyName())
                 .withRoles(roleMapper.toDto(user.getRoles()))
                 .withPicture(user.getPicture())

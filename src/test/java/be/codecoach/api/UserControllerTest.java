@@ -70,7 +70,7 @@ class UserControllerTest {
     void registerUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/users")
-                        .content(new ObjectMapper().writeValueAsString(new User("Glenn", "Verhaeghe", "gle@ver.be", "egov", "Pass1234", Set.of(new Role(RoleEnum.COACHEE)), null, null)))
+                        .content(new ObjectMapper().writeValueAsString(new User("Glenn", "Verhaeghe", "gle@ver.be", "", "egov", "Pass1234", Set.of(new Role(RoleEnum.COACHEE)), null, null)))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());

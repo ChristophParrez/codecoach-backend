@@ -19,7 +19,7 @@ class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         email = "John@Doe.com";
-        userRepository.save(new User("","",email,"","",null,"",null));
+        userRepository.save(new User("","",email, "", "","",null,"",null));
     }
 
     @Test

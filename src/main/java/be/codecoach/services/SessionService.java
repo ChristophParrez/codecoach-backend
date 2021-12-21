@@ -3,11 +3,16 @@ package be.codecoach.services;
 import be.codecoach.api.dtos.FeedbackDto;
 import be.codecoach.api.dtos.SessionDto;
 import be.codecoach.domain.*;
-import be.codecoach.exceptions.*;
+import be.codecoach.exceptions.FeedbackAlreadyProvidedException;
+import be.codecoach.exceptions.ForbiddenAccessException;
+import be.codecoach.exceptions.InvalidInputException;
 import be.codecoach.repositories.*;
 import be.codecoach.services.mappers.FeedbackMapper;
 import be.codecoach.services.mappers.SessionMapper;
 import be.codecoach.services.validators.SessionValidator;
+import be.codecoach.twilio.SmsSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +35,10 @@ public class SessionService {
     private final AuthenticationService authenticationService;
     private final FeedbackMapper feedbackMapper;
     private final FeedbackRepository feedbackRepository;
+    private final SmsSender smsSender;
 
     @Autowired
-    public SessionService(UserRepository userRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository) {
+    public SessionService(UserRepository userRepository, SessionRepository sessionRepository, SessionValidator sessionValidator, SessionMapper sessionMapper, StatusRepository statusRepository, AuthenticationService authenticationService, FeedbackMapper feedbackMapper, FeedbackRepository feedbackRepository, LocationRepository locationRepository, SmsSender smsSender) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
         this.sessionValidator = sessionValidator;
@@ -41,6 +47,7 @@ public class SessionService {
         this.authenticationService = authenticationService;
         this.feedbackMapper = feedbackMapper;
         this.feedbackRepository = feedbackRepository;
+        this.smsSender = smsSender;
     }
 
     public void requestSession(SessionDto sessionDto) {
@@ -60,8 +67,11 @@ public class SessionService {
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
 
         sessionRepository.save(sessionToBeSaved);
-    }
 
+        if (coacheeInDatabase.get().getTelephoneNumber() != null) {
+            smsSender.sendMessage(coachInDatabase.get().getTelephoneNumber(), "Some user requested a session on " + sessionDto.getDate() + " at " + sessionDto.getTime());
+        }
+    }
 
 
     public List<SessionDto> getSessions(String role) {
@@ -104,6 +114,9 @@ public class SessionService {
             } else if (session.getStatus().getStatusName().equals("ACCEPTED")
                     && newStatus.equals("FINISHED CANCELLED BY COACH")) {
                 session.setStatus(status);
+                if (session.getCoachee().getTelephoneNumber() != null) {
+                    smsSender.sendMessage(session.getCoachee().getTelephoneNumber(), "Your " + session.getSubject() + " session on " + session.getDate() + " at " + session.getTime() + " has been cancelled by the coach");
+                }
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
             }
@@ -160,7 +173,7 @@ public class SessionService {
 
             User coach = userRepository.findById(coachId).orElseThrow();
             int previousXp = coach.getCoachInformation().getCoachXp();
-            coach.getCoachInformation().setCoachXp(previousXp+10);
+            coach.getCoachInformation().setCoachXp(previousXp + 10);
         }
     }
 }

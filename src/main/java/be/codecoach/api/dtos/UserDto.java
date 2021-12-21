@@ -8,17 +8,19 @@ public class UserDto {
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final String telephoneNumber;
     private final String companyName;
     private final String password;
     private final Set<RoleDto> roles;
     private final String picture;
     private final CoachInformationDto coachInformation;
 
-    private UserDto(String userId, String firstName, String lastName, String email, String companyName, String password, Set<RoleDto> roles, String picture, CoachInformationDto coachInformation) {
+    private UserDto(String userId, String firstName, String lastName, String email, String telephoneNumber, String companyName, String password, Set<RoleDto> roles, String picture, CoachInformationDto coachInformation) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.telephoneNumber = telephoneNumber;
         this.companyName = companyName;
         this.password = password;
         this.roles = roles;
@@ -40,6 +42,10 @@ public class UserDto {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getTelephoneNumber() {
+        return telephoneNumber;
     }
 
     public String getCompanyName() {
@@ -67,6 +73,7 @@ public class UserDto {
         private String firstName;
         private String lastName;
         private String email;
+        private String telephoneNumber;
         private String companyName;
         private String password;
         private Set<RoleDto> roles;
@@ -100,6 +107,11 @@ public class UserDto {
             return this;
         }
 
+        public Builder withTelephoneNumber(String telephoneNumber) {
+            this.telephoneNumber = telephoneNumber;
+            return this;
+        }
+
         public Builder withCompanyName(String companyName) {
             this.companyName = companyName;
             return this;
@@ -126,7 +138,7 @@ public class UserDto {
         }
 
         public UserDto build() {
-            return new UserDto(userId, firstName, lastName, email, companyName, password, roles, picture, coachInformation);
+            return new UserDto(userId, firstName, lastName, email, telephoneNumber, companyName, password, roles, picture, coachInformation);
         }
     }
 }

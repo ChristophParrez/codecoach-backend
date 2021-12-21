@@ -14,10 +14,11 @@ public class User implements Account {
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String companyName, String password, Set<Role> roles, String picture, CoachInformation coachInformation) {
+    public User(String firstName, String lastName, String email, String telephoneNumber, String companyName, String password, Set<Role> roles, String picture, CoachInformation coachInformation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.telephoneNumber = telephoneNumber;
         this.companyName = companyName;
         this.password = password;
         this.roles = roles;
@@ -54,6 +55,9 @@ public class User implements Account {
 
     @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "telephone_number")
+    private String telephoneNumber;
 
     @Column(name = "company_name")
     private String companyName;
@@ -95,6 +99,8 @@ public class User implements Account {
         return this.password;
     }
 
+
+
     @Override
     public void setPassword(String encode) {
         this.password = encode;
@@ -125,6 +131,10 @@ public class User implements Account {
 
     public String getCompanyName() {
         return companyName;
+    }
+
+    public String getTelephoneNumber() {
+        return telephoneNumber;
     }
 
     public Set<Role> getRoles() {
