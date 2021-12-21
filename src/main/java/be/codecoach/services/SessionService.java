@@ -3,6 +3,7 @@ package be.codecoach.services;
 import be.codecoach.api.dtos.FeedbackDto;
 import be.codecoach.api.dtos.SessionDto;
 import be.codecoach.domain.*;
+import be.codecoach.exceptions.DatabaseException;
 import be.codecoach.exceptions.FeedbackAlreadyProvidedException;
 import be.codecoach.exceptions.ForbiddenAccessException;
 import be.codecoach.exceptions.InvalidInputException;
@@ -92,6 +93,16 @@ public class SessionService {
         }
 
         return sessionMapper.toDto(sessionsToReturn);
+    }
+
+    private void UpdateFinishedSessions(List<Session> allSessions) {
+        Status statusDone = statusRepository.findById("DONE WAITING FOR FEEDBACK")
+                .orElseThrow(() -> new DatabaseException("DONE WAITING FOR FEEDBACK not found in the database"));
+
+        allSessions.stream()
+                .filter(session -> "ACCEPTED".equals(session.getStatus().getStatusName()))
+                .filter(session -> LocalDateTime.of(session.getDate(), session.getTime()).isBefore(LocalDateTime.now()))
+                .forEach(session -> session.setStatus(statusDone));
     }
 
     public void updateSessionStatus(String sessionId, String newStatus) {
