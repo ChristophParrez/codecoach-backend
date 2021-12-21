@@ -17,11 +17,11 @@ INSERT INTO locations (name) values ('Face2Face');
 
 INSERT INTO status (status_name) values ('REQUESTED');
 INSERT INTO status (status_name) values ('ACCEPTED');
-INSERT INTO status (status_name) values ('DONE WAITING FOR FEEDBACK');
-INSERT INTO status (status_name) values ('FINISHED FEEDBACK GIVEN');
-INSERT INTO status (status_name) values ('FINISHED AUTOMATICALLY CLOSED');
-INSERT INTO status (status_name) values ('FINISHED CANCELLED BY COACHEE');
-INSERT INTO status (status_name) values ('FINISHED CANCELLED BY COACH');
+INSERT INTO status (status_name) values ('DONE_WAITING_FOR_FEEDBACK');
+INSERT INTO status (status_name) values ('FINISHED_FEEDBACK_GIVEN');
+INSERT INTO status (status_name) values ('FINISHED_AUTOMATICALLY_CLOSED');
+INSERT INTO status (status_name) values ('FINISHED_CANCELLED_BY_COACHEE');
+INSERT INTO status (status_name) values ('FINISHED_CANCELLED_BY_COACH');
 INSERT INTO status (status_name) values ('DECLINED');
 
 INSERT INTO coach_info (introduction, coach_info_id, availability, coach_xp) values ('Hello World', 0, 'Every Monday', 0);
