@@ -28,13 +28,13 @@ public class PasswordResetService {
         this.accountService = accountService;
         this.messageSender = messageSender;
         this.signatureService = signatureService;
-    }
+    }*/
 
-    public void requestPasswordReset(PasswordResetRequestDto request) {
+    /*public void requestPasswordReset(PasswordResetRequestDto request) {
         messageSender.handle(new ResetPasswordRequestReceived(request.getEmail(), signatureService.digitallySignAndEncodeBase64(request.getEmail())));
-    }
+    }*/
 
-    public PasswordChangeResultDto performPasswordChange(PasswordChangeRequestDto request) {
+    /*public PasswordChangeResultDto performPasswordChange(PasswordChangeRequestDto request) {
         if (!signatureService.verifyBased64SignaturePasses(request.getToken(), request.getEmail())) {
             return new PasswordChangeResultDto(false);
         }
@@ -46,5 +46,5 @@ public class PasswordResetService {
         Account account = userOpt.get();
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         return new PasswordChangeResultDto(true);
-    }
+    }*/
 }

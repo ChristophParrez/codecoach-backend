@@ -2,7 +2,7 @@ package be.codecoach.security.authentication.user.api;
 
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class AccountMapper {
 /*
     public SecuredUserDto toUserDto(Account account) {

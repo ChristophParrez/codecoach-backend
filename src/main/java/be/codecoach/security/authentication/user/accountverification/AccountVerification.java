@@ -10,7 +10,7 @@ import java.util.Objects;
 //@Entity
 //@Table(name = "account_verification")
 public class AccountVerification {
-    @Id
+    /*@Id
     @Column(name = "id")
     private String profileId;
 
@@ -48,5 +48,5 @@ public class AccountVerification {
     @Override
     public int hashCode() {
         return Objects.hash(profileId);
-    }
+    }*/
 }

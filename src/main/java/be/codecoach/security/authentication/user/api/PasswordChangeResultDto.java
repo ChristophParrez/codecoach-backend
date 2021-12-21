@@ -1,7 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class PasswordChangeResultDto {
-    private boolean passwordChanged;
+    /*private boolean passwordChanged;
 
     public PasswordChangeResultDto() {
     }
@@ -13,5 +13,5 @@ public class PasswordChangeResultDto {
     public boolean isPasswordChanged() {
         return passwordChanged;
     }
-
+*/
 }

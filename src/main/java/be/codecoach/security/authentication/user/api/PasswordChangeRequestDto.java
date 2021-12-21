@@ -1,7 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class PasswordChangeRequestDto {
-    private String email;
+    /*private String email;
     private String token;
     private String password;
 
@@ -16,4 +16,5 @@ public class PasswordChangeRequestDto {
     public String getPassword() {
         return password;
     }
+     */
 }

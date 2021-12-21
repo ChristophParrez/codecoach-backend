@@ -33,7 +33,7 @@ public class SecuredUserService implements UserDetailsService {
     private final AccountVerificationService accountVerificationService;
     private final PasswordResetService passwordResetService;*/
 
-    public SecuredUserService(AccountService accountService, AccountMapper accountMapper, PasswordEncoder passwordEncoder, AccountVerificationService accountVerificationService, PasswordResetService passwordResetService) {
+    public SecuredUserService(AccountService accountService){//, AccountMapper accountMapper, PasswordEncoder passwordEncoder, AccountVerificationService accountVerificationService, PasswordResetService passwordResetService) {
         this.accountService = accountService;
         /*this.accountMapper = accountMapper;
         this.passwordEncoder = passwordEncoder;

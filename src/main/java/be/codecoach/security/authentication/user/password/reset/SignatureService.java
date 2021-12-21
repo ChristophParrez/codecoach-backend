@@ -12,7 +12,7 @@ import java.util.Objects;
 @Service
 public class SignatureService {
 
-    private final KeyPair keyPair;
+    /*private final KeyPair keyPair;
 
     public SignatureService(KeyPair keyPair) {
         this.keyPair = keyPair;
@@ -35,13 +35,13 @@ public class SignatureService {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
-    public String digitallySignAndEncodeBase64(String value) {
+    /*public String digitallySignAndEncodeBase64(String value) {
         return Base64.getEncoder().encodeToString(digitallySign(value));
-    }
+    }*/
 
-    private Signature generateSignature(String value) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    /*private Signature generateSignature(String value) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Objects.requireNonNull(value);
         byte[] data = value.getBytes(StandardCharsets.UTF_8);
 
@@ -50,9 +50,9 @@ public class SignatureService {
         sig.initSign(this.keyPair.getPrivate());
         sig.update(data);
         return sig;
-    }
+    }*/
 
-    private byte[] digitallySign(String value) {
+    /*private byte[] digitallySign(String value) {
         try {
             return generateSignature(value).sign();
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -60,5 +60,5 @@ public class SignatureService {
             sfe.addSuppressed(e);
             throw sfe;
         }
-    }
+    }*/
 }

@@ -4,7 +4,7 @@ import be.codecoach.security.authentication.user.accountverification.AccountVeri
 import be.codecoach.security.authentication.user.api.Account;
 
 public class AccountCreated implements Event {
-
+/*
     private final Account account;
     private final AccountVerification accountVerification;
 

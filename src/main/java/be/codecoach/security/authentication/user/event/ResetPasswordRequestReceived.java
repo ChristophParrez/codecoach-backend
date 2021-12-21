@@ -1,7 +1,7 @@
 package be.codecoach.security.authentication.user.event;
 
 public class ResetPasswordRequestReceived implements Event {
-
+/*
     private String email;
     private String signature;
 
@@ -17,4 +17,6 @@ public class ResetPasswordRequestReceived implements Event {
     public String getSignature() {
         return signature;
     }
+
+ */
 }
