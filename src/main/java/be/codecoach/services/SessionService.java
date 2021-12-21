@@ -31,6 +31,14 @@ public class SessionService {
 
     private static final String FORBIDDEN_ACCESS_MESSAGE = "You cannot update sessions for somebody else";
     private static final Logger logger = LoggerFactory.getLogger(SessionService.class);
+    public static final String STATUS_REQUESTED = "REQUESTED";
+    public static final String STATUS_FINISHED_CANCELLED_BY_COACH = "FINISHED_CANCELLED_BY_COACH";
+    public static final String STATUS_DONE_WAITING_FOR_FEEDBACK = "DONE_WAITING_FOR_FEEDBACK";
+    public static final String STATUS_ACCEPTED = "ACCEPTED";
+    public static final String STATUS_DECLINED = "DECLINED";
+    public static final String STATUS_FINISHED_CANCELLED_BY_COACHEE = "FINISHED_CANCELLED_BY_COACHEE";
+    public static final String STATUS_FINISHED = "FINISHED";
+    public static final String STATUS_FINISHED_FEEDBACK_GIVEN = "FINISHED_FEEDBACK_GIVEN";
 
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
@@ -67,7 +75,7 @@ public class SessionService {
         sessionValidator.assertCoachHasRequestedTopic(coachInDatabase, sessionDto);
 
         Location location = sessionValidator.validateLocationMatchesGivenPossibilities(sessionDto.getLocation().getName());
-        Status status = sessionValidator.getStatusFromRepository("REQUESTED");
+        Status status = sessionValidator.getStatusFromRepository(STATUS_REQUESTED);
 
         Session sessionToBeSaved = sessionMapper.toEntity(sessionDto, coachInDatabase.get(), coacheeInDatabase.get(), status, location);
 
@@ -101,11 +109,11 @@ public class SessionService {
     }
 
     private void UpdateFinishedSessions(List<Session> allSessions) {
-        Status statusDone = statusRepository.findById("DONE WAITING FOR FEEDBACK")
+        Status statusDone = statusRepository.findById(STATUS_DONE_WAITING_FOR_FEEDBACK)
                 .orElseThrow(() -> new DatabaseException("DONE WAITING FOR FEEDBACK not found in the database"));
 
         allSessions.stream()
-                .filter(session -> "ACCEPTED".equals(session.getStatus().getStatusName()))
+                .filter(session -> STATUS_ACCEPTED.equals(session.getStatus().getStatusName()))
                 .filter(session -> LocalDateTime.of(session.getDate(), session.getTime()).isBefore(LocalDateTime.now()))
                 .forEach(session -> session.setStatus(statusDone));
     }
@@ -125,11 +133,11 @@ public class SessionService {
 
         if (authenticationService.hasRole("COACH") && coachId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
-            if (session.getStatus().getStatusName().equals("REQUESTED")
-                    && (newStatus.equals("ACCEPTED") || newStatus.equals("DECLINED"))) {
+            if (session.getStatus().getStatusName().equals(STATUS_REQUESTED)
+                    && (newStatus.equals(STATUS_ACCEPTED) || newStatus.equals(STATUS_DECLINED))) {
                 session.setStatus(status);
-            } else if (session.getStatus().getStatusName().equals("ACCEPTED")
-                    && newStatus.equals("FINISHED CANCELLED BY COACH")) {
+            } else if (session.getStatus().getStatusName().equals(STATUS_ACCEPTED)
+                    && newStatus.equals(STATUS_FINISHED_CANCELLED_BY_COACH)) {
                 session.setStatus(status);
                 if (session.getCoachee().getTelephoneNumber() != null) {
                     //smsSender.sendMessage(session.getCoachee().getTelephoneNumber(), "Your " + session.getSubject() + " session on " + session.getDate() + " at " + session.getTime() + " has been cancelled by the coach");
@@ -139,8 +147,8 @@ public class SessionService {
             }
         } else if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
-            if ((session.getStatus().getStatusName().equals("REQUESTED") || (session.getStatus().getStatusName().equals("ACCEPTED")))
-                    && newStatus.equals("FINISHED CANCELLED BY COACHEE")) {
+            if ((session.getStatus().getStatusName().equals(STATUS_REQUESTED) || (session.getStatus().getStatusName().equals(STATUS_ACCEPTED)))
+                    && newStatus.equals(STATUS_FINISHED_CANCELLED_BY_COACHEE)) {
                 session.setStatus(status);
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
@@ -152,11 +160,11 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new InvalidInputException("Session Not found"));
 
-        if (session.getStatus().getStatusName().contains("FINISHED")) {
+        if (session.getStatus().getStatusName().contains(STATUS_FINISHED)) {
             throw new IllegalArgumentException("Session has been archived. Cannot add feedback anymore. ");
         }
 
-        if (!session.getStatus().getStatusName().equals("DONE WAITING FOR FEEDBACK")) {
+        if (!session.getStatus().getStatusName().equals(STATUS_DONE_WAITING_FOR_FEEDBACK)) {
             throw new IllegalArgumentException("You cannot give feedback before a session is finished.");
         }
 
@@ -186,7 +194,7 @@ public class SessionService {
         }
 
         if (session.getCoachFeedback() != null && session.getCoacheeFeedback() != null) {
-            session.setStatus(statusRepository.getById("FINISHED FEEDBACK GIVEN"));
+            session.setStatus(statusRepository.getById(STATUS_FINISHED_FEEDBACK_GIVEN));
 
             User coach = userRepository.findById(coachId).orElseThrow();
             int previousXp = coach.getCoachInformation().getCoachXp();
