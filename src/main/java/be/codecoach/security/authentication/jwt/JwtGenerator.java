@@ -24,8 +24,8 @@ public class JwtGenerator {
 
     private final String jwtSecret;
 
-    public JwtGenerator(@Value("${jwt.secret}") String jwtSecret) {
-        this.jwtSecret = jwtSecret;
+    public JwtGenerator() {
+        this.jwtSecret = System.getenv("JWT-SECRET");
     }
 
     public UsernamePasswordAuthenticationToken convertToken(String token) {
