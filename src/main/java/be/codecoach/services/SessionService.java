@@ -126,8 +126,6 @@ public class SessionService {
         String coachId = session.getCoach().getId();
         String coacheeId = session.getCoachee().getId();
 
-        newStatus = newStatus.replaceAll("_", " ");
-
         Status status = statusRepository.findById(newStatus)
                 .orElseThrow(() -> new InvalidInputException("Status not found"));
 
