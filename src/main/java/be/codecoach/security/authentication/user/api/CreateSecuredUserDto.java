@@ -1,7 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class CreateSecuredUserDto {
-    private String firstName;
+    /*private String firstName;
     private String lastName;
     private String classYear;
     private String email;
@@ -34,4 +34,6 @@ public class CreateSecuredUserDto {
     public String getPassword() {
         return password;
     }
+
+     */
 }

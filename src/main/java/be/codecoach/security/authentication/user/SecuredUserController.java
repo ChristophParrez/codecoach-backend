@@ -17,7 +17,7 @@ public class SecuredUserController {
     public SecuredUserController(SecuredUserService securedUserService) {
         this.securedUserService = securedUserService;
     }
-
+/*
     @PreAuthorize("isAnonymous()")
     @PostMapping(consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", path = "/validate")
     public VerificationResultDto validateAccount(@RequestBody ValidateAccountDto validationData) {
@@ -43,12 +43,14 @@ public class SecuredUserController {
             return new PasswordChangeResultDto(false);
         }
         return securedUserService.performPasswordChange(changeRequest);
-    }
-
+    }*/
+/*
     boolean isPasswordValid(String password) {
         if (password == null) return false;
 
         String pattern = "(?=.*[0-9])(?=.*[A-Z])(?=\\S+$).{8,}";
         return password.matches(pattern);
     }
+    */
+
 }

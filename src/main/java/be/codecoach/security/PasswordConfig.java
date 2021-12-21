@@ -17,6 +17,7 @@ public class PasswordConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /*
     @Bean
     public KeyPair keyPair() {
         try {
@@ -26,6 +27,6 @@ public class PasswordConfig {
         } catch (NoSuchAlgorithmException exception) {
             throw new RuntimeException(exception);
         }
-    }
+    }*/
 
 }

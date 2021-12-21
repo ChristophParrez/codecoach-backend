@@ -30,6 +30,7 @@ public class AccountVerificationService {
         this.activeProfiles = activeProfiles;
     }
 
+
     public void sendVerificationEmail(Account profile) {
         AccountVerification accountVerification = accountVerificationRepository.save(generateAccountVerification(profile));
         messageSender.handle(new AccountCreated(profile, accountVerification));
@@ -53,6 +54,7 @@ public class AccountVerificationService {
         return true;
     }
 
+
     private AccountVerification generateAccountVerification(Account account) {
         return new AccountVerification(account.getId(), DigestUtils.md5Hex(salt + account.getEmail()).toUpperCase());
     }
@@ -66,4 +68,6 @@ public class AccountVerificationService {
                 .map(account -> account.getVerificationCode().equals(verificationCode))
                 .orElse(false);
     }
+
+     */
 }

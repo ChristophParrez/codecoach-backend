@@ -1,6 +1,6 @@
 package be.codecoach.security.authentication.user.password.reset;
 
-import be.codecoach.security.authentication.user.exception.SigningFailedException;
+//import be.codecoach.security.authentication.user.exception.SigningFailedException;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;

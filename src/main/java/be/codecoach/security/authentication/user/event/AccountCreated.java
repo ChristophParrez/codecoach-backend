@@ -16,7 +16,7 @@ public class AccountCreated implements Event {
     public Account getAccount() {
         return account;
     }
-
+/*
     public String getProfileId() {
         return accountVerification.getId();
     }
@@ -24,4 +24,6 @@ public class AccountCreated implements Event {
     public String getVerificationCode() {
         return accountVerification.getVerificationCode();
     }
+
+ */
 }

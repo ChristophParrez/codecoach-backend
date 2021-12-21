@@ -1,7 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class ResendVerificationDto {
-    private String email;
+    /*private String email;
     private boolean validationBeingResend;
 
     public String getEmail() {
@@ -15,4 +15,6 @@ public class ResendVerificationDto {
     public void setValidationBeenResend(boolean validationBeenResend) {
         this.validationBeingResend = validationBeenResend;
     }
+
+     */
 }

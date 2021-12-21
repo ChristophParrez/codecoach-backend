@@ -7,8 +7,8 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "account_verification")
+//@Entity
+//@Table(name = "account_verification")
 public class AccountVerification {
     @Id
     @Column(name = "id")

@@ -1,6 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class ValidateAccountDto {
+    /*
     private String email;
     private String verificationCode;
 
@@ -11,4 +12,6 @@ public class ValidateAccountDto {
     public String getVerificationCode() {
         return verificationCode;
     }
+
+     */
 }

@@ -3,7 +3,7 @@ package be.codecoach.security.authentication.user.api;
 import java.util.Objects;
 
 public class SecuredUserDto {
-    private String id;
+    /*private String id;
     private String email;
     private boolean accountEnabled;
 
@@ -42,4 +42,6 @@ public class SecuredUserDto {
     public int hashCode() {
         return Objects.hash(id, email, accountEnabled);
     }
+
+     */
 }

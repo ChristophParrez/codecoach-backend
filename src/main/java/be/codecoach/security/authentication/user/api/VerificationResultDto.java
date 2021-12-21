@@ -1,6 +1,7 @@
 package be.codecoach.security.authentication.user.api;
 
 public class VerificationResultDto {
+    /*
     private boolean emailAddressValidated;
 
     public VerificationResultDto() {
@@ -13,4 +14,6 @@ public class VerificationResultDto {
     public boolean isEmailAddressValidated() {
         return emailAddressValidated;
     }
+
+     */
 }

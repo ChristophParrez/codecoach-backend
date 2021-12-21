@@ -13,7 +13,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PasswordResetService {
-    private final PasswordEncoder passwordEncoder;
+
+    /*private final PasswordEncoder passwordEncoder;
     private final AccountService accountService;
     private final SignatureService signatureService;
     private final MessageSender messageSender;
