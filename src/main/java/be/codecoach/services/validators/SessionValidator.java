@@ -43,6 +43,9 @@ public class SessionValidator {
         if (!coachInDatabase.get().getRoles().contains(roleRepository.findByRole(RoleEnum.COACH))) {
             throw new WrongRoleException("This user is not a coach. The user can't receive session requests");
         }
+        if (coacheeInDatabase.get().getId().equals(coachInDatabase.get().getId())) {
+            throw new UnexpectedInputException("Coach and Coachee are the same person.");
+        }
     }
 
     public Location validateLocationMatchesGivenPossibilities(String location) {
