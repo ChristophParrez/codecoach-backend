@@ -17,10 +17,6 @@ public class CoachInformationService {
         this.coachInformationRepository = coachInformationRepository;
     }
 
-    public Optional<CoachInformation> getCoachInformation(String coachInformationId) {
-        return coachInformationRepository.findById(coachInformationId);
-    }
-
     public CoachInformation save(CoachInformation coachInformation) {
         return coachInformationRepository.save(coachInformation);
     }

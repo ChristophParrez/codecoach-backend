@@ -26,7 +26,4 @@ public class RoleService {
         return roleRepository.findByRole(roleEnum);
     }
 
-    public Set<Role> mapToEntity(Set<RoleDto> roles) {
-        return roleMapper.toEntity(roles);
-    }
 }
