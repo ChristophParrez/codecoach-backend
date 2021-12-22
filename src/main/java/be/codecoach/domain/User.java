@@ -173,6 +173,10 @@ public class User implements Account {
         this.coachInformation = coachInformation;
     }
 
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
+    }
+
     public CoachInformation getCoachInformation() {
         return this.coachInformation;
     }

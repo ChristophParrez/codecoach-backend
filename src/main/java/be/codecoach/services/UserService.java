@@ -204,6 +204,9 @@ public class UserService implements AccountService {
         if (userDto.getPicture() != null) {
             user.setPicture(userDto.getPicture());
         }
+        if (userDto.getTelephoneNumber() != null) {
+            user.setTelephoneNumber(userDto.getTelephoneNumber());
+        }
     }
 
     private void setCoachFields(UserDto userDto, User user) {
