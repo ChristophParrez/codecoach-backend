@@ -32,7 +32,7 @@ INSERT INTO coach_info (introduction, coach_info_id, availability, coach_xp) val
 
 INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (0, 'Password1', 'Burgemeester', 0, 'Studio 100', 'meneer@burgemeester.de', 'Meneer De', 'https://vroegert.nl/wp-content/uploads/2016/05/Meneer-de-burgemeester-e1463667451236.jpg');
 INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (1, 'Password1', 'De Bolle', 1, 'Studio 100', 'octaaf@bolle.de', 'Octaaf', 'https://pbs.twimg.com/profile_images/1025276561082265600/iWWvCOXP_400x400.jpg');
-INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (2, 'Password1', 'Praline', 2, 'Studio 100', 'mevrouw@prali.ne', 'Mevrouw ', 'https://pbs.twimg.com/profile_images/1408234790/Rofl_irl_400x400.jpg');
+INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (2, 'Password1', 'Praline', 2, 'Studio 100', 'mevrouw@prali.ne', 'Mevrouw', 'https://pbs.twimg.com/profile_images/1408234790/Rofl_irl_400x400.jpg');
 INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (3, 'Password1', 'Vande Minister', 3, 'Studio 100', 'afgevaardigdevan@deminist.er', 'De Afgevaardigde', 'https://pbs.twimg.com/media/ERN4MctUYAAaLIs?format=jpg&name=900x900');
 INSERT INTO users (coach_info, password, last_name, user_id, company_name, email, first_name, picture) values (4, 'Password1', 'Vanleemhuyzen', 4, 'Studio 100', 'eugene@vanleemhuyz.en', 'Eugène', 'https://cds.mnm.be/sites/default/files/styles/800x600_focus/public/article/2017_12/wp_dgvlhq.jpg?itok=4Zb566Iu');
 
