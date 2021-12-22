@@ -78,7 +78,7 @@ INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_give
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, coachee_feedback, location, status) values ('5001', '2021-12-21', 'I would like to learn about polymorphism', 'Java', '14:30:00', '1002', '1003', '9001', 'Online', 'DONE_WAITING_FOR_FEEDBACK');
 
 -- Mert
-INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', null, null, '+32489223344');
+INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', "https://media-exp1.licdn.com/dms/image/C4D03AQHcGIcXI0sS6w/profile-displayphoto-shrink_400_400/0/1586875881687?e=1645660800&v=beta&t=tg-1lVU1yesqHweUqsnGH-w8WZ8YxxVz6uYtZnQWMv8", null, '+32489223344');
 INSERT INTO users_roles (user_id, role_id) values ('7319', '0');
 
 --Free
