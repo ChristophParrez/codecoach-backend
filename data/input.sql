@@ -63,12 +63,16 @@ INSERT INTO coaching_topics (coaching_info_id, topic, experience, coaching_topic
 
 -- Glenn
 INSERT INTO coach_info (introduction, coach_info_id, availability, coach_xp) values (null, '2002', null, 0);
-INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1002', 'eGov', 'glenn@mail.be', 'Glenn', 'Verhaeghe', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', null, '2002', '+32472491759');
+INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1002', 'eGov', 'glenn@mail.be', 'Glenn', 'Verhaeghe', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', 'https://randomuser.me/api/portraits/men/12.jpg', '2002', '+32472491759');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '0');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '1');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '2');
 
-
+INSERT INTO coach_info (coach_info_id, availability, coach_xp, introduction) values ('2003', 'On weekdays', 20, 'Hi there!');
+INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1003', 'CodeCoach', 'ellen@coach.com', 'Ellen', 'Gottesdiener', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', 'https://randomuser.me/api/portraits/women/12.jpg', '2003', null);
+INSERT INTO coaching_topics (coaching_topic_id, experience, topic, coaching_info_id) values ('3001', 7, 'Java', '2003');
+INSERT INTO coaching_topics (coaching_topic_id, experience, topic, coaching_info_id) values ('3002', 5, 'Angular', '2003');
+INSERT INTO users_roles (user_id, role_id) values ('1003', '1');
 
 -- Mert
 INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', null, null, '+32489223344');
