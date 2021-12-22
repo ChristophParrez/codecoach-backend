@@ -83,7 +83,7 @@ public class SessionService {
         sessionRepository.save(sessionToBeSaved);
 
         if (coacheeInDatabase.get().getTelephoneNumber() != null) {
-            //smsSender.sendMessage(coachInDatabase.get().getTelephoneNumber(), "A coachee requested a session on " + sessionDto.getDate() + " at " + sessionDto.getTime());
+            smsSender.sendMessage(coachInDatabase.get().getTelephoneNumber(), "A coachee requested a session on " + sessionDto.getDate() + " at " + sessionDto.getTime());
         }
     }
 
@@ -154,7 +154,7 @@ public class SessionService {
                     && newStatus.equals(STATUS_FINISHED_CANCELLED_BY_COACH)) {
                 session.setStatus(status);
                 if (session.getCoachee().getTelephoneNumber() != null) {
-                    //smsSender.sendMessage(session.getCoachee().getTelephoneNumber(), "Your " + session.getSubject() + " session on " + session.getDate() + " at " + session.getTime() + " has been cancelled by the coach");
+                    smsSender.sendMessage(session.getCoachee().getTelephoneNumber(), "Your " + session.getSubject() + " session on " + session.getDate() + " at " + session.getTime() + " has been cancelled by the coach");
                 }
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
@@ -171,6 +171,12 @@ public class SessionService {
     }
 
     public void giveFeedback(String sessionId, FeedbackDto feedbackDto) {
+
+
+        if (feedbackDto.getScore1() <= 0 || feedbackDto.getScore1() > 7 || feedbackDto.getScore2() <= 0 || feedbackDto.getScore2() > 7) {
+            throw new InvalidInputException("Score has to be in a range between 1 and 7");
+        }
+
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new InvalidInputException("Session Not found"));
 
