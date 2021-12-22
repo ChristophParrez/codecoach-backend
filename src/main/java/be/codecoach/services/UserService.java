@@ -70,6 +70,7 @@ public class UserService implements AccountService {
         Role role = roleService.findByRole(RoleEnum.COACHEE);
         User userToBeSaved = userMapper.toEntity(userDto, role);
         userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userToBeSaved.setEmail(userToBeSaved.getEmail().toLowerCase());
         return userRepository.save(userToBeSaved);
     }
 
@@ -192,10 +193,10 @@ public class UserService implements AccountService {
             user.setLastName(userDto.getLastName());
         }
         if (userDto.getEmail() != null) {
-            if (userRepository.existsByEmail(userDto.getEmail()) && !user.getEmail().equals(userDto.getEmail())) {
+            if (userRepository.existsByEmail(userDto.getEmail().toLowerCase()) && !user.getEmail().equals(userDto.getEmail())) {
                 throw new NotUniqueException("This email address is already used!");
             }
-            user.setEmail(userDto.getEmail());
+            user.setEmail(userDto.getEmail().toLowerCase());
         }
         if (userDto.getPicture() != null) {
             user.setPicture(userDto.getPicture());
