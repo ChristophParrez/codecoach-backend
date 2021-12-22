@@ -106,8 +106,8 @@ VALUES ('FreeDb_dummySessoin_12', '2022-01-25', 'How to write a good sql file fo
 --2 SQL sessions to be cancelled (REQUESTED)
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
 VALUES ('FreeDb_dummySessoin_2', '2022-01-21', 'How to set up a table with SQL?', 'SQL', '18:30:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'REQUESTED');
-INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
-VALUES ('FreeDb_dummySessoin_3', '2022-01-24', 'How to write good sql code', 'SQL', '18:30:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'REQUESTED');
+--INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
+--VALUES ('FreeDb_dummySessoin_3', '2022-01-24', 'How to write good sql code', 'SQL', '18:30:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'REQUESTED');
 --1 session in the future, ACCEPTED by coach
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
 VALUES ('FreeDb_dummySessoin_4', '2022-02-23', 'Explanations on Spring data', 'Spring', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'ACCEPTED');
@@ -125,19 +125,19 @@ INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, 
 VALUES ('FreeDb_dummySessoin_8', '2021-12-13', 'Date format in SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'REQUESTED');
 --1 session in the future, ACCEPTED by coach
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
-VALUES ('FreeDb_dummySessoin_9', '2022-02-23', 'Explanations on Spring data', 'Spring', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'ACCEPTED');
+VALUES ('FreeDb_dummySessoin_9', '2022-02-23', 'Explanations on Spring web', 'Spring', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'ACCEPTED');
 --1 session done where I can give feedback (ACCEPTED -> DONE WAITING FOR FEEDBACK)
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
-VALUES ('FreeDb_dummySessoin_10', '2021-12-14', 'Time format in SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'ACCEPTED');
+VALUES ('FreeDb_dummySessoin_10', '2021-12-14', 'formatting problems in SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'ACCEPTED');
 --1 session (DONE WAITING FOR FEEDBACK) -> but just waiting for coach
 INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_giver)
 VALUES ('FreeDb_userCoachee_1_feedback1', 'It was great!', 6, 6, 'FreeDb_userCoachee_1');
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, coachee_feedback, location, status)
-VALUES ('FreeDb_dummySessoin_11', '2021-12-14', 'Time format in SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'FreeDb_userCoachee_1_feedback1', 'Online', 'DONE_WAITING_FOR_FEEDBACK');
+VALUES ('FreeDb_dummySessoin_11', '2021-12-14', 'Issues with executing SQL on my database', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'FreeDb_userCoachee_1_feedback1', 'Online', 'DONE_WAITING_FOR_FEEDBACK');
 --1 session finished and feedback given
 INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_giver)
 VALUES ('FreeDb_userCoachee_1_feedback2', 'It was great!', 6, 6, 'FreeDb_userCoachee_1');
 INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_giver)
 VALUES ('FreeDb_userCoach_1_feedback1', 'It was great!', 6, 6, 'FreeDb_userCoach_1');
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coach_feedback, coachee, coachee_feedback, location, status)
-VALUES ('FreeDb_dummySessoin_1', '2021-12-14', 'Time format in SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoach_1_feedback1' , 'FreeDb_userCoachee_1', 'FreeDb_userCoachee_1_feedback2', 'Online', 'FINISHED_FEEDBACK_GIVEN');
+VALUES ('FreeDb_dummySessoin_1', '2021-12-14', 'Unions with SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoach_1_feedback1' , 'FreeDb_userCoachee_1', 'FreeDb_userCoachee_1_feedback2', 'Online', 'FINISHED_FEEDBACK_GIVEN');
