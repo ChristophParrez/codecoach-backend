@@ -1,4 +1,4 @@
-SET SCHEMA 'runtime';
+SET SCHEMA 'runtimedb';
 
 INSERT INTO roles (role_id, role_name) values (0, 'COACHEE');
 INSERT INTO roles (role_id, role_name) values (1, 'COACH');
@@ -67,6 +67,8 @@ INSERT INTO users (user_id, company_name, email, first_name, last_name, password
 INSERT INTO users_roles (user_id, role_id) values ('1002', '0');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '1');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '2');
+
+
 
 -- Mert
 INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', null, null, '+32489223344');
