@@ -65,7 +65,7 @@ public class MemberValidator {
     }
 
     private void assertEmailIsUnique(String email) {
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email.toLowerCase()).isPresent()) {
             throw new NotUniqueException("Email already exists!");
         }
     }
