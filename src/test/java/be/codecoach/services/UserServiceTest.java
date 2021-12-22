@@ -26,8 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
@@ -213,6 +212,31 @@ class UserServiceTest {
         Mockito.verify(coachInformationServiceMock).save(any());
     }
 
+    @Test
+    void givenCoachUserId_whenCallBecomeCoach_thenSaveMethodFromCoachInformationServiceIsNotCalled() {
+        // GIVEN
+        UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
+                passwordEncoderMock, coachingTopicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userServiceSpy = Mockito.spy(userService);
+
+        User user = UserTestBuilder.anEmptyUser().build();
+        Role role = RoleTestBuilder.aRoleWithCoach().build();
+        Set roleSet = new HashSet();
+        roleSet.add(role);
+        user.setRoles(roleSet);
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        Mockito.doReturn(user).when(userServiceSpy).getUser(userId);
+        when(authenticationServiceMock.hasRole("COACHEE")).thenReturn(true);
+        when(authenticationServiceMock.hasRole("COACH")).thenReturn(true);
+        Mockito.doNothing().when(authenticationServiceMock).assertUserHasRightsToPerformAction(any(String.class), any(String.class));
+        when(roleServiceMock.findByRole(any())).thenReturn(role);
+        userServiceSpy.becomeCoach(userId, response);
+
+        // THEN
+        Mockito.verify(coachInformationServiceMock, never()).save(any());
+    }
 
     @Test
     void updateUser() {
