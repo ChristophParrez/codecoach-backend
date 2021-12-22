@@ -141,3 +141,8 @@ INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_give
 VALUES ('FreeDb_userCoach_1_feedback1', 'It was great!', 6, 6, 'FreeDb_userCoach_1');
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coach_feedback, coachee, coachee_feedback, location, status)
 VALUES ('FreeDb_dummySessoin_1', '2021-12-14', 'Unions with SQL', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoach_1_feedback1' , 'FreeDb_userCoachee_1', 'FreeDb_userCoachee_1_feedback2', 'Online', 'FINISHED_FEEDBACK_GIVEN');
+
+
+-- Christoph
+INSERT INTO users (user_id, password, first_name, last_name, company_name, email, picture) values ('chris69', '$2a$10$lX8Ynwq7hbyFSG0yo7YeIei0ix7i9V/sDcI2apUBX4xnL.eJyawDO', 'Christoph', 'Parrez', 'Switchfully', 'christoph@gmail.com', 'https://randomuser.me/api/portraits/lego/1.jpg');
+INSERT INTO users_roles (user_id, role_id) values ('chris69', 0);
