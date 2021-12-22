@@ -93,16 +93,4 @@ class UserControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    /*void updateUserWithoutAuthorizationIsUnauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .put("/users/{id}", user.getId()).with(user("mertdemirol@gmail.com").password("Password123").roles("COACHEE"))
-                        .content("""
-                                {"firstName" : "Jos" }
-                                """)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isUnauthorized());
-    }
-*/
-
 }

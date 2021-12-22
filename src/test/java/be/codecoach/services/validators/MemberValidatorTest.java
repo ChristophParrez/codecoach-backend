@@ -76,7 +76,6 @@ class MemberValidatorTest {
         assertDoesNotThrow(() -> memberValidator.validate(userDto));
     }
 
-    //@Disabled("What is a good (regex) validation for email? What does the currently used regex do?")
     @ParameterizedTest
     @ValueSource(strings = { "noAt.com", "short@extension.c"  })
     @DisplayName("Assert Email is Valid: when not, throw exception")
