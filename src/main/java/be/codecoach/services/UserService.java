@@ -66,7 +66,7 @@ public class UserService implements AccountService {
 
     @Override
     public Account createAccount(UserDto userDto) {
-        assertUserInfoIsValid(userDto);
+        memberValidator.validate(userDto);
         Role role = roleService.findByRole(RoleEnum.COACHEE);
         User userToBeSaved = userMapper.toEntity(userDto, role);
         userToBeSaved.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -182,10 +182,6 @@ public class UserService implements AccountService {
         coachingTopics = coachingTopicService.addCoachingTopics(coachingTopicDtos);
 
         getUser(userId).getCoachInformation().setCoachingTopics(coachingTopics);
-    }
-
-    private void assertUserInfoIsValid(UserDto userDto) {
-        memberValidator.validate(userDto);
     }
 
     private void setRegularUserFields(UserDto userDto, User user) {

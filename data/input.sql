@@ -60,6 +60,7 @@ INSERT INTO coaching_topics (coaching_info_id, topic, experience, coaching_topic
 
 
 
+
 -- Glenn
 INSERT INTO coach_info (introduction, coach_info_id, availability, coach_xp) values (null, '2002', null, 0);
 INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1002', 'eGov', 'glenn@mail.be', 'Glenn', 'Verhaeghe', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', null, '2002', '+32472491759');
