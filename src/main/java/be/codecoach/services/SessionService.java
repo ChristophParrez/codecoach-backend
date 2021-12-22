@@ -171,6 +171,12 @@ public class SessionService {
     }
 
     public void giveFeedback(String sessionId, FeedbackDto feedbackDto) {
+
+
+        if (feedbackDto.getScore1() <= 0 || feedbackDto.getScore1() > 7 || feedbackDto.getScore2() <= 0 || feedbackDto.getScore2() > 7) {
+            throw new InvalidInputException("Score has to be in a range between 1 and 7");
+        }
+
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new InvalidInputException("Session Not found"));
 
