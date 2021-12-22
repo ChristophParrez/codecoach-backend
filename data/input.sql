@@ -67,12 +67,15 @@ INSERT INTO users (user_id, company_name, email, first_name, last_name, password
 INSERT INTO users_roles (user_id, role_id) values ('1002', '0');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '1');
 INSERT INTO users_roles (user_id, role_id) values ('1002', '2');
+INSERT INTO coaching_topics (coaching_topic_id, experience, topic, coaching_info_id) values ('3003', 6, 'Java', '2002');
 
 INSERT INTO coach_info (coach_info_id, availability, coach_xp, introduction) values ('2003', 'On weekdays', 20, 'Hi there!');
-INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1003', 'CodeCoach', 'ellen@coach.com', 'Ellen', 'Gottesdiener', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', 'https://randomuser.me/api/portraits/women/12.jpg', '2003', null);
+INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('1003', 'The Blue Bank', 'ellen@bluebank.com', 'Ellen', 'Gottesdiener', '$2a$10$6nCHRHSI92.guttxstf/XO6S7Xe.SV5n9hpOw1HerNOpwb8/OyFm2', 'https://randomuser.me/api/portraits/women/12.jpg', '2003', null);
 INSERT INTO coaching_topics (coaching_topic_id, experience, topic, coaching_info_id) values ('3001', 7, 'Java', '2003');
 INSERT INTO coaching_topics (coaching_topic_id, experience, topic, coaching_info_id) values ('3002', 5, 'Angular', '2003');
-INSERT INTO users_roles (user_id, role_id) values ('1003', '1');
+INSERT INTO users_roles (user_id, role_id) values ('1003', '0');
+INSERT INTO feedbacks (feedback_id, comment, score_one, score_two, feedback_giver) values ('9001', 'I learned a lot', 6, 6, '1003');
+INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, coachee_feedback, location, status) values ('5001', '2021-12-21', 'I would like to learn about polymorphism', 'Java', '14:30:00', '1002', '1003', '9001', 'Online', 'DONE_WAITING_FOR_FEEDBACK');
 
 -- Mert
 INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', null, null, '+32489223344');
@@ -98,7 +101,6 @@ INSERT INTO coaching_topics (coaching_info_id, topic, experience, coaching_topic
 values ('FreeDb_coachInfo_Simon', 'Spring', 6, 'FreeDb_coachTopics_S2');
 --Dummy sessions
 --1 session waiting for accept by coach (REQUESTED)
-SET SCHEMA 'runtime';
 INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, location, status)
 VALUES ('FreeDb_dummySessoin_12', '2022-01-25', 'How to write a good sql file for my Spring project', 'SQL', '19:00:00','FreeDb_userCoach_1', 'FreeDb_userCoachee_1', 'Online', 'REQUESTED');
 --2 SQL sessions to be cancelled (REQUESTED)
