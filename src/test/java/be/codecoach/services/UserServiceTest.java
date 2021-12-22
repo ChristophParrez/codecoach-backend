@@ -1,7 +1,10 @@
 package be.codecoach.services;
 
 import be.codecoach.api.dtos.UserDto;
+import be.codecoach.builder.CoachInformationTestBuilder;
+import be.codecoach.builder.RoleTestBuilder;
 import be.codecoach.builder.UserTestBuilder;
+import be.codecoach.domain.CoachInformation;
 import be.codecoach.domain.Role;
 import be.codecoach.domain.RoleEnum;
 import be.codecoach.domain.User;
@@ -14,9 +17,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +41,7 @@ class UserServiceTest {
     private CoachInformationService coachInformationServiceMock;
     private AuthenticationService authenticationServiceMock;
     private JwtGenerator jwtGeneratorMock;
+    MockHttpServletResponse response = new MockHttpServletResponse();
 
     @BeforeEach
     void setUp() {
@@ -181,8 +188,31 @@ class UserServiceTest {
     }
 
     @Test
-    void becomeCoach() {
+    void givenCoacheeUserId_whenCallBecomeCoach_thenSaveMethodFromCoachInformationServiceIsCalled() {
+        // GIVEN
+        UserService userService = new UserService(userMapperMock, roleServiceMock, userRepositoryMock, memberValidatorMock,
+                passwordEncoderMock, coachingTopicServiceMock, coachInformationServiceMock, authenticationServiceMock, jwtGeneratorMock);
+        UserService userServiceSpy = Mockito.spy(userService);
+
+        User user = UserTestBuilder.anEmptyUser().build();
+        Role role = RoleTestBuilder.aRoleWithCoachee().build();
+        Set roleSet = new HashSet();
+        roleSet.add(role);
+        user.setRoles(roleSet);
+        String userId = UUID.randomUUID().toString();
+
+        // WHEN
+        Mockito.doReturn(user).when(userServiceSpy).getUser(userId);
+        when(authenticationServiceMock.hasRole("COACHEE")).thenReturn(true);
+        when(authenticationServiceMock.hasRole("COACH")).thenReturn(false);
+        Mockito.doNothing().when(authenticationServiceMock).assertUserHasRightsToPerformAction(any(String.class), any(String.class));
+        when(roleServiceMock.findByRole(any())).thenReturn(role);
+        userServiceSpy.becomeCoach(userId, response);
+
+        // THEN
+        Mockito.verify(coachInformationServiceMock).save(any());
     }
+
 
     @Test
     void updateUser() {

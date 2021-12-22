@@ -19,7 +19,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 
 @Service
 public class JwtGenerator {
-    private static final int TOKEN_TIME_TO_LIVE = 3600000;
+    private static final int TOKEN_TIME_TO_LIVE = 36000000;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtGenerator.class);
 
     private final String jwtSecret;
