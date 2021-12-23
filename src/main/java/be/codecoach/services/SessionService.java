@@ -171,21 +171,10 @@ public class SessionService {
 
     public void giveFeedback(String sessionId, FeedbackDto feedbackDto) {
 
-
-        if (feedbackDto.getScore1() <= 0 || feedbackDto.getScore1() > 7 || feedbackDto.getScore2() <= 0 || feedbackDto.getScore2() > 7) {
-            throw new InvalidInputException("Score has to be in a range between 1 and 7");
-        }
-
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new InvalidInputException("Session Not found"));
 
-        if (session.getStatus().getStatusName().contains(STATUS_FINISHED)) {
-            throw new IllegalArgumentException("Session has been archived. Cannot add feedback anymore. ");
-        }
-
-        if (!session.getStatus().getStatusName().equals(STATUS_DONE_WAITING_FOR_FEEDBACK)) {
-            throw new IllegalArgumentException("You cannot give feedback before a session is finished.");
-        }
+        validateFeedback(feedbackDto, session);
 
         String coachId = session.getCoach().getId();
         String coacheeId = session.getCoachee().getId();
@@ -218,6 +207,20 @@ public class SessionService {
             User coach = userRepository.findById(coachId).orElseThrow();
             int previousXp = coach.getCoachInformation().getCoachXp();
             coach.getCoachInformation().setCoachXp(previousXp + 10);
+        }
+    }
+
+    private void validateFeedback(FeedbackDto feedbackDto, Session session) {
+        if (feedbackDto.getScore1() <= 0 || feedbackDto.getScore1() > 7 || feedbackDto.getScore2() <= 0 || feedbackDto.getScore2() > 7) {
+            throw new InvalidInputException("Score has to be in a range between 1 and 7");
+        }
+
+        if (session.getStatus().getStatusName().contains(STATUS_FINISHED)) {
+            throw new IllegalArgumentException("Session has been archived. Cannot add feedback anymore. ");
+        }
+
+        if (!session.getStatus().getStatusName().equals(STATUS_DONE_WAITING_FOR_FEEDBACK)) {
+            throw new IllegalArgumentException("You cannot give feedback before a session is finished.");
         }
     }
 }
