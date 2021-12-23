@@ -148,5 +148,5 @@ VALUES ('FreeDb_dummySessoin_1', '2021-12-14', 'Unions with SQL', 'SQL', '19:00:
 
 
 -- Christoph
-INSERT INTO users (user_id, password, first_name, last_name, company_name, email, picture) values ('chris69', '$2a$10$lX8Ynwq7hbyFSG0yo7YeIei0ix7i9V/sDcI2apUBX4xnL.eJyawDO', 'Christoph', 'Parrez', 'Switchfully', 'christoph@gmail.com', 'https://randomuser.me/api/portraits/lego/1.jpg');
+INSERT INTO users (user_id, password, first_name, last_name, company_name, email) values ('chris69', '$2a$10$lX8Ynwq7hbyFSG0yo7YeIei0ix7i9V/sDcI2apUBX4xnL.eJyawDO', 'Christoph', 'Parrez', 'Switchfully', 'christoph@gmail.com');
 INSERT INTO users_roles (user_id, role_id) values ('chris69', 0);
