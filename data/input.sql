@@ -80,6 +80,7 @@ INSERT INTO sessions (session_id, date, remarks, subject, time, coach, coachee, 
 -- Mert
 INSERT INTO users (user_id, company_name, email, first_name, last_name, password, picture, coach_info, telephone_number) values ('7319', 'FOD ECO', 'mert@mail.be', 'Mert', 'Demirok', '$2a$10$aN7hxcif/Dcgwhzbd3b4X.gg.3j5f6ZYo1rATsUZNh6iyTVbWMySe', 'https://media-exp1.licdn.com/dms/image/C4D03AQHcGIcXI0sS6w/profile-displayphoto-shrink_400_400/0/1586875881687?e=1645660800&v=beta&t=tg-1lVU1yesqHweUqsnGH-w8WZ8YxxVz6uYtZnQWMv8', null, '+32489223344');
 INSERT INTO users_roles (user_id, role_id) values ('7319', '0');
+INSERT INTO users_roles (user_id, role_id) values ('7319', '2');
 
 --Free
 --coachee Free Hoebeke
