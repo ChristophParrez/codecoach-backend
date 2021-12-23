@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,7 +144,6 @@ public class SessionService {
                 .orElseThrow(() -> new InvalidInputException("Status not found"));
 
         if (authenticationService.hasRole("COACH") && coachId.equals(authenticationService.getAuthenticationIdFromDb())) {
-
             if (session.getStatus().getStatusName().equals(STATUS_REQUESTED)
                     && (newStatus.equals(STATUS_ACCEPTED) || newStatus.equals(STATUS_DECLINED))) {
                 session.setStatus(status);
@@ -159,14 +156,16 @@ public class SessionService {
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
             }
-        } else if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
 
+        } else if (authenticationService.hasRole("COACHEE") && coacheeId.equals(authenticationService.getAuthenticationIdFromDb())) {
             if ((session.getStatus().getStatusName().equals(STATUS_REQUESTED) || (session.getStatus().getStatusName().equals(STATUS_ACCEPTED)))
                     && newStatus.equals(STATUS_FINISHED_CANCELLED_BY_COACHEE)) {
                 session.setStatus(status);
             } else {
                 throw new IllegalArgumentException("Status " + session.getStatus().getStatusName() + " can not be changed to " + newStatus + ".");
             }
+        } else {
+            throw new ForbiddenAccessException("You can't change status of someone else's session.");
         }
     }
 
