@@ -87,6 +87,10 @@ INSERT INTO users (user_id, first_name, last_name, password,   company_name, ema
 values ('FreeDb_userCoachee_1', 'Free', 'Hoebeke', '$2a$10$G/yX9SSk28WiXznnydU2d.ZtXYieBiZGtluDyW.90eGLRKv0e5vGG',
         'Cegeka', 'freehoebeke@gmail.com', '+32479074042' , 'https://freeh23.github.io/Images/me-and-myCat.jpg');
 INSERT INTO users_roles (role_id, user_id) values (0, 'FreeDb_userCoachee_1');
+-- 2nd coache for showing an exception in Postman
+INSERT INTO users (user_id, first_name, last_name, password,   company_name, email, telephone_number,  picture)
+values ('FreeDb_userCoachee_2', 'Samson', 'Van Gert', '$2a$10$G/yX9SSk28WiXznnydU2d.ZtXYieBiZGtluDyW.90eGLRKv0e5vGG',
+        'Studio100', 'samson@studio.com', '+32479074042' , 'https://cds.radio1.be/sites/default/files/styles/1200x630_scale_and_crop/public/remote_files/576ec2bea006d_samson_0.jpg?itok=4ue8eiUB');
 --coach Simon Brown
 INSERT INTO coach_info (introduction, coach_info_id, availability, coach_xp)
 values ('Hello! My name is Simon Brown and I would love to help you with Spring or SQL', 'FreeDb_coachInfo_Simon' , 'All days', 50);
